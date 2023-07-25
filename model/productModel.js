@@ -21,6 +21,7 @@ const productSchema = mongoose.Schema({
         },
         quantity: {
                 type: Number,
+                default: 0,
         },
         discount: {
                 type: Boolean,
@@ -42,10 +43,8 @@ const productSchema = mongoose.Schema({
                 default: 0,
         },
         colors: [{
-                colorId: {
-                        type: mongoose.Schema.ObjectId,
-                        ref: "ProductColor",
-                },
+                type: mongoose.Schema.ObjectId,
+                ref: "ProductColor"
         }],
         numOfReviews: {
                 type: Number,

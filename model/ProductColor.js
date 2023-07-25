@@ -12,13 +12,29 @@ const productSchema = mongoose.Schema({
                 },
                 quantity: {
                         type: Number,
+                        default: 0,
+                },
+                status: {
+                        type: String,
+                        enum: ["OUTOFSTOCK", "STOCK"],
                 },
         }],
         img: {
                 type: String
         },
+        publicId:{
+                type: String
+        },
         color: {
                 type: String
+        },
+        quantity:{
+                type: Number,
+                default: 0,
+        },
+        status: {
+                type: String,
+                enum: ["OUTOFSTOCK", "STOCK"],
         },
 },
         { timestamps: true });

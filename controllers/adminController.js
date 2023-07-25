@@ -12,6 +12,9 @@ const helpandSupport = require("../model/helpAndSupport");
 const staticContent = require("../model/staticContent");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const ProductColor = require("../model/ProductColor");
+const productModel = require("../model/productModel");
+const cloudinary = require("cloudinary");
+const { diskStorage } = require("multer");
 
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
@@ -226,24 +229,37 @@ exports.createProduct = async (req, res) => {
                 if (!findsubCategory || findsubCategory.length === 0) {
                         return res.status(400).send({ status: 404, msg: "not found" });
                 }
-                let images = [], colors = []
+                let images = [];
                 if (req.files) {
                         for (let i = 0; i < req.files.length; i++) {
+                                console.log(req.files[i]);
                                 let obj = {
                                         img: req.files[i].path,
+                                        publicId: req.files[i].filename,
                                         color: req.body.color[i]
                                 }
                                 images.push(obj)
-                                let obj1 = {
-                                        color: req.body.color[i]
-                                }
-                                colors.push(obj1)
                         }
                 }
-                req.body.images = images;
-                req.body.colors = colors;
                 const ProductCreated = await Product.create(req.body);
-                return res.status(201).send({ status: 200, message: "Product add successfully", data: ProductCreated, });
+                if (ProductCreated) {
+                        let count = 0;
+                        for (let k = 0; k < images.length; k++) {
+                                let obj = {
+                                        productId: ProductCreated._id,
+                                        img: images[k].img,
+                                        publicId: images[k].publicId,
+                                        color: images[k].color
+                                }
+                                let x = await ProductColor.create(obj);
+                                await Product.findByIdAndUpdate({ _id: ProductCreated._id }, { $push: { colors: x._id } }, { new: true })
+                                count++;
+                        }
+                        if (count == images.length) {
+                                let b = await Product.findById({ _id: ProductCreated._id }).populate('colors')
+                                return res.status(201).send({ status: 200, message: "Product add successfully", data: b, });
+                        }
+                }
         } catch (err) {
                 console.log(err);
                 return res.status(500).send({ message: "Internal server error while creating Product", });
@@ -374,7 +390,7 @@ exports.getOnSale = async (req, res, next) => {
 };
 exports.getIdProduct = async (req, res) => {
         try {
-                const data = await Product.findById(req.params.id).populate('categoryId subcategoryId');
+                const data = await Product.findById(req.params.id).populate('categoryId subcategoryId').populate('colors')
                 if (!data || data.length === 0) {
                         return res.status(400).send({ msg: "not found" });
                 }
@@ -401,18 +417,19 @@ exports.editProduct = async (req, res) => {
                                 return res.status(400).send({ status: 404, msg: "not found" });
                         }
                 }
-                let images = [], colors = [];
+                let images = [];
                 if (req.files) {
-                        for (let i = 0; i < req.files.length; i++) {
-                                let obj = {
-                                        img: req.files[i].path,
-                                        color: req.body.color[i]
+                        if (req.files.length == req.body.color.length) {
+                                for (let i = 0; i < req.files.length; i++) {
+                                        let obj = {
+                                                img: req.files[i].path,
+                                                publicId: req.files[i].filename,
+                                                color: req.body.color[i]
+                                        }
+                                        images.push(obj)
                                 }
-                                images.push(obj)
-                                let obj1 = {
-                                        color: req.body.color[i]
-                                }
-                                colors.push(obj1)
+                        } else {
+                                return res.status(201).send({ status: 201, msg: "color and image length not matched." });
                         }
                 }
                 let obj = {
@@ -423,13 +440,40 @@ exports.editProduct = async (req, res) => {
                         price: req.body.price || data.price,
                         taxInclude: req.body.taxInclude || data.taxInclude,
                         tax: req.body.tax || data.tax,
-                        images: images || data.images,
                         discount: req.body.discount || data.discount,
                         discountPrice: req.body.discountPrice || data.discountPrice,
-                        colors: colors || data.colors
                 }
                 let update = await Product.findByIdAndUpdate({ _id: data._id }, { $set: obj }, { new: true })
-                return res.status(200).json({ status: 200, message: "Product update successfully.", data: update });
+                if (update) {
+                        if (images.length > 0) {
+                                let count = 0;
+                                for (let k = 0; k < images.length; k++) {
+                                        let findColor = await ProductColor.findOne({ color: images[k].color });
+                                        if (findColor) {
+                                                await cloudinary.v2.api.delete_resources([`${findColor.publicId}`], { type: 'upload', resource_type: 'image' })
+                                                await ProductColor.findByIdAndUpdate({ _id: findColor._id }, { $set: { img: images[k].img, publicId: images[k].publicId, } }, { new: true })
+                                                count++;
+                                        } else {
+                                                let obj = {
+                                                        productId: update._id,
+                                                        img: images[k].img,
+                                                        publicId: images[k].publicId,
+                                                        color: images[k].color
+                                                }
+                                                let x = await ProductColor.create(obj);
+                                                await Product.findByIdAndUpdate({ _id: update._id }, { $push: { colors: x._id } }, { new: true })
+                                                count++;
+                                        }
+                                }
+                                if (count == images.length) {
+                                        let b = await Product.findById({ _id: update._id }).populate('colors')
+                                        return res.status(200).send({ status: 200, message: "Product update successfully", data: b, });
+                                }
+                        } else {
+                                let b = await Product.findById({ _id: update._id }).populate('colors')
+                                return res.status(200).send({ status: 200, message: "Product update successfully", data: b, });
+                        }
+                }
         } catch (err) {
                 return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
@@ -444,6 +488,234 @@ exports.deleteProduct = async (req, res) => {
                         return res.status(200).json({ status: 200, message: "Product delete successfully.", data: {} });
                 }
         } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.addProductColorSize = async (req, res) => {
+        try {
+                const data = await ProductColor.findById(req.params.id);
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                } else {
+                        if (data.colorSize.length == 0) {
+                                let colorSize = [], quantity = 0;
+                                if (req.body.size.length == req.body.quantity.length) {
+                                        for (let i = 0; i < req.body.size.length; i++) {
+                                                let status;
+                                                if (req.body.quantity[i] > 0) { status = "STOCK" }
+                                                if (req.body.quantity[i] <= 0) { status = "OUTOFSTOCK" }
+                                                let obj = {
+                                                        size: req.body.size[i],
+                                                        quantity: req.body.quantity[i],
+                                                        status: status
+                                                }
+                                                colorSize.push(obj)
+                                                quantity = quantity + req.body.quantity[i];
+                                        }
+                                        let statu;
+                                        if (quantity > 0) { statu = "STOCK" }
+                                        if (quantity <= 0) { statu = "OUTOFSTOCK" }
+                                        let update = await ProductColor.findByIdAndUpdate({ _id: data._id }, { $set: { colorSize: colorSize, quantity: quantity, status: statu } }, { new: true });
+                                        if (update) {
+                                                let findProduct = await Product.findById({ _id: data.productId });
+                                                if (findProduct) {
+                                                        let status;
+                                                        const productQuantity = findProduct.quantity + quantity;
+                                                        if (productQuantity > 0) { status = "STOCK" }
+                                                        if (productQuantity <= 0) { status = "OUTOFSTOCK" }
+                                                        let updated = await Product.findByIdAndUpdate({ _id: findProduct._id }, { $set: { quantity: productQuantity, status: status } }, { new: true });
+                                                        return res.status(200).send({ status: 200, message: "Product color update successfully", data: update, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(201).send({ status: 201, msg: "Size Array and quantity array not matched." });
+                                }
+                        } else {
+                                let saveExitSize = [], colorSize = [], quantity = 0;
+                                data.colorSize.map(i => { saveExitSize.push(i.size) })
+                                if (req.body.size.length == req.body.quantity.length) {
+                                        let newSize = [];
+                                        let unique1 = req.body.size.filter((o) => saveExitSize.indexOf(o) === -1);
+                                        let unique2 = saveExitSize.filter((o) => req.body.size.indexOf(o) === -1);
+                                        newSize = unique1.concat(unique2);
+                                        if (newSize.length == 0 && unique1.length == 0) {
+                                                console.log("545======================");
+                                                let colorSize = [], quantity = 0;
+                                                if (req.body.size.length == req.body.quantity.length) {
+                                                        for (let i = 0; i < req.body.size.length; i++) {
+                                                                let status;
+                                                                if (req.body.quantity[i] > 0) { status = "STOCK" }
+                                                                if (req.body.quantity[i] <= 0) { status = "OUTOFSTOCK" }
+                                                                let obj = {
+                                                                        size: req.body.size[i],
+                                                                        quantity: req.body.quantity[i],
+                                                                        status: status
+                                                                }
+                                                                colorSize.push(obj)
+                                                                quantity = quantity + req.body.quantity[i];
+                                                        }
+                                                        let statu;
+                                                        if (quantity > 0) { statu = "STOCK" }
+                                                        if (quantity <= 0) { statu = "OUTOFSTOCK" }
+                                                        let update = await ProductColor.findByIdAndUpdate({ _id: data._id }, { $set: { colorSize: colorSize, quantity: quantity, status: statu } }, { new: true });
+                                                        if (update) {
+                                                                let findProduct = await Product.findById({ _id: data.productId });
+                                                                if (findProduct) {
+                                                                        let productQuantity = 0;
+                                                                        for (let x = 0; x < findProduct.colors.length; x++) {
+                                                                                let data = await ProductColor.findById(findProduct.colors[x]);
+                                                                                productQuantity = productQuantity + data.quantity;
+                                                                        }
+                                                                        console.log("-----------------571----------------", productQuantity);
+                                                                        let status;
+                                                                        if (productQuantity > 0) { status = "STOCK" }
+                                                                        if (productQuantity <= 0) { status = "OUTOFSTOCK" }
+                                                                        let updated = await Product.findByIdAndUpdate({ _id: findProduct._id }, { $set: { quantity: productQuantity, status: status } }, { new: true });
+                                                                        return res.status(200).send({ status: 200, message: "Product color update successfully", data: update, });
+                                                                }
+                                                        }
+                                                } else {
+                                                        return res.status(201).send({ status: 201, msg: "Size Array and quantity array not matched." });
+                                                }
+                                        } else if (newSize.length > 0 && unique1.length == 0) {
+                                                console.log("595======================");
+                                                let colorSize = [], quantity = 0;
+                                                if (req.body.size.length == req.body.quantity.length) {
+                                                        for (let i = 0; i < req.body.size.length; i++) {
+                                                                let status;
+                                                                if (req.body.quantity[i] > 0) { status = "STOCK" }
+                                                                if (req.body.quantity[i] <= 0) { status = "OUTOFSTOCK" }
+                                                                let obj = {
+                                                                        size: req.body.size[i],
+                                                                        quantity: req.body.quantity[i],
+                                                                        status: status
+                                                                }
+                                                                colorSize.push(obj)
+                                                                quantity = quantity + req.body.quantity[i];
+                                                        }
+                                                        let statu;
+                                                        if (quantity > 0) { statu = "STOCK" }
+                                                        if (quantity <= 0) { statu = "OUTOFSTOCK" }
+                                                        let update = await ProductColor.findByIdAndUpdate({ _id: data._id }, { $set: { colorSize: colorSize, quantity: quantity, status: statu } }, { new: true });
+                                                        if (update) {
+                                                                let findProduct = await Product.findById({ _id: data.productId });
+                                                                if (findProduct) {
+                                                                        let productQuantity = 0;
+                                                                        for (let x = 0; x < findProduct.colors.length; x++) {
+                                                                                let data = await ProductColor.findById(findProduct.colors[x]);
+                                                                                productQuantity = productQuantity + data.quantity;
+                                                                        }
+                                                                        console.log("-----------------571----------------", productQuantity);
+                                                                        let status;
+                                                                        if (productQuantity > 0) { status = "STOCK" }
+                                                                        if (productQuantity <= 0) { status = "OUTOFSTOCK" }
+                                                                        let updated = await Product.findByIdAndUpdate({ _id: findProduct._id }, { $set: { quantity: productQuantity, status: status } }, { new: true });
+                                                                        return res.status(200).send({ status: 200, message: "Product color update successfully", data: update, });
+                                                                }
+                                                        }
+                                                } else {
+                                                        return res.status(201).send({ status: 201, msg: "Size Array and quantity array not matched." });
+                                                }
+                                        } else {
+                                                for (let k = 0; k < req.body.size.length; k++) {
+                                                        for (let j = 0; j < unique1.length; j++) {
+                                                                if (req.body.size[k] == unique1[j]) {
+                                                                        let status;
+                                                                        if (req.body.quantity[k] > 0) { status = "STOCK" }
+                                                                        if (req.body.quantity[k] <= 0) { status = "OUTOFSTOCK" }
+                                                                        let obj = { size: req.body.size[k], quantity: req.body.quantity[k], status: status }
+                                                                        colorSize.push(obj)
+                                                                } else {
+                                                                        let status;
+                                                                        if (req.body.quantity[k] > 0) { status = "STOCK" }
+                                                                        if (req.body.quantity[k] <= 0) { status = "OUTOFSTOCK" }
+                                                                        let obj = { size: req.body.size[k], quantity: req.body.quantity[k], status: status }
+                                                                        colorSize.push(obj)
+                                                                }
+                                                        }
+                                                }
+                                                for (let z = 0; z < colorSize.length; z++) {
+                                                        quantity = quantity + colorSize[z].quantity
+                                                }
+                                                let status;
+                                                if (quantity > 0) { status = "STOCK" }
+                                                if (quantity <= 0) { status = "OUTOFSTOCK" }
+                                                console.log(colorSize, quantity, status);
+                                                let update = await ProductColor.findByIdAndUpdate({ _id: data._id }, { $set: { colorSize: colorSize, quantity: quantity, status: status } }, { new: true });
+                                                if (update) {
+                                                        let findProduct = await Product.findById({ _id: data.productId });
+                                                        if (findProduct) {
+                                                                let productQuantity = 0;
+                                                                for (let x = 0; x < findProduct.colors.length; x++) {
+                                                                        let data = await ProductColor.findById(findProduct.colors[x]);
+                                                                        productQuantity = productQuantity + data.quantity;
+                                                                }
+                                                                console.log("---------------------------------", productQuantity);
+                                                                let status;
+                                                                if (productQuantity > 0) { status = "STOCK" }
+                                                                if (productQuantity <= 0) { status = "OUTOFSTOCK" }
+                                                                let updated = await Product.findByIdAndUpdate({ _id: findProduct._id }, { $set: { quantity: productQuantity, status: status } }, { new: true });
+                                                                return res.status(200).send({ status: 200, message: "Product color update successfully", data: update, });
+                                                        }
+                                                }
+                                        }
+                                } else {
+                                        return res.status(201).send({ status: 201, msg: "Size Array and quantity array not matched." });
+                                }
+                        }
+                }
+        } catch (err) {
+                console.log(err);
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.editProductColorSize = async (req, res) => {
+        try {
+                const data = await ProductColor.findById(req.params.id);
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                } else {
+                        for (let i = 0; i < data.colorSize.length; i++) {
+                                if (((data.colorSize[i]._id).toString() == req.body.sizeId)) {
+                                        if ((data.colorSize[i].size == req.body.size)) {
+                                                let status;
+                                                if (req.body.quantity > 0) { status = "STOCK" }
+                                                if (req.body.quantity <= 0) { status = "OUTOFSTOCK" }
+                                                let update = await ProductColor.findOneAndUpdate({ _id: data._id, 'colorSize._id': data.colorSize[i]._id }, { $set: { 'colorSize.$.size': req.body.size, 'colorSize.$.quantity': req.body.quantity, 'colorSize.$.status': status } }, { new: true });
+                                                if (update) {
+                                                        let quantity = 0
+                                                        for (let k = 0; k < update.colorSize.length; k++) {
+                                                                quantity = quantity + update.colorSize[k].quantity
+                                                        }
+                                                        let statu;
+                                                        if (quantity > 0) { statu = "STOCK" }
+                                                        if (quantity <= 0) { statu = "OUTOFSTOCK" }
+                                                        let update1 = await ProductColor.findByIdAndUpdate({ _id: data._id }, { $set: { quantity: quantity, status: statu } }, { new: true });
+                                                        if (update1) {
+                                                                let findProduct = await Product.findById({ _id: data.productId });
+                                                                if (findProduct) {
+                                                                        let productQuantity = 0;
+                                                                        for (let x = 0; x < findProduct.colors.length; x++) {
+                                                                                let data = await ProductColor.findById(findProduct.colors[x]);
+                                                                                productQuantity = productQuantity + data.quantity;
+                                                                        }
+                                                                        let status;
+                                                                        if (productQuantity > 0) { status = "STOCK" }
+                                                                        if (productQuantity <= 0) { status = "OUTOFSTOCK" }
+                                                                        let updated = await Product.findByIdAndUpdate({ _id: findProduct._id }, { $set: { quantity: productQuantity, status: status } }, { new: true });
+                                                                        return res.status(200).send({ status: 200, message: "Product color update successfully", data: update1, });
+                                                                }
+                                                        }
+                                                }
+                                        } else {
+                                                return res.status(409).send({ status: 409, msg: "Size Already exit" });
+                                        }
+                                }
+                        }
+                        return res.status(404).send({ status: 404, msg: "Size id not found" });
+                }
+        } catch (err) {
+                console.log(err);
                 return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };
