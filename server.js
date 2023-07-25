@@ -19,9 +19,10 @@ app.get("/", (req, res) => {
 });
 
 const admin = require('./routes/admin.route');
+const user = require('./routes/user.route');
 // const course = require('./routes/course.route');
-// const user = require('./routes/user.route');
 app.use('/api/v1', admin);
+app.use('/api/v1', user);
 // require("./routes/static.route")(app);
 // app.use('/api/v1/course', course);
 // app.use('/api/v1/user', user);

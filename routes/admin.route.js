@@ -1,24 +1,8 @@
 const auth = require("../controllers/adminController");
 const authJwt = require("../middewares/authJwt");
-const authConfig = require("../configs/auth.config");
-var multer = require("multer");
 const express = require("express");
 const router = express()
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("cloudinary").v2;
-cloudinary.config({
-        cloud_name: authConfig.cloud_name,
-        api_key: authConfig.api_key,
-        api_secret: authConfig.api_secret,
-});
-const storage = new CloudinaryStorage({
-        cloudinary: cloudinary,
-        params: {
-                folder: "images/image",
-                allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"],
-        },
-});
-const upload = multer({ storage: storage });
+const { upload, upload1, upload2, cpUpload } = require('../middewares/imageUpload')
 router.post("/admin/registration", auth.registration);
 router.post("/admin/login", auth.signin);
 router.get("/admin/getProfile", [authJwt.verifyToken], auth.getProfile);
@@ -34,10 +18,34 @@ router.delete("/SubCategory/deleteSubcategory/:id", [authJwt.verifyToken], auth.
 router.get("/SubCategory/all/Subcategory", auth.getSubCategory);
 router.get("/SubCategory/allSubcategoryById/:categoryId", auth.getSubCategoryByCategoryId);
 router.post("/Product/addProduct", [authJwt.verifyToken], upload.array('images'), auth.createProduct);
-router.get("/Product/all/Product", auth.getAllProducts);
+router.get("/Product/all/BestSeller", auth.getBestSeller);
+router.get("/Product/all/NewArrival", auth.getNewArrival);
+router.get("/Product/all/getOnSale", auth.getOnSale);
 router.get("/Product/:id", auth.getIdProduct);
 router.put("/Product/editProduct/:id", [authJwt.verifyToken], upload.array('images'), auth.editProduct);
 router.delete("/Product/deleteProduct/:id", [authJwt.verifyToken], auth.deleteProduct);
-router.post("/Banner/addBanner", [authJwt.verifyToken], upload.single('image'), auth.createBanner);
-
+router.post("/Banner/addBanner", [authJwt.verifyToken], upload1.single('image'), auth.createBanner);
+router.get("/Banner/getTopBanner", auth.getTopBanner);
+router.get("/Banner/getMidBanner", auth.getMidBanner);
+router.get("/Banner/getBottomBanner", auth.getBottomBanner);
+router.get("/Banner/:id", auth.getIdBanner);
+router.delete("/Banner/:id", [authJwt.verifyToken], auth.deleteBanner);
+router.put("/Banner/updateBanner/:id", [authJwt.verifyToken], upload1.single('image'), auth.updateBanner);
+router.post("/Blog/addBlog", [authJwt.verifyToken], upload2.single('image'), auth.createBlog);
+router.get("/Blog/all", auth.getBlog);
+router.get("/Blog/getBlogByToken", [authJwt.verifyToken], auth.getBlogByToken);
+router.get("/Blog/:id", auth.getIdBlog);
+router.put("/Blog/updateBlog/:id", [authJwt.verifyToken], upload2.single('image'), auth.updateBlog);
+router.delete("/Blog/:id", [authJwt.verifyToken], auth.deleteBlog);
+router.post("/ContactDetails/addContactDetails", [authJwt.verifyToken], auth.addContactDetails);
+router.get("/ContactDetails/viewContactDetails", auth.viewContactDetails);
+router.post("/help/addQuery", auth.addQuery);
+router.get("/help/all", auth.getAllHelpandSupport);
+router.get("/help/:id", auth.getHelpandSupportById);
+router.delete("/help/:id", auth.deleteHelpandSupport);
+router.post("/AboutUs/addAboutUs", [authJwt.verifyToken], cpUpload, auth.createAboutUs);
+router.get("/AboutUs/all", auth.viewAboutus);
+router.put("/AboutUs/editAboutUs", [authJwt.verifyToken], cpUpload, auth.editAboutUs);
+router.delete("/AboutUs/deleteAboutUs", [authJwt.verifyToken], auth.deleteAboutUs);
+router.post("/NewsLetter/subscribeUnsubscribe", auth.subscribeUnsubscribe);
 module.exports = router;

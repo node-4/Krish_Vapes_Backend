@@ -36,8 +36,26 @@ var userSchema = new schema(
                 password: {
                         type: String,
                 },
+                alias: {
+                        type: String,
+                },
+                company: {
+                        type: String,
+                },
+                vatNumber: {
+                        type: String,
+                },
+                address: {
+                        type: String,
+                },
+                addressComplement: {
+                        type: String,
+                },
                 city: {
                         type: String,
+                },
+                pincode: {
+                        type: Number,
                 },
                 country: {
                         type: String,
@@ -47,9 +65,6 @@ var userSchema = new schema(
                 },
                 district: {
                         type: String,
-                },
-                pincode: {
-                        type: Number,
                 },
                 otp: {
                         type: String,

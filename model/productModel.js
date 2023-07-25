@@ -19,6 +19,9 @@ const productSchema = mongoose.Schema({
         price: {
                 type: Number,
         },
+        quantity: {
+                type: Number,
+        },
         discount: {
                 type: Boolean,
                 default: false
@@ -38,13 +41,11 @@ const productSchema = mongoose.Schema({
                 type: Number,
                 default: 0,
         },
-        images: [{
-                img: {
-                        type: String
+        colors: [{
+                colorId: {
+                        type: mongoose.Schema.ObjectId,
+                        ref: "ProductColor",
                 },
-                color: {
-                        type: String
-                }
         }],
         numOfReviews: {
                 type: Number,
@@ -67,11 +68,12 @@ const productSchema = mongoose.Schema({
                         },
                 },
         ],
-        createdAt: {
-                type: Date,
-                default: Date.now,
+        status: {
+                type: String,
+                enum: ["OUTOFSTOCK", "STOCK"],
         },
-});
+},
+        { timestamps: true });
 
 productSchema.plugin(mongoosePaginate);
 productSchema.plugin(mongooseAggregatePaginate);
