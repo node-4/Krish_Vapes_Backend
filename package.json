@@ -93,6 +93,7 @@
     "util": "^0.10.4",
     "utils-merge": "^1.0.1",
     "vary": "^1.1.2",
+    "vercel": "^31.1.0",
     "webidl-conversions": "^7.0.0",
     "whatwg-url": "^11.0.0"
   },
