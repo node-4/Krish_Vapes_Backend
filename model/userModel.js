@@ -36,19 +36,7 @@ var userSchema = new schema(
                 password: {
                         type: String,
                 },
-                alias: {
-                        type: String,
-                },
-                company: {
-                        type: String,
-                },
-                vatNumber: {
-                        type: String,
-                },
                 address: {
-                        type: String,
-                },
-                addressComplement: {
                         type: String,
                 },
                 city: {

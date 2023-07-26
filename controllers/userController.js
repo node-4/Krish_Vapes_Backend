@@ -12,6 +12,7 @@ const Product = require("../model/productModel");
 const staticContent = require("../model/staticContent");
 const subCategory = require("../model/subCategoryModel");
 const User = require("../model/userModel");
+const userAddress = require("../model/userAddress");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
 exports.registration = async (req, res) => {
@@ -98,28 +99,102 @@ exports.update = async (req, res) => {
 };
 exports.addAdress = async (req, res) => {
         try {
-                const { alias, company, vatNumber, address, addressComplement, city, pincode, country, phone } = req.body;
+                const { firstName, lastName, alias, company, vatNumber, address, addressComplement, city, pincode, country, phone } = req.body;
                 const user = await User.findById(req.user._id);
                 if (!user) {
                         return res.status(404).send({ message: "not found" });
+                } else {
+                        let obj = {
+                                userId: user._id,
+                                firstName: firstName,
+                                lastName: lastName,
+                                alias: alias,
+                                company: company,
+                                vatNumber: vatNumber,
+                                address: address,
+                                addressComplement: addressComplement,
+                                city: city,
+                                pincode: pincode,
+                                country: country,
+                                phone: phone
+                        }
+                        const userCreate = await userAddress.create(obj);
+                        return res.status(200).send({ message: "Address add successfully.", data: userCreate });
                 }
-                user.alias = alias || user.alias;
-                user.company = company || user.company;
-                user.vatNumber = vatNumber || user.vatNumber;
-                user.address = address || user.address;
-                user.addressComplement = addressComplement || user.addressComplement;
-                user.city = city || user.city;
-                user.pincode = pincode || user.pincode;
-                user.country = country || user.country;
-                user.phone = phone || user.phone;
-                const updated = await user.save();
-                const findData = await User.findById(updated._id).select('alias company vatNumber address addressComplement city pincode country phone');
-                return res.status(200).send({ message: "updated", data: findData });
         } catch (err) {
                 console.log(err);
                 return res.status(500).send({ message: "internal server error " + err.message, });
         }
 };
+exports.updateAdress = async (req, res) => {
+        try {
+                const { firstName, lastName, alias, company, vatNumber, address, addressComplement, city, pincode, country, phone } = req.body;
+                const user = await User.findById(req.user._id);
+                if (!user) {
+                        return res.status(404).send({ message: "not found" });
+                } else {
+                        const findData = await userAddress.findById(req.params.id);
+                        if (!findData) {
+                                return res.status(400).send({ msg: "not found" });
+                        }
+                        let obj = {
+                                userId: user._id,
+                                firstName: firstName || findData.firstName,
+                                lastName: lastName || findData.lastName,
+                                alias: alias || findData.alias,
+                                company: company || findData.company,
+                                vatNumber: vatNumber || findData.vatNumber,
+                                address: address || findData.address,
+                                addressComplement: addressComplement || findData.addressComplement,
+                                city: city || findData.city,
+                                pincode: pincode || findData.pincode,
+                                country: country || findData.country,
+                                phone: phone || findData.phone
+                        }
+                        const userCreate = await userAddress.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true })
+                        return res.status(200).send({ message: "Address update successfully.", data: userCreate });
+                }
+        } catch (err) {
+                console.log(err);
+                return res.status(500).send({ message: "internal server error " + err.message, });
+        }
+};
+exports.deleteAdress = async (req, res) => {
+        try {
+                const user = await User.findById(req.user._id);
+                if (!user) {
+                        return res.status(404).send({ message: "not found" });
+                } else {
+                        const findData = await userAddress.findById(req.params.id);
+                        if (!findData) {
+                                return res.status(400).send({ msg: "not found" });
+                        }
+                        const userCreate = await userAddress.findByIdAndDelete({ _id: findData._id })
+                        return res.status(200).send({ message: "Address delete successfully.", data: {} });
+                }
+        } catch (err) {
+                console.log(err);
+                return res.status(500).send({ message: "internal server error " + err.message, });
+        }
+};
+exports.getAdress = async (req, res) => {
+        try {
+                const user = await User.findById(req.user._id);
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or token expired." });
+                } else {
+                        let findAddress = await userAddress.find({ userId: user._id });
+                        if (findAddress.length > 0) {
+                                return res.status(200).send({ status: 200, message: "Address detail found.", data: findAddress });
+                        } else {
+                                return res.status(400).send({ status: 400, message: "Address detail not found.", data: {} });
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+}
 exports.createWishlist = async (req, res, next) => {
         try {
                 const product = req.params.id;
