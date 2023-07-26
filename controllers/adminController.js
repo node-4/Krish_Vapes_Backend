@@ -148,11 +148,24 @@ exports.createSubCategory = async (req, res) => {
 };
 exports.getSubCategory = async (req, res) => {
         try {
-                const data = await subCategory.find().populate('categoryId');
-                if (!data || data.length === 0) {
-                        return res.status(400).send({ msg: "not found" });
+                const categories = await Category.find({});
+                if (categories.length == 0) {
+                        return res.status(404).json({ message: "Data not found.", status: 404, data: {} });
+                } else {
+                        let Array = []
+                        for (let i = 0; i < categories.length; i++) {
+                                const data = await subCategory.find({ categoryId: categories[i]._id });
+                                if (!data || data.length === 0) {
+                                        return res.status(400).send({ msg: "not found" });
+                                }
+                                let obj = {
+                                        category: categories[i],
+                                        subCategory: data
+                                }
+                                Array.push(obj)
+                        }
+                        return res.status(200).json({ status: 200, message: "Sub Category data found.", data: Array });
                 }
-                return res.status(200).json({ status: 200, message: "Sub Category data found.", data: data });
         } catch (err) {
                 return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }

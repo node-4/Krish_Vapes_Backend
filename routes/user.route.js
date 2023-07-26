@@ -12,4 +12,5 @@ router.post("/user/createWishlist/:id", [authJwt.verifyToken], auth.createWishli
 router.post("/user/removeFromWishlist/:id", [authJwt.verifyToken], auth.removeFromWishlist);
 router.get("/user/myWishlist", [authJwt.verifyToken], auth.myWishlist);
 router.post("/user/addToCart", [authJwt.verifyToken], auth.addToCart);
+router.get("/user/getCart", [authJwt.verifyToken], auth.getCart);
 module.exports = router;

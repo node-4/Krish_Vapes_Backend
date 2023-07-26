@@ -174,7 +174,7 @@ exports.addToCart = async (req, res) => {
                         } else {
                                 let findProduct = await Product.findById({ _id: req.body.productId });
                                 if (findProduct) {
-                                        if (findProduct.color == true) {
+                                        if (findProduct.colorActive == true) {
                                                 let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
                                                 if (findColor) {
                                                         if (findColor.size == true) {
@@ -205,7 +205,28 @@ exports.addToCart = async (req, res) => {
                                                                         }
                                                                 }
                                                         } else {
-                                                                console.log("Color========", findColor);
+                                                                console.log("Color====208====", findColor);
+                                                                let products = []
+                                                                let obj = {
+                                                                        categoryId: findProduct.categoryId,
+                                                                        subcategoryId: findProduct.subcategoryId,
+                                                                        productId: findProduct._id,
+                                                                        productColorId: findColor._id,
+                                                                        productPrice: findProduct.price,
+                                                                        quantity: req.body.quantity,
+                                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                }
+                                                                products.push(obj)
+                                                                let cartObj = {
+                                                                        userId: user._id,
+                                                                        products: products,
+                                                                        totalAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                        paidAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                        totalItem: 1,
+                                                                }
+                                                                console.log(cartObj);
+                                                                const cartCreate = await Cart.create(cartObj);
+                                                                return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
                                                         }
                                                 } else {
                                                         return res.status(404).send({ status: 404, message: "Color not found." });
@@ -236,6 +257,24 @@ exports.addToCart = async (req, res) => {
                                 } else {
                                         return res.status(404).send({ status: 404, message: "Product not found." });
                                 }
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+}
+exports.getCart = async (req, res) => {
+        try {
+                const user = await User.findById(req.user._id);
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or token expired." });
+                } else {
+                        let findCart = await Cart.findOne({ userId: user._id }).populate('products.categoryId products.subcategoryId products.productId products.productColorId');
+                        if (findCart) {
+                                return res.status(200).send({ status: 200, message: "Cart detail found.", data: findCart });
+                        } else {
+                                return res.status(400).send({ status: 400, message: "Cart detail not found.", data: {} });
                         }
                 }
         } catch (error) {
