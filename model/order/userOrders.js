@@ -10,7 +10,7 @@ const DocumentSchema = schema({
   },
   Orders: [{
     type: schema.Types.ObjectId,
-    ref: "Order",
+    ref: "order",
   }],
   address: {
     street1: {

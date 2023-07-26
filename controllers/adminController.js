@@ -1,5 +1,4 @@
 const bcrypt = require("bcryptjs");
-const cloudinary = require("cloudinary");
 const jwt = require("jsonwebtoken");
 const authConfig = require("../configs/auth.config");
 const banner = require("../model/bannerModel");
@@ -8,11 +7,14 @@ const Cart = require("../model/cartModel");
 const Category = require("../model/categoryModel");
 const contact = require("../model/contactDetail");
 const helpandSupport = require("../model/helpAndSupport");
+const order = require("../model/order/order");
+const userOrders = require("../model/order/userOrders");
 const ProductColor = require("../model/ProductColor");
 const Product = require("../model/productModel");
 const staticContent = require("../model/staticContent");
 const subCategory = require("../model/subCategoryModel");
 const User = require("../model/userModel");
+const userAddress = require("../model/userAddress");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
 
@@ -444,6 +446,53 @@ exports.getOnSale = async (req, res, next) => {
         } catch (err) {
                 console.log(err);
                 return res.status(500).send({ message: "Internal server error while creating Product", });
+        }
+};
+exports.paginateProductSearch = async (req, res) => {
+        try {
+                const { search, fromDate, toDate, categoryId, subcategoryId, quantity, status, page, limit } = req.query;
+                let query = {};
+                if (search) {
+                        query.$or = [
+                                { "name": { $regex: req.query.search, $options: "i" }, },
+                                { "description": { $regex: req.query.search, $options: "i" }, },
+                        ]
+                }
+                if (status) {
+                        query.status = status
+                }
+                if (subcategoryId) {
+                        query.subcategoryId = subcategoryId
+                }
+                if (categoryId) {
+                        query.categoryId = categoryId
+                }
+                if (quantity) {
+                        query.quantity = quantity
+                }
+                if (fromDate && !toDate) {
+                        query.createdAt = { $gte: fromDate };
+                }
+                if (!fromDate && toDate) {
+                        query.createdAt = { $lte: toDate };
+                }
+                if (fromDate && toDate) {
+                        query.$and = [
+                                { createdAt: { $gte: fromDate } },
+                                { createdAt: { $lte: toDate } },
+                        ]
+                }
+                let options = {
+                        page: Number(page) || 1,
+                        limit: Number(limit) || 15,
+                        sort: { createdAt: -1 },
+                        populate: ('categoryId subcategoryId colors')
+                };
+                let data = await Product.paginate(query, options);
+                return res.status(200).json({ status: 200, message: "Product data found.", data: data });
+
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };
 exports.getIdProduct = async (req, res) => {
@@ -1225,3 +1274,27 @@ exports.subscribeUnsubscribe = async (req, res) => {
                 return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
         }
 }
+exports.getAllOrders = async (req, res, next) => {
+        try {
+                const orders = await userOrders.find({ orderStatus: "confirmed" }).populate('Orders')
+                if (orders.length == 0) {
+                        return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                }
+                return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getOrders = async (req, res, next) => {
+        try {
+                const orders = await order.find({ orderStatus: "confirmed" }).populate([{ path: 'userId', select: 'fullName firstName lastName courtesyTitle email' }, { path: 'categoryId', select: 'name image' }, { path: 'subcategoryId', select: 'name categoryId' }, { path: 'productId', select: 'categoryId subcategoryId name description price quantity discount discountPrice taxInclude colorActive tax ratings colors numOfReviews img publicId' }, { path: 'productColorId', select: 'productId size img publicId color uantity colorSize' }])
+                if (orders.length == 0) {
+                        return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                }
+                return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};

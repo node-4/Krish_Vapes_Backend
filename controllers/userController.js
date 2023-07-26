@@ -340,7 +340,7 @@ exports.addToCart = async (req, res) => {
                 console.log(error);
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
-}
+};
 exports.getCart = async (req, res) => {
         try {
                 const user = await User.findById(req.user._id);
@@ -358,4 +358,197 @@ exports.getCart = async (req, res) => {
                 console.log(error);
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
+};
+exports.checkout = async (req, res) => {
+        try {
+                let findOrder = await userOrders.find({ user: req.user.id, orderStatus: "unconfirmed" });
+                if (findOrder.length > 0) {
+                        for (let i = 0; i < findOrder.length; i++) {
+                                await userOrders.findOneAndDelete({ orderId: findOrder[i].orderId });
+                                let findOrders = await userOrders.find({ orderId: findOrder[i].orderId });
+                                if (findOrders.length > 0) {
+                                        for (let i = 0; i < findOrders.length; i++) {
+                                                await userOrders.findByIdAndDelete({ _id: findOrders[i]._id });
+                                        }
+                                }
+                        }
+                        let findCart = await Cart.findOne({ userId: req.user.id });
+                        if (findCart) {
+                                let orderId = await reffralCode();
+                                for (let i = 0; i < findCart.products.length; i++) {
+                                        let obj = {
+                                                orderId: orderId,
+                                                userId: findCart.userId,
+                                                categoryId: findCart.products[i].categoryId,
+                                                subcategoryId: findCart.products[i].subcategoryId,
+                                                productId: findCart.products[i].productId,
+                                                productColorId: findCart.products[i].productColorId,
+                                                productSize: findCart.products[i].productSize,
+                                                productPrice: findCart.products[i].productPrice,
+                                                quantity: findCart.products[i].quantity,
+                                                total: findCart.products[i].total,
+                                                address: {
+                                                        street1: req.body.street1,
+                                                        street2: req.body.street2,
+                                                        city: req.body.city,
+                                                        state: req.body.state,
+                                                        country: req.body.country
+                                                },
+                                        }
+                                        const Data = await order.create(obj);
+                                        if (Data) {
+                                                let findUserOrder = await userOrders.findOne({ orderId: orderId });
+                                                if (findUserOrder) {
+                                                        await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $push: { Orders: Data._id } }, { new: true });
+                                                } else {
+                                                        let Orders = [];
+                                                        Orders.push(Data._id)
+                                                        let obj1 = {
+                                                                userId: findCart.userId,
+                                                                orderId: orderId,
+                                                                Orders: Orders,
+                                                                address: {
+                                                                        street1: req.body.street1,
+                                                                        street2: req.body.street2,
+                                                                        city: req.body.city,
+                                                                        state: req.body.state,
+                                                                        country: req.body.country
+                                                                },
+                                                                total: findCart.totalAmount,
+                                                                totalItem: findCart.totalItem
+                                                        };
+                                                        await userOrders.create(obj1);
+                                                }
+                                        }
+                                }
+                                let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
+                                res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
+                        }
+                } else {
+                        let findCart = await Cart.findOne({ userId: req.user.id });
+                        if (findCart) {
+                                let orderId = await reffralCode();
+                                for (let i = 0; i < findCart.products.length; i++) {
+                                        let obj = {
+                                                orderId: orderId,
+                                                userId: findCart.userId,
+                                                categoryId: findCart.products[i].categoryId,
+                                                subcategoryId: findCart.products[i].subcategoryId,
+                                                productId: findCart.products[i].productId,
+                                                productColorId: findCart.products[i].productColorId,
+                                                productSize: findCart.products[i].productSize,
+                                                productPrice: findCart.products[i].productPrice,
+                                                quantity: findCart.products[i].quantity,
+                                                total: findCart.products[i].total,
+                                                address: {
+                                                        street1: req.body.street1,
+                                                        street2: req.body.street2,
+                                                        city: req.body.city,
+                                                        state: req.body.state,
+                                                        country: req.body.country
+                                                },
+                                        }
+                                        const Data = await order.create(obj);
+                                        if (Data) {
+                                                let findUserOrder = await userOrders.findOne({ orderId: orderId });
+                                                if (findUserOrder) {
+                                                        await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $push: { Orders: Data._id } }, { new: true });
+                                                } else {
+                                                        let Orders = [];
+                                                        Orders.push(Data._id)
+                                                        let obj1 = {
+                                                                userId: findCart.userId,
+                                                                orderId: orderId,
+                                                                Orders: Orders,
+                                                                address: {
+                                                                        street1: req.body.street1,
+                                                                        street2: req.body.street2,
+                                                                        city: req.body.city,
+                                                                        state: req.body.state,
+                                                                        country: req.body.country
+                                                                },
+                                                                total: findCart.totalAmount,
+                                                                totalItem: findCart.totalItem
+                                                        };
+                                                        await userOrders.create(obj1);
+                                                }
+                                        }
+                                }
+                                let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
+                                res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.placeOrder = async (req, res) => {
+        try {
+                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+                if (findUserOrder) {
+                        if (req.body.paymentStatus == "paid") {
+                                let update = await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+                                if (update) {
+                                        for (let i = 0; i < update.Orders.length; i++) {
+                                                await order.findByIdAndUpdate({ _id: update.Orders[i]._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+                                        }
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                }
+                        }
+                        if (req.body.paymentStatus == "failed") {
+                                res.status(201).json({ message: "Payment failed.", status: 201, orderId: req.params.orderId });
+                        }
+
+                } else {
+                        return res.status(404).json({ message: "No data found", data: {} });
+                }
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getAllOrders = async (req, res, next) => {
+        try {
+                const orders = await userOrders.find({ userId: req.user._id, orderStatus: "confirmed" }).populate('Orders')
+                if (orders.length == 0) {
+                        return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                }
+                return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getOrders = async (req, res, next) => {
+        try {
+                const orders = await order.find({ userId: req.user._id, orderStatus: "confirmed" }).populate([{ path: 'userId', select: 'fullName firstName lastName courtesyTitle email' }, { path: 'categoryId', select: 'name image' }, { path: 'subcategoryId', select: 'name categoryId' }, { path: 'productId', select: 'categoryId subcategoryId name description price quantity discount discountPrice taxInclude colorActive tax ratings colors numOfReviews img publicId' }, { path: 'productColorId', select: 'productId size img publicId color uantity colorSize' }])
+                if (orders.length == 0) {
+                        return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                }
+                return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getOrderbyId = async (req, res, next) => {
+        try {
+                const orders = await order.findById({ _id: req.params.id }).populate([{ path: 'userId', select: 'fullName firstName lastName courtesyTitle email' }, { path: 'categoryId', select: 'name image' }, { path: 'subcategoryId', select: 'name categoryId' }, { path: 'productId', select: 'categoryId subcategoryId name description price quantity discount discountPrice taxInclude colorActive tax ratings colors numOfReviews img publicId' }, { path: 'productColorId', select: 'productId size img publicId color uantity colorSize' }])
+                if (!orders) {
+                        return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                }
+                return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+const reffralCode = async () => {
+        var digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let OTP = '';
+        for (let i = 0; i < 9; i++) {
+                OTP += digits[Math.floor(Math.random() * 36)];
+        }
+        return OTP;
 }

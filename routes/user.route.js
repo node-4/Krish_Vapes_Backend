@@ -16,4 +16,9 @@ router.post("/user/removeFromWishlist/:id", [authJwt.verifyToken], auth.removeFr
 router.get("/user/myWishlist", [authJwt.verifyToken], auth.myWishlist);
 router.post("/user/addToCart", [authJwt.verifyToken], auth.addToCart);
 router.get("/user/getCart", [authJwt.verifyToken], auth.getCart);
+router.post("/user/checkout", [authJwt.verifyToken], auth.checkout);
+router.post("/user/placeOrder/:orderId", [authJwt.verifyToken], auth.placeOrder);
+router.get("/user/allOrders", [authJwt.verifyToken], auth.getAllOrders);
+router.get("/user/Orders", [authJwt.verifyToken], auth.getOrders);
+router.get("/user/viewOrder/:id", [authJwt.verifyToken], auth.getOrderbyId);
 module.exports = router;
