@@ -2,14 +2,14 @@ const auth = require("../controllers/adminController");
 const authJwt = require("../middewares/authJwt");
 const express = require("express");
 const router = express()
-const { cpUpload0, upload, upload1, upload2, cpUpload } = require('../middewares/imageUpload')
+const { cpUpload0, upload, upload1, upload2, cpUpload, categoryUpload } = require('../middewares/imageUpload')
 router.post("/admin/registration", auth.registration);
 router.post("/admin/login", auth.signin);
 router.get("/admin/getProfile", [authJwt.verifyToken], auth.getProfile);
 router.put("/admin/update", [authJwt.verifyToken], auth.update);
-router.post("/Category/addCategory", [authJwt.verifyToken], auth.createCategory);
+router.post("/Category/addCategory", [authJwt.verifyToken], categoryUpload.single('image'), auth.createCategory);
 router.get("/Category/allCategory", auth.getCategories);
-router.put("/Category/updateCategory/:id", [authJwt.verifyToken], auth.updateCategory);
+router.put("/Category/updateCategory/:id", [authJwt.verifyToken], categoryUpload.single('image'), auth.updateCategory);
 router.delete("/Category/deleteCategory/:id", [authJwt.verifyToken], auth.removeCategory);
 router.post("/SubCategory/addSubcategory", [authJwt.verifyToken], auth.createSubCategory);
 router.get("/SubCategory/:id", auth.getIdSubCategory);

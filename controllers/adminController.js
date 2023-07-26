@@ -98,11 +98,14 @@ exports.createCategory = async (req, res) => {
                 if (findCategory) {
                         return res.status(409).json({ message: "category already exit.", status: 404, data: {} });
                 } else {
-                        const data = { name: req.body.name };
+                        let image;
+                        if (req.file) {
+                                image = req.file.path
+                        }
+                        const data = { name: req.body.name, image: image };
                         const category = await Category.create(data);
                         return res.status(200).json({ message: "category add successfully.", status: 200, data: category });
                 }
-
         } catch (error) {
                 return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
         }
@@ -120,7 +123,12 @@ exports.updateCategory = async (req, res) => {
         if (!category) {
                 return res.status(404).json({ message: "Category Not Found", status: 404, data: {} });
         }
+        let image;
+        if (req.file) {
+                image = req.file.path
+        }
         category.name = req.body.name || category.name;
+        category.image = image || category.image
         let update = await category.save();
         res.status(200).json({ status: 200, message: "Updated Successfully", data: update });
 };
@@ -155,9 +163,6 @@ exports.getSubCategory = async (req, res) => {
                         let Array = []
                         for (let i = 0; i < categories.length; i++) {
                                 const data = await subCategory.find({ categoryId: categories[i]._id });
-                                if (!data || data.length === 0) {
-                                        return res.status(400).send({ msg: "not found" });
-                                }
                                 let obj = {
                                         category: categories[i],
                                         subCategory: data
