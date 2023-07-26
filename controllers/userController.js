@@ -1,23 +1,24 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authConfig = require("../configs/auth.config");
-const User = require("../model/userModel");
-const Category = require("../model/categoryModel");
-const subCategory = require("../model/subCategoryModel");
-const Product = require("../model/productModel");
 const banner = require("../model/bannerModel");
 const blog = require("../model/blogModel");
+const Cart = require("../model/cartModel");
+const Category = require("../model/categoryModel");
 const contact = require("../model/contactDetail");
 const helpandSupport = require("../model/helpAndSupport");
+const ProductColor = require("../model/ProductColor");
+const Product = require("../model/productModel");
 const staticContent = require("../model/staticContent");
+const subCategory = require("../model/subCategoryModel");
+const User = require("../model/userModel");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
-
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
         try {
                 req.body.email = email.split(" ").join("").toLowerCase();
-                let user = await User.findOne({ $and: [{ $or: [{ email: req.body.email }, { phone: phone }] }], userType: "USER" });
+                let user = await User.findOne({ email: req.body.email, userType: "USER" });
                 if (!user) {
                         req.body.password = bcrypt.hashSync(req.body.password, 8);
                         req.body.userType = "USER";
@@ -26,6 +27,7 @@ exports.registration = async (req, res) => {
                         const userCreate = await User.create(req.body);
                         return res.status(200).send({ message: "registered successfully ", data: userCreate, });
                 } else {
+                        console.log(user);
                         return res.status(409).send({ message: "Already Exist", data: [] });
                 }
         } catch (error) {
@@ -159,3 +161,21 @@ exports.myWishlist = async (req, res, next) => {
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
+exports.addToCart = async (req, res) => {
+        try {
+                const user = await User.findById(req.user._id);
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or token expired." });
+                } else {
+                        let findCart = await Cart.findOne({ userId: user._id });
+                        if (findCart) {
+
+                        } else {
+
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+}

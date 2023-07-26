@@ -34,6 +34,10 @@ const productSchema = mongoose.Schema({
                 type: Boolean,
                 default: true
         },
+        color: {
+                type: Boolean,
+                default: false
+        },
         tax: {
                 type: Number,
                 default: 0,
@@ -41,6 +45,12 @@ const productSchema = mongoose.Schema({
         ratings: {
                 type: Number,
                 default: 0,
+        },
+        img: {
+                type: String
+        },
+        publicId: {
+                type: String
         },
         colors: [{
                 type: mongoose.Schema.ObjectId,

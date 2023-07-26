@@ -1,20 +1,20 @@
 const bcrypt = require("bcryptjs");
+const cloudinary = require("cloudinary");
 const jwt = require("jsonwebtoken");
 const authConfig = require("../configs/auth.config");
-const User = require("../model/userModel");
-const Category = require("../model/categoryModel");
-const subCategory = require("../model/subCategoryModel");
-const Product = require("../model/productModel");
 const banner = require("../model/bannerModel");
 const blog = require("../model/blogModel");
+const Cart = require("../model/cartModel");
+const Category = require("../model/categoryModel");
 const contact = require("../model/contactDetail");
 const helpandSupport = require("../model/helpAndSupport");
-const staticContent = require("../model/staticContent");
-const visitorSubscriber = require("../model/visitorSubscriber");
 const ProductColor = require("../model/ProductColor");
-const productModel = require("../model/productModel");
-const cloudinary = require("cloudinary");
-const { diskStorage } = require("multer");
+const Product = require("../model/productModel");
+const staticContent = require("../model/staticContent");
+const subCategory = require("../model/subCategoryModel");
+const User = require("../model/userModel");
+const visitorSubscriber = require("../model/visitorSubscriber");
+const Wishlist = require("../model/WishlistModel");
 
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
@@ -229,35 +229,46 @@ exports.createProduct = async (req, res) => {
                 if (!findsubCategory || findsubCategory.length === 0) {
                         return res.status(400).send({ status: 404, msg: "not found" });
                 }
-                let images = [];
-                if (req.files) {
-                        for (let i = 0; i < req.files.length; i++) {
-                                console.log(req.files[i]);
-                                let obj = {
-                                        img: req.files[i].path,
-                                        publicId: req.files[i].filename,
-                                        color: req.body.color[i]
+                if (req.body.color == true) {
+                        let images = [];
+                        if (req.files['images']) {
+                                let Image = req.files['images'];
+                                for (let i = 0; i < Image.length; i++) {
+                                        let obj = {
+                                                img: Image[i].path,
+                                                publicId: Image[i].filename,
+                                                color: req.body.color[i]
+                                        }
+                                        images.push(obj)
                                 }
-                                images.push(obj)
+                        }
+                } else {
+                        if (req.files['image']) {
+                                req.body.img = req.files['image'].path;
+                                req.body.publicId = req.files['image'].filename;
                         }
                 }
                 const ProductCreated = await Product.create(req.body);
                 if (ProductCreated) {
-                        let count = 0;
-                        for (let k = 0; k < images.length; k++) {
-                                let obj = {
-                                        productId: ProductCreated._id,
-                                        img: images[k].img,
-                                        publicId: images[k].publicId,
-                                        color: images[k].color
+                        if (req.body.color == true) {
+                                let count = 0;
+                                for (let k = 0; k < images.length; k++) {
+                                        let obj = {
+                                                productId: ProductCreated._id,
+                                                img: images[k].img,
+                                                publicId: images[k].publicId,
+                                                color: images[k].color
+                                        }
+                                        let x = await ProductColor.create(obj);
+                                        await Product.findByIdAndUpdate({ _id: ProductCreated._id }, { $push: { colors: x._id } }, { new: true })
+                                        count++;
                                 }
-                                let x = await ProductColor.create(obj);
-                                await Product.findByIdAndUpdate({ _id: ProductCreated._id }, { $push: { colors: x._id } }, { new: true })
-                                count++;
-                        }
-                        if (count == images.length) {
-                                let b = await Product.findById({ _id: ProductCreated._id }).populate('colors')
-                                return res.status(201).send({ status: 200, message: "Product add successfully", data: b, });
+                                if (count == images.length) {
+                                        let b = await Product.findById({ _id: ProductCreated._id }).populate('colors')
+                                        return res.status(201).send({ status: 200, message: "Product add successfully", data: b, });
+                                }
+                        } else {
+                                return res.status(201).send({ status: 200, message: "Product add successfully", data: ProductCreated, });
                         }
                 }
         } catch (err) {

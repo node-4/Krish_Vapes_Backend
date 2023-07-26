@@ -19,16 +19,20 @@ const productSchema = mongoose.Schema({
                         enum: ["OUTOFSTOCK", "STOCK"],
                 },
         }],
+        size: {
+                type: Boolean,
+                default: false
+        },
         img: {
                 type: String
         },
-        publicId:{
+        publicId: {
                 type: String
         },
         color: {
                 type: String
         },
-        quantity:{
+        quantity: {
                 type: Number,
                 default: 0,
         },

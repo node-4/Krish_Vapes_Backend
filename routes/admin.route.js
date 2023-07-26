@@ -2,7 +2,7 @@ const auth = require("../controllers/adminController");
 const authJwt = require("../middewares/authJwt");
 const express = require("express");
 const router = express()
-const { upload, upload1, upload2, cpUpload } = require('../middewares/imageUpload')
+const { cpUpload0, upload, upload1, upload2, cpUpload } = require('../middewares/imageUpload')
 router.post("/admin/registration", auth.registration);
 router.post("/admin/login", auth.signin);
 router.get("/admin/getProfile", [authJwt.verifyToken], auth.getProfile);
@@ -17,7 +17,7 @@ router.put("/SubCategory/updateSubcategory/:id", [authJwt.verifyToken], auth.upd
 router.delete("/SubCategory/deleteSubcategory/:id", [authJwt.verifyToken], auth.deleteSubCategory);
 router.get("/SubCategory/all/Subcategory", auth.getSubCategory);
 router.get("/SubCategory/allSubcategoryById/:categoryId", auth.getSubCategoryByCategoryId);
-router.post("/Product/addProduct", [authJwt.verifyToken], upload.array('images'), auth.createProduct);
+router.post("/Product/addProduct", [authJwt.verifyToken], cpUpload0, auth.createProduct);
 router.get("/Product/all/BestSeller", auth.getBestSeller);
 router.get("/Product/all/NewArrival", auth.getNewArrival);
 router.get("/Product/all/getOnSale", auth.getOnSale);
