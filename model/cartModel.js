@@ -18,9 +18,12 @@ const DocumentSchema = schema({
                         type: schema.Types.ObjectId,
                         ref: "Product"
                 },
-                ProductColorId: {
+                productColorId: {
                         type: schema.Types.ObjectId,
                         ref: "ProductColor"
+                },
+                productSize: {
+                        type: String,
                 },
                 productPrice: {
                         type: Number

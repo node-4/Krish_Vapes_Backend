@@ -22,7 +22,7 @@ router.get("/Product/all/BestSeller", auth.getBestSeller);
 router.get("/Product/all/NewArrival", auth.getNewArrival);
 router.get("/Product/all/getOnSale", auth.getOnSale);
 router.get("/Product/:id", auth.getIdProduct);
-router.put("/Product/editProduct/:id", [authJwt.verifyToken], upload.array('images'), auth.editProduct);
+router.put("/Product/editProduct/:id", [authJwt.verifyToken], cpUpload0, auth.editProduct);
 router.put("/Product/addProductColorSize/:id", [authJwt.verifyToken], auth.addProductColorSize);
 router.put("/Product/editProductColorSize/:id", [authJwt.verifyToken], auth.editProductColorSize);
 router.delete("/Product/deleteProduct/:id", [authJwt.verifyToken], auth.deleteProduct);

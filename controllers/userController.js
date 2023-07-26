@@ -38,7 +38,8 @@ exports.registration = async (req, res) => {
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
-                const user = await User.findOne({ email: email, userType: "USER" });
+                req.body.email = email.split(" ").join("").toLowerCase();
+                const user = await User.findOne({ email: req.body.email, userType: "USER" });
                 if (!user) {
                         return res.status(404).send({ message: "user not found ! not registered" });
                 }
@@ -171,7 +172,70 @@ exports.addToCart = async (req, res) => {
                         if (findCart) {
 
                         } else {
-
+                                let findProduct = await Product.findById({ _id: req.body.productId });
+                                if (findProduct) {
+                                        if (findProduct.color == true) {
+                                                let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
+                                                if (findColor) {
+                                                        if (findColor.size == true) {
+                                                                for (let i = 0; i < findColor.colorSize.length; i++) {
+                                                                        if ((findColor.colorSize[i].size == req.body.size) == true) {
+                                                                                let products = []
+                                                                                let obj = {
+                                                                                        categoryId: findProduct.categoryId,
+                                                                                        subcategoryId: findProduct.subcategoryId,
+                                                                                        productId: findProduct._id,
+                                                                                        productColorId: findColor._id,
+                                                                                        productSize: req.body.size,
+                                                                                        productPrice: findProduct.price,
+                                                                                        quantity: req.body.quantity,
+                                                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                }
+                                                                                products.push(obj)
+                                                                                let cartObj = {
+                                                                                        userId: user._id,
+                                                                                        products: products,
+                                                                                        totalAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                        paidAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                        totalItem: 1,
+                                                                                }
+                                                                                console.log(cartObj);
+                                                                                const cartCreate = await Cart.create(cartObj);
+                                                                                return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
+                                                                        }
+                                                                }
+                                                        } else {
+                                                                console.log("Color========", findColor);
+                                                        }
+                                                } else {
+                                                        return res.status(404).send({ status: 404, message: "Color not found." });
+                                                }
+                                        } else {
+                                                console.log("214================");
+                                                let products = []
+                                                let obj = {
+                                                        categoryId: findProduct.categoryId,
+                                                        subcategoryId: findProduct.subcategoryId,
+                                                        productId: findProduct._id,
+                                                        productPrice: findProduct.price,
+                                                        quantity: req.body.quantity,
+                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                }
+                                                products.push(obj)
+                                                let cartObj = {
+                                                        userId: user._id,
+                                                        products: products,
+                                                        totalAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                        paidAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                        totalItem: 1,
+                                                }
+                                                console.log(cartObj);
+                                                const cartCreate = await Cart.create(cartObj);
+                                                return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
+                                        }
+                                } else {
+                                        return res.status(404).send({ status: 404, message: "Product not found." });
+                                }
                         }
                 }
         } catch (error) {
