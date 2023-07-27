@@ -629,6 +629,17 @@ exports.deleteProduct = async (req, res) => {
                 return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };
+exports.getIdProductColor = async (req, res) => {
+        try {
+                const data = await ProductColor.findById(req.params.id);
+                if (!data || data.length === 0) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "ProductColor data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
 exports.addProductColorSize = async (req, res) => {
         try {
                 const data = await ProductColor.findById(req.params.id);

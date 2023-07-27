@@ -23,6 +23,7 @@ router.get("/Product/all/paginateProductSearch", auth.paginateProductSearch);
 router.get("/Product/all/NewArrival", auth.getNewArrival);
 router.get("/Product/all/getOnSale", auth.getOnSale);
 router.get("/Product/:id", auth.getIdProduct);
+router.get("/Product/color/:id", auth.getIdProductColor);
 router.put("/Product/editProduct/:id", [authJwt.verifyToken], cpUpload0, auth.editProduct);
 router.put("/Product/addProductColorSize/:id", [authJwt.verifyToken], auth.addProductColorSize);
 router.put("/Product/editProductColorSize/:id", [authJwt.verifyToken], auth.editProductColorSize);
