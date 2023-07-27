@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "d29422bf-1788-4777-a5a0-a7fd152031c4",
+		"_postman_id": "30274762-c276-48db-b4d5-cbadc2df8cd9",
 		"name": "krishVapes-Backend",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "15173170"
+		"_exporter_id": "23385795",
+		"_collection_link": "https://solar-trinity-26355.postman.co/workspace/flyweis~160f0fa9-ce3b-44b5-9e35-ff590823618d/collection/23385795-30274762-c276-48db-b4d5-cbadc2df8cd9?action=share&creator=23385795&source=collection_link"
 	},
 	"item": [
 		{
@@ -205,7 +206,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"React@gmail.com\",\r\n    \"password\": \"React\"\r\n}",
+							"raw": "{\r\n    \"email\": \"varun@gmail.com\",\r\n    \"password\": \"varun@1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -403,6 +404,30 @@
 					"response": []
 				},
 				{
+					"name": "updateQuantity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"64c104bb768117eae488878e\",\r\n    \"quantity\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/updateQuantity"
+					},
+					"response": []
+				},
+				{
 					"name": "addToCart color",
 					"request": {
 						"auth": {
@@ -415,7 +440,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productId\": \"64c104bb768117eae488878e\",\r\n    \"colorId\": \"64c104bb768117eae4888793\",\r\n    \"quantity\": 10\r\n}",
+							"raw": "{\r\n    \"productId\": \"64c1004586462269a2bb6b07\",\r\n    \"colorId\": \"64c1004686462269a2bb6b0c\",\r\n    \"quantity\": 10\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -423,6 +448,30 @@
 							}
 						},
 						"url": "localhost:2014/api/v1/user/addToCart"
+					},
+					"response": []
+				},
+				{
+					"name": "updateQuantity color",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"64c1004586462269a2bb6b07\",\r\n    \"colorId\": \"64c1004686462269a2bb6b0c\",\r\n    \"quantity\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/updateQuantity"
 					},
 					"response": []
 				},
@@ -447,6 +496,30 @@
 							}
 						},
 						"url": "localhost:2014/api/v1/user/addToCart"
+					},
+					"response": []
+				},
+				{
+					"name": "updateQuantity color with varient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"64bffb6848d29a27dcb333d3\",\r\n    \"colorId\": \"64bffb6948d29a27dcb333d5\",\r\n    \"size\": \"M\",\r\n    \"quantity\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/updateQuantity"
 					},
 					"response": []
 				},
@@ -478,7 +551,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"street1\": \"E41\",\r\n    \"street2\": \"sector 55\",\r\n    \"city\": \"Noida\",\r\n    \"state\": \"Uttar Pradesh\",\r\n    \"country\": \"India\"\r\n}",
+							"raw": "{\r\n    \"addressId\": \"64c21434c01273c0e24edc18\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -509,7 +582,7 @@
 								}
 							}
 						},
-						"url": "localhost:2014/api/v1/user/placeOrder/7ZQKYWMSY"
+						"url": "localhost:2014/api/v1/user/placeOrder/Y5FE8PHBB"
 					},
 					"response": []
 				},
@@ -1208,7 +1281,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "localhost:2014/api/v1/Product/all/getOnSale?search=Vaping",
+							"raw": "localhost:2014/api/v1/Product/all/getOnSale",
 							"host": [
 								"localhost"
 							],
@@ -1223,7 +1296,8 @@
 							"query": [
 								{
 									"key": "search",
-									"value": "Vaping"
+									"value": "Vaping",
+									"disabled": true
 								}
 							]
 						}
@@ -1356,6 +1430,28 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product color by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": "localhost:2014/api/v1/Product/color/64bffb6948d29a27dcb333d5"
 					},
 					"response": []
 				},
