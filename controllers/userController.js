@@ -189,7 +189,7 @@ exports.getAdress = async (req, res) => {
                         if (findAddress.length > 0) {
                                 return res.status(200).send({ status: 200, message: "Address detail found.", data: findAddress });
                         } else {
-                                return res.status(200).send({ status: 200, message: "Address detail not found.", data: {} });
+                                return res.status(200).send({ status: 200, message: "Address detail not found.", data: []});
                         }
                 }
         } catch (error) {
