@@ -39,21 +39,39 @@ const DocumentSchema = schema({
                 default: 0
         },
         address: {
-                street1: {
+                alias: {
                         type: String,
                 },
-                street2: {
-                        type: String
+                firstName: {
+                        type: String,
+                },
+                lastName: {
+                        type: String,
+                },
+                company: {
+                        type: String,
+                },
+                vatNumber: {
+                        type: String,
+                },
+                address: {
+                        type: String,
+                },
+                addressComplement: {
+                        type: String,
                 },
                 city: {
                         type: String,
                 },
-                state: {
-                        type: String,
+                pincode: {
+                        type: Number,
                 },
                 country: {
-                        type: String
-                }
+                        type: String,
+                },
+                phone: {
+                        type: String,
+                },
         },
         orderStatus: {
                 type: String,

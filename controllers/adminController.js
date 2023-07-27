@@ -337,13 +337,12 @@ exports.getBestSeller = async (req, res, next) => {
                                                 ]
                                         }
                                 },
-                                {
-                                        $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" },
-                                },
+                                { $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" }, },
                                 { $unwind: "$colors" },
                                 { $sort: { ratings: -1 } }
                         ]
-                        apiFeature = await Product.aggregate(data1);
+                        let apiFeature = await Product.aggregate(data1);
+                        await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
                 } else {
                         let apiFeature = await Product.aggregate([
@@ -355,6 +354,7 @@ exports.getBestSeller = async (req, res, next) => {
                                 { $unwind: "$colors" },
                                 { $sort: { ratings: -1 } }
                         ]);
+                        await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
                 }
         } catch (err) {
@@ -387,7 +387,9 @@ exports.getNewArrival = async (req, res, next) => {
                                 }, { $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" }, },
                                 { $unwind: "$colors" }, { $sort: { createdAt: -1 } },
                         ]
-                        apiFeature = await Product.aggregate(data1);
+                        let apiFeature = await Product.aggregate(data1);
+                        await Product.populate(apiFeature, [{ path: 'colors' }])
+
                         return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
                 } else {
                         let apiFeature = await Product.aggregate([
@@ -398,6 +400,7 @@ exports.getNewArrival = async (req, res, next) => {
                                 { $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" }, },
                                 { $unwind: "$colors" }, { $sort: { createdAt: -1 } },
                         ]);
+                        await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
                 }
         } catch (err) {
@@ -432,7 +435,8 @@ exports.getOnSale = async (req, res, next) => {
                                         $match: { "discount": true },
                                 },
                         ]
-                        apiFeature = await Product.aggregate(data1);
+                        let apiFeature = await Product.aggregate(data1);
+                        await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
                 } else {
                         let apiFeature = await Product.aggregate([
@@ -441,6 +445,7 @@ exports.getOnSale = async (req, res, next) => {
                                 { $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId", }, },
                                 { $unwind: "$subcategoryId" }, { $match: { "discount": true } },
                         ]);
+                        await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
                 }
         } catch (err) {

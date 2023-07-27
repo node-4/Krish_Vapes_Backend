@@ -189,7 +189,7 @@ exports.getAdress = async (req, res) => {
                         if (findAddress.length > 0) {
                                 return res.status(200).send({ status: 200, message: "Address detail found.", data: findAddress });
                         } else {
-                                return res.status(200).send({ status: 200, message: "Address detail not found.", data: []});
+                                return res.status(200).send({ status: 200, message: "Address detail not found.", data: [] });
                         }
                 }
         } catch (error) {
@@ -247,13 +247,93 @@ exports.addToCart = async (req, res) => {
                 } else {
                         let findCart = await Cart.findOne({ userId: user._id });
                         if (findCart) {
-
-                        } else {
                                 let findProduct = await Product.findById({ _id: req.body.productId });
                                 if (findProduct) {
                                         if (findProduct.colorActive == true) {
                                                 let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
                                                 if (findColor) {
+                                                        if (findColor.size == true) {
+                                                                for (let i = 0; i < findColor.colorSize.length; i++) {
+                                                                        if ((findColor.colorSize[i].size == req.body.size) == true) {
+                                                                                let products = []
+                                                                                let obj = {
+                                                                                        categoryId: findProduct.categoryId,
+                                                                                        subcategoryId: findProduct.subcategoryId,
+                                                                                        productId: findProduct._id,
+                                                                                        productColorId: findColor._id,
+                                                                                        productSize: req.body.size,
+                                                                                        productPrice: findProduct.price,
+                                                                                        quantity: req.body.quantity,
+                                                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                }
+                                                                                products.push(obj)
+                                                                                let cartObj = {
+                                                                                        userId: user._id,
+                                                                                        products: products,
+                                                                                        totalAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                        paidAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                        totalItem: 1,
+                                                                                }
+                                                                                console.log(cartObj);
+                                                                        }
+                                                                }
+                                                        } else {
+                                                                console.log("---------------------------------280------------");
+                                                                let products = []
+                                                                let obj = {
+                                                                        categoryId: findProduct.categoryId,
+                                                                        subcategoryId: findProduct.subcategoryId,
+                                                                        productId: findProduct._id,
+                                                                        productColorId: findColor._id,
+                                                                        productPrice: findProduct.price,
+                                                                        quantity: req.body.quantity,
+                                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                }
+                                                                products.push(obj)
+                                                                let cartObj = {
+                                                                        userId: user._id,
+                                                                        products: products,
+                                                                        totalAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                        paidAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                        totalItem: 1,
+                                                                }
+                                                        }
+                                                } else {
+                                                        return res.status(404).send({ status: 404, message: "Color not found." });
+                                                }
+                                        } else {
+                                                console.log("214================");
+                                                let products = []
+                                                let obj = {
+                                                        categoryId: findProduct.categoryId,
+                                                        subcategoryId: findProduct.subcategoryId,
+                                                        productId: findProduct._id,
+                                                        productPrice: findProduct.price,
+                                                        quantity: req.body.quantity,
+                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                }
+                                                products.push(obj)
+                                                let cartObj = {
+                                                        userId: user._id,
+                                                        products: products,
+                                                        totalAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                        paidAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                        totalItem: 1,
+                                                }
+                                        }
+                                } else {
+                                        return res.status(404).send({ status: 404, message: "Product not found." });
+                                }
+                        }
+                        ///////////////////////////////first time add to cart//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        else {
+                                let findProduct = await Product.findById({ _id: req.body.productId });
+                                if (findProduct) {
+                                        console.log(findProduct);
+                                        if (findProduct.colorActive == true) {
+                                                let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
+                                                if (findColor) {
+                                                        console.log(findColor);
                                                         if (findColor.size == true) {
                                                                 for (let i = 0; i < findColor.colorSize.length; i++) {
                                                                         if ((findColor.colorSize[i].size == req.body.size) == true) {
@@ -374,108 +454,142 @@ exports.checkout = async (req, res) => {
                         }
                         let findCart = await Cart.findOne({ userId: req.user.id });
                         if (findCart) {
-                                let orderId = await reffralCode();
-                                for (let i = 0; i < findCart.products.length; i++) {
-                                        let obj = {
-                                                orderId: orderId,
-                                                userId: findCart.userId,
-                                                categoryId: findCart.products[i].categoryId,
-                                                subcategoryId: findCart.products[i].subcategoryId,
-                                                productId: findCart.products[i].productId,
-                                                productColorId: findCart.products[i].productColorId,
-                                                productSize: findCart.products[i].productSize,
-                                                productPrice: findCart.products[i].productPrice,
-                                                quantity: findCart.products[i].quantity,
-                                                total: findCart.products[i].total,
-                                                address: {
-                                                        street1: req.body.street1,
-                                                        street2: req.body.street2,
-                                                        city: req.body.city,
-                                                        state: req.body.state,
-                                                        country: req.body.country
-                                                },
-                                        }
-                                        const Data = await order.create(obj);
-                                        if (Data) {
-                                                let findUserOrder = await userOrders.findOne({ orderId: orderId });
-                                                if (findUserOrder) {
-                                                        await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $push: { Orders: Data._id } }, { new: true });
-                                                } else {
-                                                        let Orders = [];
-                                                        Orders.push(Data._id)
-                                                        let obj1 = {
-                                                                userId: findCart.userId,
-                                                                orderId: orderId,
-                                                                Orders: Orders,
-                                                                address: {
-                                                                        street1: req.body.street1,
-                                                                        street2: req.body.street2,
-                                                                        city: req.body.city,
-                                                                        state: req.body.state,
-                                                                        country: req.body.country
-                                                                },
-                                                                total: findCart.totalAmount,
-                                                                totalItem: findCart.totalItem
-                                                        };
-                                                        await userOrders.create(obj1);
+                                let findAddress = await userAddress.find({ _id: req.body.addressId });
+                                if (findAddress) {
+                                        let orderId = await reffralCode();
+                                        for (let i = 0; i < findCart.products.length; i++) {
+                                                let obj = {
+                                                        orderId: orderId,
+                                                        userId: findCart.userId,
+                                                        categoryId: findCart.products[i].categoryId,
+                                                        subcategoryId: findCart.products[i].subcategoryId,
+                                                        productId: findCart.products[i].productId,
+                                                        productColorId: findCart.products[i].productColorId,
+                                                        productSize: findCart.products[i].productSize,
+                                                        productPrice: findCart.products[i].productPrice,
+                                                        quantity: findCart.products[i].quantity,
+                                                        total: findCart.products[i].total,
+                                                        address: {
+                                                                alias: findAddress.alias,
+                                                                firstName: findAddress.firstName,
+                                                                lastName: findAddress.lastName,
+                                                                company: findAddress.company,
+                                                                vatNumber: findAddress.vatNumber,
+                                                                address: findAddress.address,
+                                                                addressComplement: findAddress.addressComplement,
+                                                                city: findAddress.city,
+                                                                pincode: findAddress.pincode,
+                                                                country: findAddress.country,
+                                                                phone: findAddress.phone
+                                                        },
+                                                }
+                                                const Data = await order.create(obj);
+                                                if (Data) {
+                                                        let findUserOrder = await userOrders.findOne({ orderId: orderId });
+                                                        if (findUserOrder) {
+                                                                await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $push: { Orders: Data._id } }, { new: true });
+                                                        } else {
+                                                                let Orders = [];
+                                                                Orders.push(Data._id)
+                                                                let obj1 = {
+                                                                        userId: findCart.userId,
+                                                                        orderId: orderId,
+                                                                        Orders: Orders,
+                                                                        address: {
+                                                                                alias: findAddress.alias,
+                                                                                firstName: findAddress.firstName,
+                                                                                lastName: findAddress.lastName,
+                                                                                company: findAddress.company,
+                                                                                vatNumber: findAddress.vatNumber,
+                                                                                address: findAddress.address,
+                                                                                addressComplement: findAddress.addressComplement,
+                                                                                city: findAddress.city,
+                                                                                pincode: findAddress.pincode,
+                                                                                country: findAddress.country,
+                                                                                phone: findAddress.phone
+                                                                        },
+                                                                        total: findCart.totalAmount,
+                                                                        totalItem: findCart.totalItem
+                                                                };
+                                                                await userOrders.create(obj1);
+                                                        }
                                                 }
                                         }
+                                        let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
+                                        res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
+                                } else {
+                                        res.status(404).json({ status: 404, message: "Address not found. ", data: {} })
                                 }
-                                let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
-                                res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
                         }
                 } else {
                         let findCart = await Cart.findOne({ userId: req.user.id });
                         if (findCart) {
-                                let orderId = await reffralCode();
-                                for (let i = 0; i < findCart.products.length; i++) {
-                                        let obj = {
-                                                orderId: orderId,
-                                                userId: findCart.userId,
-                                                categoryId: findCart.products[i].categoryId,
-                                                subcategoryId: findCart.products[i].subcategoryId,
-                                                productId: findCart.products[i].productId,
-                                                productColorId: findCart.products[i].productColorId,
-                                                productSize: findCart.products[i].productSize,
-                                                productPrice: findCart.products[i].productPrice,
-                                                quantity: findCart.products[i].quantity,
-                                                total: findCart.products[i].total,
-                                                address: {
-                                                        street1: req.body.street1,
-                                                        street2: req.body.street2,
-                                                        city: req.body.city,
-                                                        state: req.body.state,
-                                                        country: req.body.country
-                                                },
-                                        }
-                                        const Data = await order.create(obj);
-                                        if (Data) {
-                                                let findUserOrder = await userOrders.findOne({ orderId: orderId });
-                                                if (findUserOrder) {
-                                                        await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $push: { Orders: Data._id } }, { new: true });
-                                                } else {
-                                                        let Orders = [];
-                                                        Orders.push(Data._id)
-                                                        let obj1 = {
-                                                                userId: findCart.userId,
-                                                                orderId: orderId,
-                                                                Orders: Orders,
-                                                                address: {
-                                                                        street1: req.body.street1,
-                                                                        street2: req.body.street2,
-                                                                        city: req.body.city,
-                                                                        state: req.body.state,
-                                                                        country: req.body.country
-                                                                },
-                                                                total: findCart.totalAmount,
-                                                                totalItem: findCart.totalItem
-                                                        };
-                                                        await userOrders.create(obj1);
+                                let findAddress = await userAddress.find({ _id: req.body.addressId });
+                                if (findAddress) {
+                                        let orderId = await reffralCode();
+                                        for (let i = 0; i < findCart.products.length; i++) {
+                                                let obj = {
+                                                        orderId: orderId,
+                                                        userId: findCart.userId,
+                                                        categoryId: findCart.products[i].categoryId,
+                                                        subcategoryId: findCart.products[i].subcategoryId,
+                                                        productId: findCart.products[i].productId,
+                                                        productColorId: findCart.products[i].productColorId,
+                                                        productSize: findCart.products[i].productSize,
+                                                        productPrice: findCart.products[i].productPrice,
+                                                        quantity: findCart.products[i].quantity,
+                                                        total: findCart.products[i].total,
+                                                        address: {
+                                                                alias: findAddress.alias,
+                                                                firstName: findAddress.firstName,
+                                                                lastName: findAddress.lastName,
+                                                                company: findAddress.company,
+                                                                vatNumber: findAddress.vatNumber,
+                                                                address: findAddress.address,
+                                                                addressComplement: findAddress.addressComplement,
+                                                                city: findAddress.city,
+                                                                pincode: findAddress.pincode,
+                                                                country: findAddress.country,
+                                                                phone: findAddress.phone
+                                                        },
+                                                }
+                                                const Data = await order.create(obj);
+                                                if (Data) {
+                                                        let findUserOrder = await userOrders.findOne({ orderId: orderId });
+                                                        if (findUserOrder) {
+                                                                await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $push: { Orders: Data._id } }, { new: true });
+                                                        } else {
+                                                                let Orders = [];
+                                                                Orders.push(Data._id)
+                                                                let obj1 = {
+                                                                        userId: findCart.userId,
+                                                                        orderId: orderId,
+                                                                        Orders: Orders,
+                                                                        address: {
+                                                                                alias: findAddress.alias,
+                                                                                firstName: findAddress.firstName,
+                                                                                lastName: findAddress.lastName,
+                                                                                company: findAddress.company,
+                                                                                vatNumber: findAddress.vatNumber,
+                                                                                address: findAddress.address,
+                                                                                addressComplement: findAddress.addressComplement,
+                                                                                city: findAddress.city,
+                                                                                pincode: findAddress.pincode,
+                                                                                country: findAddress.country,
+                                                                                phone: findAddress.phone
+                                                                        },
+                                                                        total: findCart.totalAmount,
+                                                                        totalItem: findCart.totalItem
+                                                                };
+                                                                await userOrders.create(obj1);
+                                                        }
                                                 }
                                         }
+                                        let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
+                                        res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
+                                } else {
+                                        res.status(404).json({ status: 404, message: "Address not found. ", data: {} })
                                 }
-                                let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
-                                res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
                         }
                 }
         } catch (error) {
