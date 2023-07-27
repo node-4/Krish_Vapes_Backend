@@ -676,7 +676,6 @@ exports.updateQuantity = async (req, res) => {
                 } else {
                         let findCart = await Cart.findOne({ userId: user._id });
                         if (findCart) {
-                                console.log(findCart);
                                 let findProduct = await Product.findById({ _id: req.body.productId });
                                 if (findProduct) {
                                         var result = null, products = [], count = 0, productLength = findCart.products.length;
@@ -738,9 +737,11 @@ exports.updateQuantity = async (req, res) => {
                                                                 categoryId: findCart.products[i].categoryId,
                                                                 subcategoryId: findCart.products[i].subcategoryId,
                                                                 productId: findCart.products[i].productId,
+                                                                productColorId: findCart.products[i].productColorId,
+                                                                productSize: findCart.products[i].productSize,
                                                                 productPrice: findCart.products[i].productPrice,
                                                                 quantity: findCart.products[i].quantity,
-                                                                total: findCart.products[i].total,
+                                                                total: Number((findCart.products[i].productPrice * findCart.products[i].quantity).toFixed(2)),
                                                         }
                                                         products.push(obj)
                                                         count++
@@ -753,12 +754,73 @@ exports.updateQuantity = async (req, res) => {
                                                         for (let j = 0; j < update.products.length; j++) {
                                                                 totals = totals + update.products[j].total
                                                         }
+                                                        console.log(totals);
                                                         let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, paidAmount: totals, totalItem: update.products.length } }, { new: true });
-                                                        return res.status(200).json({ status: 200, message: "Product add to cart Successfully.", data: update1 })
+                                                        return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
                                                 }
                                         }
                                 } else {
                                         return res.status(404).send({ status: 404, message: "Product not found." });
+                                }
+                        } else {
+                                return res.status(404).send({ status: 404, message: "Cart not found." });
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.deleteProductfromCart = async (req, res) => {
+        try {
+                const user = await User.findById(req.user._id);
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or token expired." });
+                } else {
+                        let findCart = await Cart.findOne({ userId: user._id });
+                        if (findCart) {
+                                let products = [], count = 0;
+                                for (let i = 0; i < findCart.products.length; i++) {
+                                        if ((findCart.products[i]._id).toString() != req.body.cartProductId) {
+                                                products.push(findCart.products[i])
+                                                count++
+                                        }
+                                }
+                                if (count == findCart.products.length - 1) {
+                                        let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
+                                        if (update) {
+                                                let totals = 0;
+                                                for (let j = 0; j < update.products.length; j++) {
+                                                        totals = totals + update.products[j].total
+                                                }
+                                                console.log(totals);
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, paidAmount: totals, totalItem: products.length } }, { new: true });
+                                                return res.status(200).json({ status: 200, message: "Product delete from cart Successfully.", data: update1 })
+                                        }
+                                }
+                        } else {
+                                return res.status(404).send({ status: 404, message: "Cart not found." });
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.deleteCart = async (req, res) => {
+        try {
+                const user = await User.findById(req.user._id);
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or token expired." });
+                } else {
+                        let findCart = await Cart.findOne({ userId: user._id });
+                        if (findCart) {
+                                await Cart.findByIdAndDelete({ _id: findCart._id });
+                                let findCarts = await Cart.findOne({ userId: user._id });
+                                if (findCarts) {
+                                        return res.status(200).json({ status: 200, message: "cart not delete.", data: findCarts })
+                                } else {
+                                        return res.status(200).json({ status: 200, message: "cart delete Successfully.", data: {} })
                                 }
                         } else {
                                 return res.status(404).send({ status: 404, message: "Cart not found." });

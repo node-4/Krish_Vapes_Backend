@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "30274762-c276-48db-b4d5-cbadc2df8cd9",
+		"_postman_id": "b6aded6f-ca0d-4aa8-a226-ca433adb2f4c",
 		"name": "krishVapes-Backend",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "23385795",
-		"_collection_link": "https://solar-trinity-26355.postman.co/workspace/flyweis~160f0fa9-ce3b-44b5-9e35-ff590823618d/collection/23385795-30274762-c276-48db-b4d5-cbadc2df8cd9?action=share&creator=23385795&source=collection_link"
+		"_exporter_id": "15173170"
 	},
 	"item": [
 		{
@@ -416,7 +415,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productId\": \"64c104bb768117eae488878e\",\r\n    \"quantity\": 13\r\n}",
+							"raw": "{\r\n    \"productId\": \"64c0db9951404240d348662d\",\r\n    \"quantity\": 13\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -464,7 +463,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productId\": \"64c1004586462269a2bb6b07\",\r\n    \"colorId\": \"64c1004686462269a2bb6b0c\",\r\n    \"quantity\": 13\r\n}",
+							"raw": "{\r\n    \"productId\": \"64c1004586462269a2bb6b07\",\r\n    \"colorId\": \"64c1004686462269a2bb6b0c\",\r\n    \"quantity\": 11\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -520,6 +519,45 @@
 							}
 						},
 						"url": "localhost:2014/api/v1/user/updateQuantity"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteProductfromCart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cartProductId\": \"64c29c25367ee6aef9acc04c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/deleteProductfromCart"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/deleteCart"
 					},
 					"response": []
 				},
