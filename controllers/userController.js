@@ -233,7 +233,19 @@ exports.myWishlist = async (req, res, next) => {
                 if (!myList) {
                         myList = await Wishlist.create({ user: req.user._id });
                 }
-                res.status(200).json({ status: 200, wishlist: myList, });
+                let array = []
+                for (let i = 0; i < myList.products.length; i++) {
+                        const data = await Product.findById(myList.products[i]._id).populate('categoryId subcategoryId').populate('colors')
+                        array.push(data)
+                }
+                let obj = {
+                        _id: myList._id,
+                        user: myList.user,
+                        products: array,
+                        __v: myList.__v
+                }
+
+                res.status(200).json({ status: 200, wishlist: obj, });
         } catch (error) {
                 console.log(error);
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
