@@ -734,6 +734,109 @@ exports.getOrderbyId = async (req, res, next) => {
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
+// exports.updateQuantity = async (req, res) => {
+//         try {
+//                 const user = await User.findById(req.user._id);
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "User not found or token expired." });
+//                 } else {
+//                         let findCart = await Cart.findOne({ userId: user._id });
+//                         if (findCart) {
+//                                 let findProduct = await Product.findById({ _id: req.body.productId });
+//                                 if (findProduct) {
+//                                         var result = null, products = [], count = 0, productLength = findCart.products.length;
+//                                         for (var i = 0; i < findCart.products.length; i++) {
+//                                                 if ((findCart.products[i].productId).toString() === req.body.productId) {
+//                                                         result = findCart.products[i];
+//                                                         if (result != null) {
+//                                                                 if (findProduct.colorActive == true) {
+//                                                                         let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
+//                                                                         if (findColor) {
+//                                                                                 if (findColor.size == true) {
+//                                                                                         for (let i = 0; i < findColor.colorSize.length; i++) {
+//                                                                                                 if ((findColor.colorSize[i].size == req.body.size) == true) {
+//                                                                                                         let obj = {
+//                                                                                                                 categoryId: findProduct.categoryId,
+//                                                                                                                 subcategoryId: findProduct.subcategoryId,
+//                                                                                                                 productId: findProduct._id,
+//                                                                                                                 productColorId: findColor._id,
+//                                                                                                                 productSize: req.body.size,
+//                                                                                                                 productPrice: findProduct.price,
+//                                                                                                                 quantity: req.body.quantity,
+//                                                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+//                                                                                                         }
+//                                                                                                         products.push(obj)
+//                                                                                                         count++
+//                                                                                                 }
+//                                                                                         }
+//                                                                                 } else {
+//                                                                                         let obj = {
+//                                                                                                 categoryId: findProduct.categoryId,
+//                                                                                                 subcategoryId: findProduct.subcategoryId,
+//                                                                                                 productId: findProduct._id,
+//                                                                                                 productColorId: findColor._id,
+//                                                                                                 productPrice: findProduct.price,
+//                                                                                                 quantity: req.body.quantity,
+//                                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+//                                                                                         }
+//                                                                                         products.push(obj)
+//                                                                                         count++;
+//                                                                                 }
+//                                                                         } else {
+//                                                                                 return res.status(404).send({ status: 404, message: "Color not found." });
+//                                                                         }
+//                                                                 } else {
+//                                                                         let obj = {
+//                                                                                 categoryId: findProduct.categoryId,
+//                                                                                 subcategoryId: findProduct.subcategoryId,
+//                                                                                 productId: findProduct._id,
+//                                                                                 productPrice: findProduct.price,
+//                                                                                 quantity: req.body.quantity,
+//                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+//                                                                         }
+//                                                                         products.push(obj)
+//                                                                         count++
+//                                                                 }
+//                                                         }
+//                                                 } else {
+//                                                         let obj = {
+//                                                                 categoryId: findCart.products[i].categoryId,
+//                                                                 subcategoryId: findCart.products[i].subcategoryId,
+//                                                                 productId: findCart.products[i].productId,
+//                                                                 productColorId: findCart.products[i].productColorId,
+//                                                                 productSize: findCart.products[i].productSize,
+//                                                                 productPrice: findCart.products[i].productPrice,
+//                                                                 quantity: findCart.products[i].quantity,
+//                                                                 total: Number((findCart.products[i].productPrice * findCart.products[i].quantity).toFixed(2)),
+//                                                         }
+//                                                         products.push(obj)
+//                                                         count++
+//                                                 }
+//                                         }
+//                                         if (count == productLength) {
+//                                                 let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
+//                                                 if (update) {
+//                                                         let totals = 0;
+//                                                         for (let j = 0; j < update.products.length; j++) {
+//                                                                 totals = totals + update.products[j].total
+//                                                         }
+//                                                         console.log(totals);
+//                                                         let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, paidAmount: totals, totalItem: update.products.length } }, { new: true });
+//                                                         return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
+//                                                 }
+//                                         }
+//                                 } else {
+//                                         return res.status(404).send({ status: 404, message: "Product not found." });
+//                                 }
+//                         } else {
+//                                 return res.status(404).send({ status: 404, message: "Cart not found." });
+//                         }
+//                 }
+//         } catch (error) {
+//                 console.log(error);
+//                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
+//         }
+// };
 exports.updateQuantity = async (req, res) => {
         try {
                 const user = await User.findById(req.user._id);
@@ -742,91 +845,47 @@ exports.updateQuantity = async (req, res) => {
                 } else {
                         let findCart = await Cart.findOne({ userId: user._id });
                         if (findCart) {
-                                let findProduct = await Product.findById({ _id: req.body.productId });
-                                if (findProduct) {
-                                        var result = null, products = [], count = 0, productLength = findCart.products.length;
-                                        for (var i = 0; i < findCart.products.length; i++) {
-                                                if ((findCart.products[i].productId).toString() === req.body.productId) {
-                                                        result = findCart.products[i];
-                                                        if (result != null) {
-                                                                if (findProduct.colorActive == true) {
-                                                                        let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
-                                                                        if (findColor) {
-                                                                                if (findColor.size == true) {
-                                                                                        for (let i = 0; i < findColor.colorSize.length; i++) {
-                                                                                                if ((findColor.colorSize[i].size == req.body.size) == true) {
-                                                                                                        let obj = {
-                                                                                                                categoryId: findProduct.categoryId,
-                                                                                                                subcategoryId: findProduct.subcategoryId,
-                                                                                                                productId: findProduct._id,
-                                                                                                                productColorId: findColor._id,
-                                                                                                                productSize: req.body.size,
-                                                                                                                productPrice: findProduct.price,
-                                                                                                                quantity: req.body.quantity,
-                                                                                                                total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                                        }
-                                                                                                        products.push(obj)
-                                                                                                        count++
-                                                                                                }
-                                                                                        }
-                                                                                } else {
-                                                                                        let obj = {
-                                                                                                categoryId: findProduct.categoryId,
-                                                                                                subcategoryId: findProduct.subcategoryId,
-                                                                                                productId: findProduct._id,
-                                                                                                productColorId: findColor._id,
-                                                                                                productPrice: findProduct.price,
-                                                                                                quantity: req.body.quantity,
-                                                                                                total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                        }
-                                                                                        products.push(obj)
-                                                                                        count++;
-                                                                                }
-                                                                        } else {
-                                                                                return res.status(404).send({ status: 404, message: "Color not found." });
-                                                                        }
-                                                                } else {
-                                                                        let obj = {
-                                                                                categoryId: findProduct.categoryId,
-                                                                                subcategoryId: findProduct.subcategoryId,
-                                                                                productId: findProduct._id,
-                                                                                productPrice: findProduct.price,
-                                                                                quantity: req.body.quantity,
-                                                                                total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                        }
-                                                                        products.push(obj)
-                                                                        count++
-                                                                }
-                                                        }
-                                                } else {
-                                                        let obj = {
-                                                                categoryId: findCart.products[i].categoryId,
-                                                                subcategoryId: findCart.products[i].subcategoryId,
-                                                                productId: findCart.products[i].productId,
-                                                                productColorId: findCart.products[i].productColorId,
-                                                                productSize: findCart.products[i].productSize,
-                                                                productPrice: findCart.products[i].productPrice,
-                                                                quantity: findCart.products[i].quantity,
-                                                                total: Number((findCart.products[i].productPrice * findCart.products[i].quantity).toFixed(2)),
-                                                        }
-                                                        products.push(obj)
-                                                        count++
+                                let products = [], count = 0, productLength = findCart.products.length;
+                                for (var i = 0; i < findCart.products.length; i++) {
+                                        if ((findCart.products[i]._id).toString() === req.body.products_id) {
+                                                let obj = {
+                                                        categoryId: findCart.products[i].categoryId,
+                                                        subcategoryId: findCart.products[i].subcategoryId,
+                                                        productId: findCart.products[i].productId,
+                                                        productColorId: findCart.products[i].productColorId,
+                                                        productSize: findCart.products[i].productSize,
+                                                        productPrice: findCart.products[i].productPrice,
+                                                        quantity: req.body.quantity,
+                                                        total: Number((findCart.products[i].productPrice * req.body.quantity).toFixed(2)),
                                                 }
-                                        }
-                                        if (count == productLength) {
-                                                let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
-                                                if (update) {
-                                                        let totals = 0;
-                                                        for (let j = 0; j < update.products.length; j++) {
-                                                                totals = totals + update.products[j].total
-                                                        }
-                                                        console.log(totals);
-                                                        let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, paidAmount: totals, totalItem: update.products.length } }, { new: true });
-                                                        return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
+                                                products.push(obj)
+                                                count++
+                                        } else {
+                                                let obj = {
+                                                        categoryId: findCart.products[i].categoryId,
+                                                        subcategoryId: findCart.products[i].subcategoryId,
+                                                        productId: findCart.products[i].productId,
+                                                        productColorId: findCart.products[i].productColorId,
+                                                        productSize: findCart.products[i].productSize,
+                                                        productPrice: findCart.products[i].productPrice,
+                                                        quantity: findCart.products[i].quantity,
+                                                        total: Number((findCart.products[i].productPrice * findCart.products[i].quantity).toFixed(2)),
                                                 }
+                                                products.push(obj)
+                                                count++
                                         }
-                                } else {
-                                        return res.status(404).send({ status: 404, message: "Product not found." });
+                                }
+                                if (count == productLength) {
+                                        let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
+                                        if (update) {
+                                                let totals = 0;
+                                                for (let j = 0; j < update.products.length; j++) {
+                                                        totals = totals + update.products[j].total
+                                                }
+                                                console.log(totals);
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, paidAmount: totals, totalItem: update.products.length } }, { new: true });
+                                                return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
+                                        }
                                 }
                         } else {
                                 return res.status(404).send({ status: 404, message: "Cart not found." });
