@@ -847,7 +847,7 @@ exports.deleteProductfromCart = async (req, res) => {
                         if (findCart) {
                                 let products = [], count = 0;
                                 for (let i = 0; i < findCart.products.length; i++) {
-                                        if ((findCart.products[i]._id).toString() != req.body.cartProductId) {
+                                        if ((findCart.products[i]._id).toString() != req.params.cartProductId) {
                                                 products.push(findCart.products[i])
                                                 count++
                                         }

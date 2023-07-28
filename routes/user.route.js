@@ -16,7 +16,7 @@ router.get("/user/myWishlist", [authJwt.verifyToken], auth.myWishlist);
 router.post("/user/addToCart", [authJwt.verifyToken], auth.addToCart);
 router.get("/user/getCart", [authJwt.verifyToken], auth.getCart);
 router.put("/user/updateQuantity", [authJwt.verifyToken], auth.updateQuantity);
-router.delete("/user/deleteProductfromCart", [authJwt.verifyToken], auth.deleteProductfromCart);
+router.put("/user/deleteProductfromCart/:cartProductId", [authJwt.verifyToken], auth.deleteProductfromCart);
 router.delete("/user/deleteCart", [authJwt.verifyToken], auth.deleteCart);
 router.post("/user/checkout", [authJwt.verifyToken], auth.checkout);
 router.post("/user/placeOrder/:orderId", [authJwt.verifyToken], auth.placeOrder);
