@@ -20,8 +20,7 @@ const Wishlist = require("../model/WishlistModel");
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
         try {
-                req.body.email = email.split(" ").join("").toLowerCase();
-                let user = await User.findOne({ email: req.body.email, userType: "USER" });
+                let user = await User.findOne({ email: email, userType: "USER" });
                 if (!user) {
                         req.body.password = bcrypt.hashSync(req.body.password, 8);
                         req.body.userType = "USER";
@@ -41,8 +40,7 @@ exports.registration = async (req, res) => {
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
-                req.body.email = email.split(" ").join("").toLowerCase();
-                const user = await User.findOne({ email: req.body.email, userType: "USER" });
+                const user = await User.findOne({ email: email, userType: "USER" });
                 if (!user) {
                         return res.status(404).send({ message: "user not found ! not registered" });
                 }
