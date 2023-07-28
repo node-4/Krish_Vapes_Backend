@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "b6aded6f-ca0d-4aa8-a226-ca433adb2f4c",
+		"_postman_id": "f0795ce3-3655-4661-a05d-a585806bf69c",
 		"name": "krishVapes-Backend",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "15173170"
+		"_exporter_id": "23385795",
+		"_collection_link": "https://solar-trinity-26355.postman.co/workspace/flyweis~160f0fa9-ce3b-44b5-9e35-ff590823618d/collection/23385795-f0795ce3-3655-4661-a05d-a585806bf69c?action=share&creator=23385795&source=collection_link"
 	},
 	"item": [
 		{
@@ -205,7 +206,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"varun@gmail.com\",\r\n    \"password\": \"varun@1234\"\r\n}",
+							"raw": "{\r\n    \"email\": \"QadirAli@gmail.com\",\r\n    \"password\": \"Qadir\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -309,7 +310,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzBkNGViMTc4YmQ0YmE4ODQ2YTc3ZiIsImlhdCI6MTY5MDUyOTQ4MiwiZXhwIjoxNjkwNzg4NjgyfQ.zNZzXqMI5l25nyeWSFUXf2YrrBfC_tKAj6ZH79TFD5o"
 							}
 						},
 						"method": "GET",
@@ -408,14 +409,14 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzM2Njg4YzY0NjM3OGZlODczMzc2YSIsImlhdCI6MTY5MDUzOTkyNCwiZXhwIjoxNjkwNzk5MTI0fQ.FoUhKBq7QzhyK81vTVkMYupiQZR8Zlz-cA3psY11Smk"
 							}
 						},
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productId\": \"64c0db9951404240d348662d\",\r\n    \"quantity\": 13\r\n}",
+							"raw": "{\r\n    \"products_id\": \"64c2779bf149df5c8d5669a7\",\r\n    \"quantity\": 13\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -480,21 +481,21 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzM2Njg4YzY0NjM3OGZlODczMzc2YSIsImlhdCI6MTY5MDUyOTc3NiwiZXhwIjoxNjkwNzg4OTc2fQ.Lv5LFkFJGaakIRKejXGQXgHO-dTCB8hoy5PLPiN1zN8"
 							}
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productId\": \"64bffb6848d29a27dcb333d3\",\r\n    \"colorId\": \"64bffb6948d29a27dcb333d5\",\r\n    \"size\": \"M\",\r\n    \"quantity\": 10\r\n}",
+							"raw": "{\r\n    \"colorId\": \"64bffb6948d29a27dcb333d8\",\r\n    \"productId\": \"64bffb6848d29a27dcb333d3\",\r\n    \"quantity\": 1,\r\n    \"size\": \"XL\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "localhost:2014/api/v1/user/addToCart"
+						"url": "https://krish-vapes-backend.vercel.app/api/v1/user/addToCart"
 					},
 					"response": []
 				},
@@ -582,21 +583,21 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzNiOThiNDlhYWY3OGE1ZWRiZWFhZSIsImlhdCI6MTY5MDU0ODYyMiwiZXhwIjoxNjkwODA3ODIyfQ.kg2CT_ICVWUEacLke3PL58rYMeKlRo4hLo2L7PJcDNk"
 							}
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"addressId\": \"64c21434c01273c0e24edc18\"\r\n}",
+							"raw": "{\r\n    \"addressId\": \"64c3bd63cb3beac4fd3c3864\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "localhost:2014/api/v1/user/checkout"
+						"url": "https://krish-vapes-backend.vercel.app/api/v1/user/checkout"
 					},
 					"response": []
 				},
@@ -1210,7 +1211,7 @@
 							"query": [
 								{
 									"key": "search",
-									"value": "Diamond",
+									"value": "Diamond Stud",
 									"disabled": true
 								},
 								{
