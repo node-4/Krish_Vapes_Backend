@@ -156,6 +156,18 @@ exports.createSubCategory = async (req, res) => {
                 return res.status(500).send({ message: "Internal server error while creating sub category", });
         }
 };
+exports.getSubCategoryForAdmin = async (req, res) => {
+        try {
+                const data = await subCategory.find({}).populate('categoryId');
+                if (data.length > 0) {
+                        return res.status(200).json({ status: 200, message: "Sub Category data found.", data: data });
+                } else {
+                        return res.status(404).json({ status: 404, message: "Sub Category data not found.", data: {} });
+                }
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
 exports.getSubCategory = async (req, res) => {
         try {
                 const categories = await Category.find({});

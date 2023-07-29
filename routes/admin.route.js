@@ -16,6 +16,7 @@ router.get("/SubCategory/:id", auth.getIdSubCategory);
 router.put("/SubCategory/updateSubcategory/:id", [authJwt.verifyToken], auth.updateSubCategory);
 router.delete("/SubCategory/deleteSubcategory/:id", [authJwt.verifyToken], auth.deleteSubCategory);
 router.get("/SubCategory/all/Subcategory", auth.getSubCategory);
+router.get("/SubCategory/all/SubCategoryForAdmin", auth.getSubCategoryForAdmin);
 router.get("/SubCategory/allSubcategoryById/:categoryId", auth.getSubCategoryByCategoryId);
 router.post("/Product/addProduct", [authJwt.verifyToken], cpUpload0, auth.createProduct);
 router.get("/Product/all/BestSeller", auth.getBestSeller);
