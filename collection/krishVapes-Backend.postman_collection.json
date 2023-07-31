@@ -167,12 +167,55 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDc4ODQxMCwiZXhwIjoxNjkxMDQ3NjEwfQ.A2oln1cwDPi5lLVJpXn0jp5paGaUs3OrT7AVZu6_KgY"
 							}
 						},
 						"method": "GET",
 						"header": [],
 						"url": "localhost:2014/api/v1/admin/Orders"
+					},
+					"response": []
+				},
+				{
+					"name": "paginate/OrdersSearch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:2014/api/v1/admin/paginate/OrdersSearch?search=Y5FE8PHBB",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"paginate",
+								"OrdersSearch"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Y5FE8PHBB"
+								},
+								{
+									"key": "fromDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
 					},
 					"response": []
 				}
@@ -661,12 +704,12 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDc4OTI0OSwiZXhwIjoxNjkxMDQ4NDQ5fQ.nzYgWXCjaRQzBx5nBaHzo-Q1B8DQk6caQPaZvXVVyII"
 							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": "localhost:2014/api/v1/user/viewOrder/64c150c404f16136e0184bed"
+						"url": "localhost:2014/api/v1/user/viewOrder/64c25d2c2ba30c636d979c54"
 					},
 					"response": []
 				}
@@ -764,6 +807,49 @@
 						"url": "localhost:2014/api/v1/Category/allCategory"
 					},
 					"response": []
+				},
+				{
+					"name": "paginateCategoriesSearch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:2014/api/v1/Category/paginateCategoriesSearch",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"Category",
+								"paginateCategoriesSearch"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Diamond Stud",
+									"disabled": true
+								},
+								{
+									"key": "fromDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -843,6 +929,15 @@
 					"response": []
 				},
 				{
+					"name": "SubCategoryForAdmin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/SubCategory/all/SubCategoryForAdmin"
+					},
+					"response": []
+				},
+				{
 					"name": "all Subcategory By category Id",
 					"request": {
 						"method": "GET",
@@ -859,6 +954,50 @@
 						"url": "localhost:2014/api/v1/SubCategory/64c1135b4024038808e36425"
 					},
 					"response": []
+				},
+				{
+					"name": "paginateSubCategoriesSearch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:2014/api/v1/SubCategory/paginate/SubCategoriesSearch",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"SubCategory",
+								"paginate",
+								"SubCategoriesSearch"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Diamond Stud",
+									"disabled": true
+								},
+								{
+									"key": "fromDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -871,7 +1010,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDc4ODQxMCwiZXhwIjoxNjkxMDQ3NjEwfQ.A2oln1cwDPi5lLVJpXn0jp5paGaUs3OrT7AVZu6_KgY"
 							}
 						},
 						"method": "POST",
@@ -948,8 +1087,8 @@
 									"key": "images",
 									"type": "file",
 									"src": [
-										"SZ2T5Hra3/4.jpg",
-										"SZ2T5Hra3/5.jpg"
+										"JzGvc2sBr/1.jpg",
+										"JzGvc2sBr/2.jpg"
 									]
 								}
 							]

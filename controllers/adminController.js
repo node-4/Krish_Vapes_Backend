@@ -443,8 +443,6 @@ exports.getBestSeller = async (req, res, next) => {
                                                 ]
                                         }
                                 },
-                                { $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" }, },
-                                { $unwind: "$colors" },
                                 { $sort: { ratings: -1 } }
                         ]
                         let apiFeature = await Product.aggregate(data1);
@@ -456,8 +454,6 @@ exports.getBestSeller = async (req, res, next) => {
                                 { $unwind: "$categoryId" },
                                 { $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId", }, },
                                 { $unwind: "$subcategoryId" },
-                                { $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" }, },
-                                { $unwind: "$colors" },
                                 { $sort: { ratings: -1 } }
                         ]);
                         await Product.populate(apiFeature, [{ path: 'colors' }])
@@ -490,24 +486,21 @@ exports.getNewArrival = async (req, res, next) => {
                                                         { "description": { $regex: req.query.search, $options: "i" }, },
                                                 ]
                                         }
-                                }, { $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" }, },
-                                { $unwind: "$colors" }, { $sort: { createdAt: -1 } },
+                                },
                         ]
                         let apiFeature = await Product.aggregate(data1);
-                        await Product.populate(apiFeature, [{ path: 'colors' }])
-
-                        return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
+                        let update = await Product.populate(apiFeature, [{ path: 'colors' }])
+                        return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
                 } else {
                         let apiFeature = await Product.aggregate([
                                 { $lookup: { from: "categories", localField: "categoryId", foreignField: "_id", as: "categoryId" } },
                                 { $unwind: "$categoryId" },
                                 { $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId", }, },
                                 { $unwind: "$subcategoryId" },
-                                { $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" }, },
-                                { $unwind: "$colors" }, { $sort: { createdAt: -1 } },
                         ]);
-                        await Product.populate(apiFeature, [{ path: 'colors' }])
-                        return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
+
+                        let update = await Product.populate(apiFeature, [{ path: 'colors' }])
+                        return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
                 }
         } catch (err) {
                 console.log(err);
@@ -526,8 +519,6 @@ exports.getOnSale = async (req, res, next) => {
                                 {
                                         $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId", },
                                 },
-                                { $lookup: { from: "productcolors", localField: "colors", foreignField: "_id", as: "colors" }, },
-                                { $unwind: "$colors" },
                                 { $unwind: "$subcategoryId" },
                                 {
                                         $match: {
