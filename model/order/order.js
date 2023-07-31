@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require("mongoose-paginate");
+const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const DocumentSchema = schema({
         orderId: {
@@ -83,5 +85,7 @@ const DocumentSchema = schema({
                 enum: ["pending", "paid", "failed"],
                 default: "pending"
         },
-}, { timestamps: true })
+}, { timestamps: true });
+DocumentSchema.plugin(mongoosePaginate);
+DocumentSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model("order", DocumentSchema);

@@ -119,6 +119,39 @@ exports.getCategories = async (req, res) => {
         }
         res.status(200).json({ status: 200, message: "Category data found.", data: categories });
 };
+exports.paginateCategoriesSearch = async (req, res) => {
+        try {
+                const { search, fromDate, toDate, page, limit } = req.query;
+                let query = {};
+                if (search) {
+                        query.$or = [
+                                { "name": { $regex: req.query.search, $options: "i" }, },
+                        ]
+                }
+                if (fromDate && !toDate) {
+                        query.createdAt = { $gte: fromDate };
+                }
+                if (!fromDate && toDate) {
+                        query.createdAt = { $lte: toDate };
+                }
+                if (fromDate && toDate) {
+                        query.$and = [
+                                { createdAt: { $gte: fromDate } },
+                                { createdAt: { $lte: toDate } },
+                        ]
+                }
+                let options = {
+                        page: Number(page) || 1,
+                        limit: Number(limit) || 10,
+                        sort: { createdAt: -1 },
+                };
+                let data = await Category.paginate(query, options);
+                return res.status(200).json({ status: 200, message: "Category data found.", data: data });
+
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
 exports.updateCategory = async (req, res) => {
         const { id } = req.params;
         const category = await Category.findById(id);
@@ -164,6 +197,41 @@ exports.getSubCategoryForAdmin = async (req, res) => {
                 } else {
                         return res.status(404).json({ status: 404, message: "Sub Category data not found.", data: {} });
                 }
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.paginateSubCategoriesSearch = async (req, res) => {
+        try {
+                console.log("------------------------");
+                const { search, fromDate, toDate, page, limit } = req.query;
+                let query = {};
+                if (search) {
+                        query.$or = [
+                                { "name": { $regex: req.query.search, $options: "i" }, },
+                        ]
+                }
+                if (fromDate && !toDate) {
+                        query.createdAt = { $gte: fromDate };
+                }
+                if (!fromDate && toDate) {
+                        query.createdAt = { $lte: toDate };
+                }
+                if (fromDate && toDate) {
+                        query.$and = [
+                                { createdAt: { $gte: fromDate } },
+                                { createdAt: { $lte: toDate } },
+                        ]
+                }
+                let options = {
+                        page: Number(page) || 1,
+                        limit: Number(limit) || 10,
+                        sort: { createdAt: -1 },
+                        populate: ('categoryId')
+                };
+                let data = await subCategory.paginate(query, options);
+                return res.status(200).json({ status: 200, message: "Sub Category data found.", data: data });
+
         } catch (err) {
                 return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
@@ -265,7 +333,7 @@ exports.createProduct = async (req, res) => {
                         let images = [];
                         let Image = req.files['images'];
                         for (let i = 0; i < Image.length; i++) {
-                                if (req.body.size == true) {
+                                if (req.body.size == 'true') {
                                         let obj = {
                                                 img: Image[i].path,
                                                 publicId: Image[i].filename,
@@ -275,12 +343,16 @@ exports.createProduct = async (req, res) => {
                                         images.push(obj)
                                 } else {
                                         let quantity = Number(req.body.arrayQuantity[i])
+                                        let statu;
+                                        if (quantity > 0) { statu = "STOCK" }
+                                        if (quantity <= 0) { statu = "OUTOFSTOCK" }
                                         let obj = {
                                                 img: Image[i].path,
                                                 publicId: Image[i].filename,
                                                 color: req.body.color[i],
+                                                quantity: quantity,
                                                 size: req.body.size,
-                                                quantity: quantity
+                                                status: statu
                                         }
                                         images.push(obj)
                                 }
@@ -288,24 +360,46 @@ exports.createProduct = async (req, res) => {
                         const ProductCreated = await Product.create(req.body);
                         if (ProductCreated) {
                                 if (req.body.colorActive == 'true') {
-                                        let count = 0;
-                                        for (let k = 0; k < images.length; k++) {
-                                                let quantity = Number(images[k].quantity)
-                                                let obj = {
-                                                        productId: ProductCreated._id,
-                                                        img: images[k].img,
-                                                        publicId: images[k].publicId,
-                                                        color: images[k].color,
-                                                        size: images[k].size,
-                                                        quantity: quantity
+                                        if (req.body.size == 'true') {
+                                                let count = 0;
+                                                for (let k = 0; k < images.length; k++) {
+                                                        let quantity = Number(images[k].quantity)
+                                                        let obj = {
+                                                                productId: ProductCreated._id,
+                                                                img: images[k].img,
+                                                                publicId: images[k].publicId,
+                                                                color: images[k].color,
+                                                                size: images[k].size,
+                                                        }
+                                                        let x = await ProductColor.create(obj);
+                                                        await Product.findByIdAndUpdate({ _id: ProductCreated._id }, { $push: { colors: x._id } }, { new: true })
+                                                        count++;
                                                 }
-                                                let x = await ProductColor.create(obj);
-                                                await Product.findByIdAndUpdate({ _id: ProductCreated._id }, { $push: { colors: x._id } }, { new: true })
-                                                count++;
-                                        }
-                                        if (count == images.length) {
-                                                let b = await Product.findById({ _id: ProductCreated._id }).populate('colors')
-                                                return res.status(201).send({ status: 200, message: "Product add successfully", data: b, });
+                                                if (count == images.length) {
+                                                        let b = await Product.findById({ _id: ProductCreated._id }).populate('colors')
+                                                        return res.status(201).send({ status: 200, message: "Product add successfully", data: b, });
+                                                }
+                                        } else {
+                                                let count = 0;
+                                                for (let k = 0; k < images.length; k++) {
+                                                        let quantity = Number(images[k].quantity)
+                                                        let obj = {
+                                                                productId: ProductCreated._id,
+                                                                img: images[k].img,
+                                                                publicId: images[k].publicId,
+                                                                color: images[k].color,
+                                                                quantity: images[k].quantity,
+                                                                size: images[k].size,
+                                                                status: images[k].status
+                                                        }
+                                                        let x = await ProductColor.create(obj);
+                                                        await Product.findByIdAndUpdate({ _id: ProductCreated._id }, { $push: { colors: x._id } }, { new: true })
+                                                        count++;
+                                                }
+                                                if (count == images.length) {
+                                                        let b = await Product.findById({ _id: ProductCreated._id }).populate('colors')
+                                                        return res.status(201).send({ status: 200, message: "Product add successfully", data: b, });
+                                                }
                                         }
                                 }
                         }
@@ -542,8 +636,8 @@ exports.editProduct = async (req, res) => {
                         }
                 }
                 let images = [];
-                if (req.body.colorActive == true) {
-                        if (req.body.size == true) {
+                if (req.body.colorActive == 'true') {
+                        if (req.body.size == 'true') {
                                 let obj = {
                                         img: Image[i].path,
                                         publicId: Image[i].filename,
@@ -553,8 +647,8 @@ exports.editProduct = async (req, res) => {
                                 images.push(obj)
                         } else {
                                 let statu;
-                                if (req.body.quantity[i] > 0) { statu = "STOCK" }
-                                if (req.body.quantity[i] <= 0) { statu = "OUTOFSTOCK" }
+                                if (req.body.arrayQuantity[i] > 0) { statu = "STOCK" }
+                                if (req.body.arrayQuantity[i] <= 0) { statu = "OUTOFSTOCK" }
                                 let obj = {
                                         img: Image[i].path,
                                         publicId: Image[i].filename,
@@ -1324,5 +1418,40 @@ exports.getOrders = async (req, res, next) => {
         } catch (error) {
                 console.log(error);
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.paginateOrdersSearch = async (req, res) => {
+        try {
+                console.log("------------------------");
+                const { search, fromDate, toDate, page, limit } = req.query;
+                let query = { orderStatus: "confirmed" };
+                if (search) {
+                        query.$or = [
+                                { "orderId": { $regex: req.query.search, $options: "i" }, },
+                        ]
+                }
+                if (fromDate && !toDate) {
+                        query.createdAt = { $gte: fromDate };
+                }
+                if (!fromDate && toDate) {
+                        query.createdAt = { $lte: toDate };
+                }
+                if (fromDate && toDate) {
+                        query.$and = [
+                                { createdAt: { $gte: fromDate } },
+                                { createdAt: { $lte: toDate } },
+                        ]
+                }
+                let options = {
+                        page: Number(page) || 1,
+                        limit: Number(limit) || 10,
+                        sort: { createdAt: -1 },
+                        populate: ([{ path: 'userId', select: 'fullName firstName lastName courtesyTitle email' }, { path: 'categoryId', select: 'name image' }, { path: 'subcategoryId', select: 'name categoryId' }, { path: 'productId', select: 'categoryId subcategoryId name description price quantity discount discountPrice taxInclude colorActive tax ratings colors numOfReviews img publicId' }, { path: 'productColorId', select: 'productId size img publicId color uantity colorSize' }])
+                };
+                let data = await order.paginate(query, options);
+                return res.status(200).json({ status: 200, message: "Orders data found.", data: data });
+
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };

@@ -9,6 +9,7 @@ router.get("/admin/getProfile", [authJwt.verifyToken], auth.getProfile);
 router.put("/admin/update", [authJwt.verifyToken], auth.update);
 router.post("/Category/addCategory", [authJwt.verifyToken], categoryUpload.single('image'), auth.createCategory);
 router.get("/Category/allCategory", auth.getCategories);
+router.get("/Category/paginateCategoriesSearch", auth.paginateCategoriesSearch);
 router.put("/Category/updateCategory/:id", [authJwt.verifyToken], categoryUpload.single('image'), auth.updateCategory);
 router.delete("/Category/deleteCategory/:id", [authJwt.verifyToken], auth.removeCategory);
 router.post("/SubCategory/addSubcategory", [authJwt.verifyToken], auth.createSubCategory);
@@ -17,6 +18,7 @@ router.put("/SubCategory/updateSubcategory/:id", [authJwt.verifyToken], auth.upd
 router.delete("/SubCategory/deleteSubcategory/:id", [authJwt.verifyToken], auth.deleteSubCategory);
 router.get("/SubCategory/all/Subcategory", auth.getSubCategory);
 router.get("/SubCategory/all/SubCategoryForAdmin", auth.getSubCategoryForAdmin);
+router.get("/SubCategory/paginate/SubCategoriesSearch", auth.paginateSubCategoriesSearch);
 router.get("/SubCategory/allSubcategoryById/:categoryId", auth.getSubCategoryByCategoryId);
 router.post("/Product/addProduct", [authJwt.verifyToken], cpUpload0, auth.createProduct);
 router.get("/Product/all/BestSeller", auth.getBestSeller);
@@ -55,4 +57,6 @@ router.delete("/AboutUs/deleteAboutUs", [authJwt.verifyToken], auth.deleteAboutU
 router.post("/NewsLetter/subscribeUnsubscribe", auth.subscribeUnsubscribe);
 router.get("/admin/allOrders", [authJwt.verifyToken], auth.getAllOrders);
 router.get("/admin/Orders", [authJwt.verifyToken], auth.getOrders);
+router.get("/admin/paginate/OrdersSearch", auth.paginateOrdersSearch);
+
 module.exports = router;

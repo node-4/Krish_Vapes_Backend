@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate");
+const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = new mongoose.Schema(
         {
                 categoryId: {
@@ -16,4 +18,6 @@ const schema = new mongoose.Schema(
         },
         { timeseries: true }
 );
+schema.plugin(mongoosePaginate);
+schema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model("subcategory", schema);
