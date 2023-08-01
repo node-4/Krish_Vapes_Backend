@@ -7,6 +7,7 @@ router.post("/admin/registration", auth.registration);
 router.post("/admin/login", auth.signin);
 router.get("/admin/getProfile", [authJwt.verifyToken], auth.getProfile);
 router.get("/admin/getAllUser", auth.getAllUser);
+router.delete("/admin/:id", [authJwt.verifyToken], auth.deleteUser);
 router.put("/admin/update", [authJwt.verifyToken], auth.update);
 router.post("/Category/addCategory", [authJwt.verifyToken], categoryUpload.single('image'), auth.createCategory);
 router.get("/Category/allCategory", auth.getCategories);

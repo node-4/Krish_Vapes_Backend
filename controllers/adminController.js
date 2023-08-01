@@ -84,6 +84,18 @@ exports.getAllUser = async (req, res) => {
                 });
         }
 };
+exports.deleteUser = async (req, res) => {
+        try {
+                const data = await User.findByIdAndDelete(req.params.id);
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).send({ msg: "deleted", data: data });
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
 exports.update = async (req, res) => {
         try {
                 const { fullName, firstName, lastName, email, phone, password } = req.body;
@@ -1196,39 +1208,37 @@ exports.addContactDetails = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ message: "not found" });
                 } else {
-                        if (user.userType == "ADMIN") {
-                                let findContact = await contact.findOne();
-                                if (findContact) {
-                                        req.body.fb = req.body.fb || findContact.fb;
-                                        req.body.twitter = req.body.twitter || findContact.twitter;
-                                        req.body.google = req.body.google || findContact.google;
-                                        req.body.instagram = req.body.instagram || findContact.instagram;
-                                        req.body.basketball = req.body.basketball || findContact.basketball;
-                                        req.body.behance = req.body.behance || findContact.behance;
-                                        req.body.dribbble = req.body.dribbble || findContact.dribbble;
-                                        req.body.pinterest = req.body.pinterest || findContact.pinterest;
-                                        req.body.linkedIn = req.body.linkedIn || findContact.linkedIn;
-                                        req.body.youtube = req.body.youtube || findContact.youtube;
-                                        req.body.map = req.body.map || findContact.map;
-                                        req.body.address = req.body.address || findContact.address;
-                                        req.body.phone = req.body.phone || findContact.phone;
-                                        req.body.supportEmail = req.body.supportEmail || findContact.supportEmail;
-                                        req.body.openingTime = req.body.openingTime || findContact.openingTime;
-                                        req.body.infoEmail = req.body.infoEmail || findContact.infoEmail;
-                                        req.body.contactAddress = req.body.contactAddress || findContact.contactAddress;
-                                        req.body.tollfreeNo = req.body.tollfreeNo || findContact.tollfreeNo;
-                                        let updateContact = await contact.findByIdAndUpdate({ _id: findContact._id }, { $set: req.body }, { new: true });
-                                        if (updateContact) {
-                                                return res.status(200).json({ message: "Contact detail update successfully.", status: 200, data: updateContact });
-                                        }
-                                } else {
-                                        let result2 = await contact.create(req.body);
-                                        if (result2) {
-                                                return res.status(200).json({ message: "Contact detail add successfully.", status: 200, data: result2 });
-                                        }
+                        let findContact = await contact.findOne();
+                        if (findContact) {
+                                let obj = {
+                                        fb: req.body.fb || findContact.fb,
+                                        twitter: req.body.twitter || findContact.twitter,
+                                        google: req.body.google || findContact.google,
+                                        instagram: req.body.instagram || findContact.instagram,
+                                        basketball: req.body.basketball || findContact.basketball,
+                                        behance: req.body.behance || findContact.behance,
+                                        dribbble: req.body.dribbble || findContact.dribbble,
+                                        pinterest: req.body.pinterest || findContact.pinterest,
+                                        linkedIn: req.body.linkedIn || findContact.linkedIn,
+                                        youtube: req.body.youtube || findContact.youtube,
+                                        map: req.body.map || findContact.map,
+                                        address: req.body.address || findContact.address,
+                                        phone: req.body.phone || findContact.phone,
+                                        supportEmail: req.body.supportEmail || findContact.supportEmail,
+                                        openingTime: req.body.openingTime || findContact.openingTime,
+                                        infoEmail: req.body.infoEmail || findContact.infoEmail,
+                                        contactAddress: req.body.contactAddress || findContact.contactAddress,
+                                        tollfreeNo: req.body.tollfreeNo || findContact.tollfreeNo,
+                                }
+                                let updateContact = await contact.findByIdAndUpdate({ _id: findContact._id }, { $set: obj }, { new: true });
+                                if (updateContact) {
+                                        return res.status(200).json({ message: "Contact detail update successfully.", status: 200, data: updateContact });
                                 }
                         } else {
-                                return res.status(404).send({ message: "You are not Authorised user." });
+                                let result2 = await contact.create(req.body);
+                                if (result2) {
+                                        return res.status(200).json({ message: "Contact detail add successfully.", status: 200, data: result2 });
+                                }
                         }
                 }
         } catch (err) {
