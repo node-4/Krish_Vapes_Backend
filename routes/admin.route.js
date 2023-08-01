@@ -6,6 +6,7 @@ const { cpUpload0, upload, upload1, upload2, cpUpload, categoryUpload } = requir
 router.post("/admin/registration", auth.registration);
 router.post("/admin/login", auth.signin);
 router.get("/admin/getProfile", [authJwt.verifyToken], auth.getProfile);
+router.get("/admin/getAllUser", [authJwt.verifyToken], auth.getAllUser);
 router.put("/admin/update", [authJwt.verifyToken], auth.update);
 router.post("/Category/addCategory", [authJwt.verifyToken], categoryUpload.single('image'), auth.createCategory);
 router.get("/Category/allCategory", auth.getCategories);
@@ -58,5 +59,6 @@ router.post("/NewsLetter/subscribeUnsubscribe", auth.subscribeUnsubscribe);
 router.get("/admin/allOrders", [authJwt.verifyToken], auth.getAllOrders);
 router.get("/admin/Orders", [authJwt.verifyToken], auth.getOrders);
 router.get("/admin/paginate/OrdersSearch", auth.paginateOrdersSearch);
+router.get("/NewsLetter/allNewsLetter", auth.allNewsLetter);
 
 module.exports = router;
