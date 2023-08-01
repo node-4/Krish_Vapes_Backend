@@ -1402,31 +1402,39 @@ exports.deleteAboutUs = async (req, res) => {
 exports.subscribeUnsubscribe = async (req, res) => {
         try {
                 if (req.body.type == "SUBSCRIBE") {
-                        const result = await visitorSubscriber.findOne({ email: req.body.email })
-                        if (result) {
-                                let updateResult = await visitorSubscriber.findOneAndUpdate({ _id: result._id }, { $set: { subscribeNow: true } }, { new: true });
-                                if (updateResult) {
-                                        return res.status(200).json({ message: "SubscribeNow.", status: 200, data: updateResult });
+                        if (req.body.email != (null || undefined)) {
+                                const result = await visitorSubscriber.findOne({ email: req.body.email })
+                                if (result) {
+                                        let updateResult = await visitorSubscriber.findOneAndUpdate({ _id: result._id }, { $set: { subscribeNow: true } }, { new: true });
+                                        if (updateResult) {
+                                                return res.status(200).json({ message: "SubscribeNow.", status: 200, data: updateResult });
+                                        }
+                                } else {
+                                        let obj = {
+                                                email: req.body.email,
+                                                subscribeNow: true,
+                                        }
+                                        let result2 = await visitorSubscriber.create(obj);
+                                        if (result2) {
+                                                return res.status(200).json({ message: "SubscribeNow.", status: 200, data: result2 });
+                                        }
                                 }
                         } else {
-                                let obj = {
-                                        email: req.body.email,
-                                        subscribeNow: true,
-                                }
-                                let result2 = await visitorSubscriber.create(obj);
-                                if (result2) {
-                                        return res.status(200).json({ message: "SubscribeNow.", status: 200, data: result2 });
-                                }
+                                return res.status(201).json({ message: "please provide email.", status: 201, data: {} });
                         }
                 } else if (req.body.type == "UNSUBSCRIBE") {
-                        const result = await visitorSubscriber.findOne({ email: req.body.email, subscribeNow: true })
-                        if (result) {
-                                let updateResult = await visitorSubscriber.findOneAndUpdate({ _id: result._id }, { $set: { subscribeNow: false } }, { new: true });
-                                if (updateResult) {
-                                        return res.status(200).json({ message: "Unsubscribe.", status: 200, data: updateResult });
+                        if (req.body.email != (null || undefined)) {
+                                const result = await visitorSubscriber.findOne({ email: req.body.email, subscribeNow: true })
+                                if (result) {
+                                        let updateResult = await visitorSubscriber.findOneAndUpdate({ _id: result._id }, { $set: { subscribeNow: false } }, { new: true });
+                                        if (updateResult) {
+                                                return res.status(200).json({ message: "Unsubscribe.", status: 200, data: updateResult });
+                                        }
+                                } else {
+                                        return res.status(409).json({ message: "You already Unsubscribe.", status: 409, data: {} });
                                 }
                         } else {
-                                return res.status(409).json({ message: "You already Unsubscribe.", status: 409, data: {} });
+                                return res.status(201).json({ message: "please provide email.", status: 201, data: {} });
                         }
                 }
         } catch (error) {
