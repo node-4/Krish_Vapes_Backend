@@ -269,27 +269,31 @@ exports.addToCart = async (req, res) => {
                                                                         if (findColor) {
                                                                                 console.log("---------------------------------271------------");
                                                                                 if (findColor.size == true) {
-                                                                                        console.log("---------------------------------273------------");
-                                                                                        for (let i = 0; i < findColor.colorSize.length; i++) {
-                                                                                                console.log("---------------------------------275------------");
-                                                                                                if ((findColor.colorSize[i].size == req.body.size) == true) {
-                                                                                                        console.log("---------------------------------277------------");
-                                                                                                        let obj = {
-                                                                                                                categoryId: findProduct.categoryId,
-                                                                                                                subcategoryId: findProduct.subcategoryId,
-                                                                                                                productId: findProduct._id,
-                                                                                                                productColorId: findColor._id,
-                                                                                                                productSize: req.body.size,
-                                                                                                                productPrice: findProduct.price,
-                                                                                                                quantity: req.body.quantity,
-                                                                                                                total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                        console.log("---------------------------------273------------", findColor.colorSize.length);
+                                                                                        if (findColor.colorSize.length > 0) {
+                                                                                                for (let i = 0; i < findColor.colorSize.length; i++) {
+                                                                                                        console.log("---------------------------------275------------");
+                                                                                                        if ((findColor.colorSize[i].size == req.body.size) == true) {
+                                                                                                                console.log("---------------------------------277------------");
+                                                                                                                let obj = {
+                                                                                                                        categoryId: findProduct.categoryId,
+                                                                                                                        subcategoryId: findProduct.subcategoryId,
+                                                                                                                        productId: findProduct._id,
+                                                                                                                        productColorId: findColor._id,
+                                                                                                                        productSize: req.body.size,
+                                                                                                                        productPrice: findProduct.price,
+                                                                                                                        quantity: req.body.quantity,
+                                                                                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                                }
+                                                                                                                let totalAmount = findCart.totalAmount + obj.total;
+                                                                                                                let paidAmount = findCart.paidAmount + obj.total;
+                                                                                                                let totalItem = findCart.totalItem + 1;
+                                                                                                                let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount }, $push: { products: obj } }, { new: true })
+                                                                                                                return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                                         }
-                                                                                                        let totalAmount = findCart.totalAmount + obj.total;
-                                                                                                        let paidAmount = findCart.paidAmount + obj.total;
-                                                                                                        let totalItem = findCart.totalItem + 1;
-                                                                                                        let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount }, $push: { products: obj } }, { new: true })
-                                                                                                        return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                                 }
+                                                                                        } else {
+                                                                                                return res.status(409).send({ status: 409, message: "Currently no size available." });
                                                                                         }
                                                                                 } else {
                                                                                         console.log("---------------------------------280------------");
@@ -336,26 +340,30 @@ exports.addToCart = async (req, res) => {
                                                                 console.log("---------------------------------271------------");
                                                                 if (findColor.size == true) {
                                                                         console.log("---------------------------------273------------");
-                                                                        for (let i = 0; i < findColor.colorSize.length; i++) {
-                                                                                console.log("---------------------------------275------------");
-                                                                                if ((findColor.colorSize[i].size == req.body.size) == true) {
-                                                                                        console.log("---------------------------------277------------");
-                                                                                        let obj = {
-                                                                                                categoryId: findProduct.categoryId,
-                                                                                                subcategoryId: findProduct.subcategoryId,
-                                                                                                productId: findProduct._id,
-                                                                                                productColorId: findColor._id,
-                                                                                                productSize: req.body.size,
-                                                                                                productPrice: findProduct.price,
-                                                                                                quantity: req.body.quantity,
-                                                                                                total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                        if (findColor.colorSize.length > 0) {
+                                                                                for (let i = 0; i < findColor.colorSize.length; i++) {
+                                                                                        console.log("---------------------------------275------------");
+                                                                                        if ((findColor.colorSize[i].size == req.body.size) == true) {
+                                                                                                console.log("---------------------------------277------------");
+                                                                                                let obj = {
+                                                                                                        categoryId: findProduct.categoryId,
+                                                                                                        subcategoryId: findProduct.subcategoryId,
+                                                                                                        productId: findProduct._id,
+                                                                                                        productColorId: findColor._id,
+                                                                                                        productSize: req.body.size,
+                                                                                                        productPrice: findProduct.price,
+                                                                                                        quantity: req.body.quantity,
+                                                                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                }
+                                                                                                let totalAmount = findCart.totalAmount + obj.total;
+                                                                                                let paidAmount = findCart.paidAmount + obj.total;
+                                                                                                let totalItem = findCart.totalItem + 1;
+                                                                                                let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount }, $push: { products: obj } }, { new: true })
+                                                                                                return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                         }
-                                                                                        let totalAmount = findCart.totalAmount + obj.total;
-                                                                                        let paidAmount = findCart.paidAmount + obj.total;
-                                                                                        let totalItem = findCart.totalItem + 1;
-                                                                                        let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount }, $push: { products: obj } }, { new: true })
-                                                                                        return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                 }
+                                                                        } else {
+                                                                                return res.status(409).send({ status: 409, message: "Currently no size available." });
                                                                         }
                                                                 } else {
                                                                         console.log("---------------------------------280------------");
@@ -408,31 +416,35 @@ exports.addToCart = async (req, res) => {
                                                 if (findColor) {
                                                         console.log(findColor);
                                                         if (findColor.size == true) {
-                                                                for (let i = 0; i < findColor.colorSize.length; i++) {
-                                                                        if ((findColor.colorSize[i].size == req.body.size) == true) {
-                                                                                let products = []
-                                                                                let obj = {
-                                                                                        categoryId: findProduct.categoryId,
-                                                                                        subcategoryId: findProduct.subcategoryId,
-                                                                                        productId: findProduct._id,
-                                                                                        productColorId: findColor._id,
-                                                                                        productSize: req.body.size,
-                                                                                        productPrice: findProduct.price,
-                                                                                        quantity: req.body.quantity,
-                                                                                        total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                if (findColor.colorSize.length > 0) {
+                                                                        for (let i = 0; i < findColor.colorSize.length; i++) {
+                                                                                if ((findColor.colorSize[i].size == req.body.size) == true) {
+                                                                                        let products = []
+                                                                                        let obj = {
+                                                                                                categoryId: findProduct.categoryId,
+                                                                                                subcategoryId: findProduct.subcategoryId,
+                                                                                                productId: findProduct._id,
+                                                                                                productColorId: findColor._id,
+                                                                                                productSize: req.body.size,
+                                                                                                productPrice: findProduct.price,
+                                                                                                quantity: req.body.quantity,
+                                                                                                total: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                        }
+                                                                                        products.push(obj)
+                                                                                        let cartObj = {
+                                                                                                userId: user._id,
+                                                                                                products: products,
+                                                                                                totalAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                paidAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                totalItem: 1,
+                                                                                        }
+                                                                                        console.log(cartObj);
+                                                                                        const cartCreate = await Cart.create(cartObj);
+                                                                                        return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
                                                                                 }
-                                                                                products.push(obj)
-                                                                                let cartObj = {
-                                                                                        userId: user._id,
-                                                                                        products: products,
-                                                                                        totalAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                        paidAmount: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                        totalItem: 1,
-                                                                                }
-                                                                                console.log(cartObj);
-                                                                                const cartCreate = await Cart.create(cartObj);
-                                                                                return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
                                                                         }
+                                                                } else {
+                                                                        return res.status(409).send({ status: 409, message: "Currently no size available." });
                                                                 }
                                                         } else {
                                                                 console.log("Color====208====", findColor);
