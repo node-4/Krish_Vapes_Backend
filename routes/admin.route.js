@@ -35,6 +35,7 @@ router.put("/Product/editProductColorSize/:id", [authJwt.verifyToken], auth.edit
 router.delete("/Product/deleteProduct/:id", [authJwt.verifyToken], auth.deleteProduct);
 router.post("/Banner/addBanner", [authJwt.verifyToken], upload1.single('image'), auth.createBanner);
 router.get("/Banner/getTopBanner", auth.getTopBanner);
+router.get("/Banner/getBanner", auth.getBanner);
 router.get("/Banner/getMidBanner", auth.getMidBanner);
 router.get("/Banner/getBottomBanner", auth.getBottomBanner);
 router.get("/Banner/:id", auth.getIdBanner);

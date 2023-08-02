@@ -6,21 +6,6 @@ var userSchema = new schema(
                         type: schema.Types.ObjectId,
                         ref: "user"
                 },
-                alias: {
-                        type: String,
-                },
-                firstName: {
-                        type: String,
-                },
-                lastName: {
-                        type: String,
-                },
-                company: {
-                        type: String,
-                },
-                vatNumber: {
-                        type: String,
-                },
                 address: {
                         type: String,
                 },
@@ -34,9 +19,6 @@ var userSchema = new schema(
                         type: Number,
                 },
                 country: {
-                        type: String,
-                },
-                phone: {
                         type: String,
                 },
         },

@@ -1044,6 +1044,17 @@ exports.createBanner = async (req, res) => {
                 return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
         }
 };
+exports.getBanner = async (req, res) => {
+        try {
+                const data = await banner.find({});
+                if (data.length === 0) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "Banner data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
 exports.getTopBanner = async (req, res) => {
         try {
                 const data = await banner.find({ position: "TOP" });

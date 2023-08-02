@@ -18,14 +18,36 @@ const userAddress = require("../model/userAddress");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
 exports.registration = async (req, res) => {
-        const { phone, email } = req.body;
+        const { courtesyTitle, dob, email, firstName, lastName, password, company, vatNumber, vatUsed, country, phone } = req.body;
         try {
                 let user = await User.findOne({ email: email, userType: "USER" });
                 if (!user) {
-                        req.body.password = bcrypt.hashSync(req.body.password, 8);
-                        req.body.userType = "USER";
+                        let fullName = `${req.body.firstName} ${req.body.lastName}`;
+                        if (vatUsed == true) {
+                                if (vatNumber != (null || undefined)) {
+                                        req.body.vatNumber = vatNumber
+                                } else {
+                                        return res.status(404).send({ message: "Vat number Not provided", data: [] });
+                                }
+                        } else {
+                                if (vatNumber != (null || undefined)) {
+                                        return res.status(404).send({ message: "Then first chose yes", data: [] });
+                                }
+                        }
+                        req.body.courtesyTitle = courtesyTitle;
+                        req.body.dob = dob;
+                        req.body.email = email;
+                        req.body.firstName = firstName;
+                        req.body.lastName = lastName;
+                        req.body.password = bcrypt.hashSync(password, 8);
+                        req.body.company = company;
+                        req.body.vatUsed = vatUsed;
+                        req.body.country = country;
+                        req.body.phone = phone;
                         req.body.accountVerification = true;
-                        req.body.fullName = `${req.body.firstName} ${req.body.lastName}`;
+                        req.body.fullName = fullName;
+                        req.body.userType = "USER";
+                        req.body.status = "Pending"
                         const userCreate = await User.create(req.body);
                         return res.status(200).send({ message: "registered successfully ", data: userCreate, });
                 } else {
@@ -43,13 +65,19 @@ exports.signin = async (req, res) => {
                 const user = await User.findOne({ email: email, userType: "USER" });
                 if (!user) {
                         return res.status(404).send({ message: "user not found ! not registered" });
+                } else {
+                        if (user.status == "Pending") {
+                                return res.status(404).send({ message: "User verification is pending login after some time." });
+                        } else {
+                                const isValidPassword = bcrypt.compareSync(password, user.password);
+                                if (!isValidPassword) {
+                                        return res.status(401).send({ message: "Wrong password" });
+                                }
+                                const accessToken = jwt.sign({ id: user._id }, authConfig.secret, { expiresIn: authConfig.accessTokenTime, });
+                                return res.status(201).send({ data: user, accessToken: accessToken });
+                        }
                 }
-                const isValidPassword = bcrypt.compareSync(password, user.password);
-                if (!isValidPassword) {
-                        return res.status(401).send({ message: "Wrong password" });
-                }
-                const accessToken = jwt.sign({ id: user._id }, authConfig.secret, { expiresIn: authConfig.accessTokenTime, });
-                return res.status(201).send({ data: user, accessToken: accessToken });
+
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ message: "Server error" + error.message });
@@ -99,7 +127,7 @@ exports.update = async (req, res) => {
 };
 exports.addAdress = async (req, res) => {
         try {
-                const { firstName, lastName, alias, company, vatNumber, address, addressComplement, city, pincode, country, phone } = req.body;
+                const { address, addressComplement, city, pincode, country } = req.body;
                 const user = await User.findById(req.user._id);
                 if (!user) {
                         return res.status(404).send({ message: "not found" });
@@ -116,7 +144,6 @@ exports.addAdress = async (req, res) => {
                                 city: city,
                                 pincode: pincode,
                                 country: country,
-                                phone: phone
                         }
                         const userCreate = await userAddress.create(obj);
                         return res.status(200).send({ message: "Address add successfully.", data: userCreate });
@@ -128,7 +155,7 @@ exports.addAdress = async (req, res) => {
 };
 exports.updateAdress = async (req, res) => {
         try {
-                const { firstName, lastName, alias, company, vatNumber, address, addressComplement, city, pincode, country, phone } = req.body;
+                const { address, addressComplement, city, pincode, country } = req.body;
                 const user = await User.findById(req.user._id);
                 if (!user) {
                         return res.status(404).send({ message: "not found" });
@@ -139,17 +166,11 @@ exports.updateAdress = async (req, res) => {
                         }
                         let obj = {
                                 userId: user._id,
-                                firstName: firstName || findData.firstName,
-                                lastName: lastName || findData.lastName,
-                                alias: alias || findData.alias,
-                                company: company || findData.company,
-                                vatNumber: vatNumber || findData.vatNumber,
                                 address: address || findData.address,
                                 addressComplement: addressComplement || findData.addressComplement,
                                 city: city || findData.city,
                                 pincode: pincode || findData.pincode,
                                 country: country || findData.country,
-                                phone: phone || findData.phone
                         }
                         const userCreate = await userAddress.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true })
                         return res.status(200).send({ message: "Address update successfully.", data: userCreate });

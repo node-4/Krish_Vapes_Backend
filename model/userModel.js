@@ -26,32 +26,19 @@ var userSchema = new schema(
                 dob: {
                         type: String,
                 },
+                country: {
+                        type: String,
+                },
                 phone: {
                         type: String,
+                        minLength: 8,
+                        maxLength: 12,
                 },
                 email: {
                         type: String,
                         minLength: 10,
                 },
                 password: {
-                        type: String,
-                },
-                address: {
-                        type: String,
-                },
-                city: {
-                        type: String,
-                },
-                pincode: {
-                        type: Number,
-                },
-                country: {
-                        type: String,
-                },
-                state: {
-                        type: String,
-                },
-                district: {
                         type: String,
                 },
                 otp: {
@@ -66,7 +53,18 @@ var userSchema = new schema(
                 },
                 userType: {
                         type: String,
-                        enum: ["USER", "VENDOR", "DRIVER", "ADMIN"],
+                        enum: ["USER", "ADMIN"],
+                },
+                company: {
+                        type: String,
+                },
+                vatNumber: {
+                        type: String,
+                        minLength: 5,
+                        maxLength: 17,
+                },
+                vatUsed: {
+                        type: Boolean,
                 },
                 status: {
                         type: String,
