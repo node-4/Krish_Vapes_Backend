@@ -84,6 +84,32 @@ exports.getAllUser = async (req, res) => {
                 });
         }
 };
+exports.viewUser = async (req, res) => {
+        try {
+                const data = await User.findById(req.params.id);
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).send({ msg: "Data found successfully", data: data });
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.approveRejectUser = async (req, res) => {
+        try {
+                const data = await User.findById(req.params.id);
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                } else {
+                        let update = await User.findByIdAndUpdate({ _id: data._id }, { $set: { status: req.body.status } }, { new: true })
+                        return res.status(200).send({ msg: `${req.body.status} successfully`, data: update });
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
 exports.deleteUser = async (req, res) => {
         try {
                 const data = await User.findByIdAndDelete(req.params.id);
