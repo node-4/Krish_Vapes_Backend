@@ -23,4 +23,5 @@ router.post("/user/placeOrder/:orderId", [authJwt.verifyToken], auth.placeOrder)
 router.get("/user/allOrders", [authJwt.verifyToken], auth.getAllOrders);
 router.get("/user/Orders", [authJwt.verifyToken], auth.getOrders);
 router.get("/user/viewOrder/:id", [authJwt.verifyToken], auth.getOrderbyId);
+// router.post("/user/placeOrder1/:orderId", [authJwt.verifyToken], auth.placeOrder1);
 module.exports = router;

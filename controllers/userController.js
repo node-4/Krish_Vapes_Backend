@@ -17,6 +17,9 @@ const User = require("../model/userModel");
 const userAddress = require("../model/userAddress");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
+const PDFDocument = require('pdfkit');
+const doc1 = new PDFDocument();
+const nodemailer = require('nodemailer')
 exports.registration = async (req, res) => {
         const { courtesyTitle, dob, email, firstName, lastName, password, company, vatNumber, vatUsed, country, phone } = req.body;
         try {
@@ -313,7 +316,7 @@ exports.addToCart = async (req, res) => {
                                                                                                                         tax: tax,
                                                                                                                         totalTax: tax * req.body.quantity,
                                                                                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                                                        paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                                        paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                                                 }
                                                                                                                 totalTax = totalTax + (tax * req.body.quantity)
                                                                                                                 let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -344,7 +347,7 @@ exports.addToCart = async (req, res) => {
                                                                                                 tax: tax,
                                                                                                 totalTax: tax * req.body.quantity,
                                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                                paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                         }
                                                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -373,7 +376,7 @@ exports.addToCart = async (req, res) => {
                                                                                 tax: tax,
                                                                                 totalTax: tax * req.body.quantity,
                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                         }
                                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -413,7 +416,7 @@ exports.addToCart = async (req, res) => {
                                                                                                         tax: tax,
                                                                                                         totalTax: tax * req.body.quantity,
                                                                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                                        paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                        paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                                 }
                                                                                                 totalTax = totalTax + (tax * req.body.quantity)
                                                                                                 let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -444,7 +447,7 @@ exports.addToCart = async (req, res) => {
                                                                                 tax: tax,
                                                                                 totalTax: tax * req.body.quantity,
                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                         }
                                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -473,7 +476,7 @@ exports.addToCart = async (req, res) => {
                                                                 tax: tax,
                                                                 totalTax: tax * req.body.quantity,
                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                         }
                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -555,7 +558,7 @@ exports.addToCart = async (req, res) => {
                                                                         tax: tax,
                                                                         totalTax: tax * req.body.quantity,
                                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                        paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                        paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                 }
                                                                 products.push(obj)
                                                                 let cartObj = {
@@ -591,7 +594,7 @@ exports.addToCart = async (req, res) => {
                                                         tax: tax,
                                                         totalTax: tax * req.body.quantity,
                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                        paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                        paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                 }
                                                 products.push(obj)
                                                 let cartObj = {
@@ -1063,6 +1066,59 @@ exports.deleteCart = async (req, res) => {
                         } else {
                                 return res.status(404).send({ status: 404, message: "Cart not found." });
                         }
+                }
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.placeOrder1 = async (req, res) => {
+        try {
+                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+                if (findUserOrder) {
+                        let attachments = []
+                        // for (let i = 0; i < findUserOrder.Orders.length; i++) {
+                                let findu = await order.findOne({ _id: findUserOrder.Orders[0]._id }).select('totalTax paidAmount orderId productPrice quantity total orderStatus paymentStatus');
+                                await doc1.text(findu);
+                                const pdfBuffer = await new Promise((resolve) => {
+                                        const chunks = [];
+                                        doc1.on('data', (chunk) => chunks.push(chunk));
+                                        doc1.on('end', () => resolve(Buffer.concat(chunks)));
+                                        doc1.end();
+                                });
+                                let obj = {
+                                        filename: 'document.pdf',
+                                        content: pdfBuffer,
+                                        contentType: 'application/pdf',
+                                }
+                                console.log("1094==============",obj);
+                                attachments.push(obj)
+                        // }
+                        console.log("===========",attachments);
+                        var transporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                        "user": "vcjagal1994@gmail.com",
+                                        "pass": "iyekdwwhkrthvklq"
+                                }
+                        });
+                        const mailOptions = {
+                                from: 'vcjagal1994@gmail.com',
+                                to: 'vcjagal1994@gmail.com',
+                                subject: 'PDF Attachment',
+                                text: 'Please find the attached PDF.',
+                                attachments: attachments,
+                        };
+                        transporter.sendMail(mailOptions, function (error, info) {
+                                console.log("error in common====>", error, info)
+                                if (error) {
+                                        callback(error, null)
+                                } else {
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                }
+                        });
+                } else {
+                        return res.status(404).json({ message: "No data found", data: {} });
                 }
         } catch (error) {
                 console.log(error);
