@@ -36,26 +36,31 @@ const DocumentSchema = schema({
                 type: Number,
                 default: 1
         },
+        tax: {
+                type: Number,
+                default: 0
+        },
+        totalTax: {
+                type: Number,
+                default: 0
+        },
         total: {
                 type: Number,
                 default: 0
         },
+        paidAmount: {
+                type: Number,
+                default: 0
+        },
+        company: {
+                type: String,
+        },
+        vatNumber: {
+                type: String,
+                minLength: 5,
+                maxLength: 17,
+        },
         address: {
-                alias: {
-                        type: String,
-                },
-                firstName: {
-                        type: String,
-                },
-                lastName: {
-                        type: String,
-                },
-                company: {
-                        type: String,
-                },
-                vatNumber: {
-                        type: String,
-                },
                 address: {
                         type: String,
                 },

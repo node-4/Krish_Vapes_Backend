@@ -663,13 +663,13 @@ exports.checkout = async (req, res) => {
                                                         productSize: findCart.products[i].productSize,
                                                         productPrice: findCart.products[i].productPrice,
                                                         quantity: findCart.products[i].quantity,
+                                                        tax: findCart.products[i].tax,
+                                                        totalTax: findCart.products[i].totalTax,
                                                         total: findCart.products[i].total,
+                                                        paidAmount: findCart.products[i].paidAmount,
+                                                        company: req.user.company,
+                                                        vatNumber: req.user.vatNumber,
                                                         address: {
-                                                                alias: findAddress.alias,
-                                                                firstName: findAddress.firstName,
-                                                                lastName: findAddress.lastName,
-                                                                company: findAddress.company,
-                                                                vatNumber: findAddress.vatNumber,
                                                                 address: findAddress.address,
                                                                 addressComplement: findAddress.addressComplement,
                                                                 city: findAddress.city,
@@ -691,11 +691,6 @@ exports.checkout = async (req, res) => {
                                                                         orderId: orderId,
                                                                         Orders: Orders,
                                                                         address: {
-                                                                                alias: findAddress.alias,
-                                                                                firstName: findAddress.firstName,
-                                                                                lastName: findAddress.lastName,
-                                                                                company: findAddress.company,
-                                                                                vatNumber: findAddress.vatNumber,
                                                                                 address: findAddress.address,
                                                                                 addressComplement: findAddress.addressComplement,
                                                                                 city: findAddress.city,
@@ -734,13 +729,13 @@ exports.checkout = async (req, res) => {
                                                         productSize: findCart.products[i].productSize,
                                                         productPrice: findCart.products[i].productPrice,
                                                         quantity: findCart.products[i].quantity,
+                                                        tax: findCart.products[i].tax,
+                                                        totalTax: findCart.products[i].totalTax,
                                                         total: findCart.products[i].total,
+                                                        paidAmount: findCart.products[i].paidAmount,
+                                                        company: req.user.company,
+                                                        vatNumber: req.user.vatNumber,
                                                         address: {
-                                                                alias: findAddress.alias,
-                                                                firstName: findAddress.firstName,
-                                                                lastName: findAddress.lastName,
-                                                                company: findAddress.company,
-                                                                vatNumber: findAddress.vatNumber,
                                                                 address: findAddress.address,
                                                                 addressComplement: findAddress.addressComplement,
                                                                 city: findAddress.city,
@@ -762,11 +757,6 @@ exports.checkout = async (req, res) => {
                                                                         orderId: orderId,
                                                                         Orders: Orders,
                                                                         address: {
-                                                                                alias: findAddress.alias,
-                                                                                firstName: findAddress.firstName,
-                                                                                lastName: findAddress.lastName,
-                                                                                company: findAddress.company,
-                                                                                vatNumber: findAddress.vatNumber,
                                                                                 address: findAddress.address,
                                                                                 addressComplement: findAddress.addressComplement,
                                                                                 city: findAddress.city,
@@ -775,7 +765,10 @@ exports.checkout = async (req, res) => {
                                                                                 phone: findAddress.phone
                                                                         },
                                                                         total: findCart.totalAmount,
-                                                                        totalItem: findCart.totalItem
+                                                                        totalItem: findCart.totalItem,
+                                                                        tax: findCart.tax,
+                                                                        totalTax: findCart.totalTax,
+                                                                        paidAmount: findCart.paidAmount
                                                                 };
                                                                 await userOrders.create(obj1);
                                                         }
