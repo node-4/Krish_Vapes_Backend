@@ -72,7 +72,7 @@ exports.getProfile = async (req, res) => {
 };
 exports.getAllUser = async (req, res) => {
         try {
-                const user = await User.find();
+                const user = await User.find({ userType: "USER" });
                 if (user.length == 0) {
                         return res.status(404).send({ message: "not found" });
                 }
