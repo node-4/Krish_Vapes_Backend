@@ -313,7 +313,7 @@ exports.addToCart = async (req, res) => {
                                                                                                                         tax: tax,
                                                                                                                         totalTax: tax * req.body.quantity,
                                                                                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                                                        paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                                        paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                                                 }
                                                                                                                 totalTax = totalTax + (tax * req.body.quantity)
                                                                                                                 let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -344,7 +344,7 @@ exports.addToCart = async (req, res) => {
                                                                                                 tax: tax,
                                                                                                 totalTax: tax * req.body.quantity,
                                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                                paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                         }
                                                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -373,7 +373,7 @@ exports.addToCart = async (req, res) => {
                                                                                 tax: tax,
                                                                                 totalTax: tax * req.body.quantity,
                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                         }
                                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -413,7 +413,7 @@ exports.addToCart = async (req, res) => {
                                                                                                         tax: tax,
                                                                                                         totalTax: tax * req.body.quantity,
                                                                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                                        paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                        paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                                 }
                                                                                                 totalTax = totalTax + (tax * req.body.quantity)
                                                                                                 let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -444,7 +444,7 @@ exports.addToCart = async (req, res) => {
                                                                                 tax: tax,
                                                                                 totalTax: tax * req.body.quantity,
                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                         }
                                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -473,7 +473,7 @@ exports.addToCart = async (req, res) => {
                                                                 tax: tax,
                                                                 totalTax: tax * req.body.quantity,
                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                         }
                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
@@ -517,7 +517,7 @@ exports.addToCart = async (req, res) => {
                                                                                                 tax: tax,
                                                                                                 totalTax: tax * req.body.quantity,
                                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                                                paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                                                paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                         }
                                                                                         totalTax = totalTax + (tax * req.body.quantity)
                                                                                         products.push(obj)
@@ -555,7 +555,7 @@ exports.addToCart = async (req, res) => {
                                                                         tax: tax,
                                                                         totalTax: tax * req.body.quantity,
                                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                                        paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                                        paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                 }
                                                                 products.push(obj)
                                                                 let cartObj = {
@@ -591,7 +591,7 @@ exports.addToCart = async (req, res) => {
                                                         tax: tax,
                                                         totalTax: tax * req.body.quantity,
                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
-                                                        paidAmount: totalTax + Number((findProduct.price * req.body.quantity).toFixed(2)),
+                                                        paidAmount:  (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                 }
                                                 products.push(obj)
                                                 let cartObj = {
