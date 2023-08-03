@@ -23,7 +23,7 @@ exports.registration = async (req, res) => {
                 let user = await User.findOne({ email: email, userType: "USER" });
                 if (!user) {
                         let fullName = `${req.body.firstName} ${req.body.lastName}`;
-                        if (vatUsed == true) {
+                        if (vatUsed == "true") {
                                 if (vatNumber != (null || undefined)) {
                                         req.body.vatNumber = vatNumber
                                 } else {
