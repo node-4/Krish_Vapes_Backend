@@ -1,4 +1,6 @@
 const auth = require("../controllers/userController");
+const pdfController = require('../controllers/pdf');
+
 const authJwt = require("../middewares/authJwt");
 const express = require("express");
 const router = express()
@@ -23,4 +25,7 @@ router.post("/user/placeOrder/:orderId", [authJwt.verifyToken], auth.placeOrder)
 router.get("/user/allOrders", [authJwt.verifyToken], auth.getAllOrders);
 router.get("/user/Orders", [authJwt.verifyToken], auth.getOrders);
 router.get("/user/viewOrder/:id", [authJwt.verifyToken], auth.getOrderbyId);
+
+router.get('/a', pdfController.print); 
+
 module.exports = router;
