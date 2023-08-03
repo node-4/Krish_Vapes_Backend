@@ -64,17 +64,17 @@ exports.signin = async (req, res) => {
                 const { email, password } = req.body;
                 const user = await User.findOne({ email: email, userType: "USER" });
                 if (!user) {
-                        return res.status(404).send({ message: "user not found ! not registered" });
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered" });
                 } else {
                         if (user.status == "Pending") {
-                                return res.status(404).send({ message: "User verification is pending login after some time." });
+                                return res.status(201).send({ status: 201, message: "User verification is pending login after some time." });
                         } else {
                                 const isValidPassword = bcrypt.compareSync(password, user.password);
                                 if (!isValidPassword) {
-                                        return res.status(401).send({ message: "Wrong password" });
+                                        return res.status(401).send({ status: 401, message: "Wrong password" });
                                 }
                                 const accessToken = jwt.sign({ id: user._id }, authConfig.secret, { expiresIn: authConfig.accessTokenTime, });
-                                return res.status(201).send({ data: user, accessToken: accessToken });
+                                return res.status(200).send({ status: 200, data: user, accessToken: accessToken });
                         }
                 }
 
