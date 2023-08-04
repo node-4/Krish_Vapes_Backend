@@ -1074,27 +1074,132 @@ exports.deleteCart = async (req, res) => {
 };
 exports.placeOrder1 = async (req, res) => {
         try {
-                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId })
                 if (findUserOrder) {
                         let attachments = []
-                        // for (let i = 0; i < findUserOrder.Orders.length; i++) {
-                                let findu = await order.findOne({ _id: findUserOrder.Orders[0]._id }).select('totalTax paidAmount orderId productPrice quantity total orderStatus paymentStatus');
-                                await doc1.text(findu);
-                                const pdfBuffer = await new Promise((resolve) => {
-                                        const chunks = [];
-                                        doc1.on('data', (chunk) => chunks.push(chunk));
-                                        doc1.on('end', () => resolve(Buffer.concat(chunks)));
-                                        doc1.end();
-                                });
-                                let obj = {
-                                        filename: 'document.pdf',
-                                        content: pdfBuffer,
-                                        contentType: 'application/pdf',
+                        for (let i = 0; i < findUserOrder.Orders.length; i++) {
+                                let findu = await order.findOne({ _id: findUserOrder.Orders[i]._id }).populate('userId categoryId subcategoryId productId productColorId');
+                                console.log(findu);
+                        }
+                        return;
+
+                        let invoice = {
+                                shipping: {
+                                        address: findUserOrder,
+                                        addressComplement: {
+                                                type: String,
+                                        },
+                                        city: {
+                                                type: String,
+                                        },
+                                        pincode: {
+                                                type: Number,
+                                        },
+                                        country: {
+                                                type: String,
+                                        },
+                                        phone: {
+                                                type: String,
+                                        },
+
+                                },
+                                items: [
+                                        {
+                                                item: 'TC 100',
+                                                description: 'Toner Cartridge',
+                                                quantity: 2,
+                                                amount: 6000,
+                                        },
+                                        {
+                                                item: 'USB_EXT',
+                                                description: 'USB Cable Extender',
+                                                quantity: 1,
+                                                amount: 2000,
+                                        },
+                                ],
+                                subtotal: 8000,
+                                paid: 0,
+                                invoice_nr: 1234,
+                        };
+                        await generateInvoiceTable(doc1, invoice)
+                        await generateCustomerInformation(doc1, invoice)
+                        await generateHeader(doc1)
+                        await generateFooter(doc1)
+                        function generateCustomerInformation(doc, invoice) {
+                                const shipping = invoice.shipping;
+
+                                doc.text(`Invoice Number: ${invoice.invoice_nr}`, 50, 200)
+                                        .text(`Invoice Date: ${new Date()}`, 50, 215)
+                                        .text(`Balance Due: ${invoice.subtotal - invoice.paid}`, 50, 130)
+                                        .text(findUserOrder.name, 400, 200)
+                                        .text(findUserOrder.address, 400, 215)
+                                        .text(
+                                                `${findUserOrder.city}, ${findUserOrder.state}, ${findUserOrder.country} (${findUserOrder.pincode})`,
+                                                300,
+                                                130,
+                                        )
+                                        .moveDown();
+                        }
+                        function generateTableRow(doc, y, c1, c2, c3, c4, c5) {
+                                doc.fontSize(10)
+                                        .text(c1, 50, y)
+                                        .text(c2, 150, y)
+                                        .text(c3, 280, y, { width: 90, align: 'right' })
+                                        .text(c4, 370, y, { width: 90, align: 'right' })
+                                        .text(c5, 0, y, { align: 'right' });
+                        }
+                        function generateInvoiceTable(doc, invoice) {
+                                let i, invoiceTableTop = 330;
+                                for (i = 0; i < invoice.items.length; i++) {
+                                        const item = invoice.items[i];
+                                        const position = invoiceTableTop + (i + 1) * 30;
+                                        generateTableRow(
+                                                doc,
+                                                position,
+                                                item.item,
+                                                item.description,
+                                                item.amount / item.quantity,
+                                                item.quantity,
+                                                item.amount,
+                                        );
                                 }
-                                console.log("1094==============",obj);
-                                attachments.push(obj)
+                        }
+                        function generateHeader(doc) {
+                                // doc.image('logo.png', 50, 45, { width: 50 })
+                                doc.fillColor('#444444')
+                                        .fontSize(20)
+                                        .text('ACME Inc.', 110, 57)
+                                        .fontSize(10)
+                                        .text('123 Main Street', 200, 65, { align: 'right' })
+                                        .text('New York, NY, 10025', 200, 80, { align: 'right' })
+                                        .moveDown();
+                        }
+                        function generateFooter(doc) {
+                                doc.fontSize(
+                                        10,
+                                ).text(
+                                        'Payment is due within 15 days. Thank you for your business.',
+                                        50,
+                                        780,
+                                        { align: 'center', width: 500 },
+                                );
+                        }
+
+                        const pdfBuffer = await new Promise((resolve) => {
+                                const chunks = [];
+                                doc1.on('data', (chunk) => chunks.push(chunk));
+                                doc1.on('end', () => resolve(Buffer.concat(chunks)));
+                                doc1.end();
+                        });
+                        let obj = {
+                                filename: 'document.pdf',
+                                content: pdfBuffer,
+                                contentType: 'application/pdf',
+                        }
+                        console.log("1094==============", obj);
+                        attachments.push(obj)
                         // }
-                        console.log("===========",attachments);
+                        console.log("===========", attachments);
                         var transporter = nodemailer.createTransport({
                                 service: 'gmail',
                                 auth: {
