@@ -17,7 +17,7 @@ const User = require("../model/userModel");
 const userAddress = require("../model/userAddress");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
-
+const nodemailer = require('nodemailer')
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
         try {
@@ -102,7 +102,38 @@ exports.approveRejectUser = async (req, res) => {
                 if (!data) {
                         return res.status(400).send({ msg: "not found" });
                 } else {
-                        let update = await User.findByIdAndUpdate({ _id: data._id }, { $set: { status: req.body.status } }, { new: true })
+                        let update = await User.findByIdAndUpdate({ _id: data._id }, { $set: { status: req.body.status } }, { new: true });
+                        var transporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                        "user": "vcjagal1994@gmail.com",
+                                        "pass": "iyekdwwhkrthvklq"
+                                }
+                        });
+                        let mailOptions;
+                        if (update.status == "Approved") {
+                                mailOptions = {
+                                        from: 'vcjagal1994@gmail.com',
+                                        to: update.email,
+                                        subject: 'Approved',
+                                        text: 'Your Account has been approved by admin',
+                                };
+                        }
+                        if (update.status == "Reject") {
+                                mailOptions = {
+                                        from: 'vcjagal1994@gmail.com',
+                                        to: update.email,
+                                        subject: 'Reject',
+                                        text: 'Your Account has been Reject by admin',
+                                };
+                        }
+                        transporter.sendMail(mailOptions, function (error, info) {
+                                if (error) {
+                                        callback(error, null)
+                                } else {
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                }
+                        });
                         return res.status(200).send({ msg: `${req.body.status} successfully`, data: update });
                 }
         } catch (err) {

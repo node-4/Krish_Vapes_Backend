@@ -1076,50 +1076,35 @@ exports.placeOrder1 = async (req, res) => {
         try {
                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId })
                 if (findUserOrder) {
-                        let attachments = []
+                        let attachments = [], items = [], orderId = findUserOrder.orderId
                         for (let i = 0; i < findUserOrder.Orders.length; i++) {
                                 let findu = await order.findOne({ _id: findUserOrder.Orders[i]._id }).populate('userId categoryId subcategoryId productId productColorId');
-                                console.log(findu);
+                                let obj = {
+                                        product: findu.productId.name,
+                                        description: findu.productId.description,
+                                        ProductColor: findu.productColorId.color,
+                                        productSize: findu.productSize,
+                                        productPrice: findu.productPrice,
+                                        quantity: findu.quantity,
+                                        tax: findu.tax,
+                                        totalTax: findu.totalTax,
+                                        paidAmount: findu.paidAmount
+                                }
+                                items.push(obj)
                         }
-                        return;
-
                         let invoice = {
                                 shipping: {
-                                        address: findUserOrder,
-                                        addressComplement: {
-                                                type: String,
-                                        },
-                                        city: {
-                                                type: String,
-                                        },
-                                        pincode: {
-                                                type: Number,
-                                        },
-                                        country: {
-                                                type: String,
-                                        },
-                                        phone: {
-                                                type: String,
-                                        },
-
+                                        address: findUserOrder.address.address,
+                                        addressComplement: findUserOrder.addressComplement,
+                                        city: findUserOrder.city,
+                                        pincode: findUserOrder.pincode,
+                                        country: findUserOrder.country
                                 },
-                                items: [
-                                        {
-                                                item: 'TC 100',
-                                                description: 'Toner Cartridge',
-                                                quantity: 2,
-                                                amount: 6000,
-                                        },
-                                        {
-                                                item: 'USB_EXT',
-                                                description: 'USB Cable Extender',
-                                                quantity: 1,
-                                                amount: 2000,
-                                        },
-                                ],
-                                subtotal: 8000,
-                                paid: 0,
-                                invoice_nr: 1234,
+                                items: items,
+                                totalTax: findUserOrder.tax,
+                                subtotal: findUserOrder.total,
+                                paid: findUserOrder.paidAmount,
+                                invoice_nr: orderId,
                         };
                         await generateInvoiceTable(doc1, invoice)
                         await generateCustomerInformation(doc1, invoice)
@@ -1127,17 +1112,14 @@ exports.placeOrder1 = async (req, res) => {
                         await generateFooter(doc1)
                         function generateCustomerInformation(doc, invoice) {
                                 const shipping = invoice.shipping;
-
                                 doc.text(`Invoice Number: ${invoice.invoice_nr}`, 50, 200)
                                         .text(`Invoice Date: ${new Date()}`, 50, 215)
-                                        .text(`Balance Due: ${invoice.subtotal - invoice.paid}`, 50, 130)
-                                        .text(findUserOrder.name, 400, 200)
-                                        .text(findUserOrder.address, 400, 215)
-                                        .text(
-                                                `${findUserOrder.city}, ${findUserOrder.state}, ${findUserOrder.country} (${findUserOrder.pincode})`,
-                                                300,
-                                                130,
-                                        )
+                                        .text(`Tax: ${invoice.totalTax}`, 50, 130)
+                                        .text(`Sub Total Due: ${invoice.subtotal}`, 50, 130)
+                                        .text(`Total: ${invoice.paid}`, 50, 130)
+                                        .text(shipping.name, 400, 200)
+                                        .text(shipping.address, 400, 215)
+                                        .text(`${shipping.city}, ${shipping.country} (${shipping.pincode})`, 300, 130,)
                                         .moveDown();
                         }
                         function generateTableRow(doc, y, c1, c2, c3, c4, c5) {
@@ -1156,11 +1138,15 @@ exports.placeOrder1 = async (req, res) => {
                                         generateTableRow(
                                                 doc,
                                                 position,
-                                                item.item,
+                                                item.product,
+                                                item.ProductColor,
                                                 item.description,
-                                                item.amount / item.quantity,
+                                                item.productSize,
+                                                item.productPrice,
                                                 item.quantity,
-                                                item.amount,
+                                                item.tax,
+                                                item.totalTax,
+                                                item.paidAmount,
                                         );
                                 }
                         }
