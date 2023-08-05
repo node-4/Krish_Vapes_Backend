@@ -979,10 +979,15 @@ exports.successOrder = async (req, res) => {
                 if (findUserOrder) {
                         let update = await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
                         if (update) {
+                                let count = 0;
                                 for (let i = 0; i < update.Orders.length; i++) {
                                         await order.findByIdAndUpdate({ _id: update.Orders[i]._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+                                        count++;
                                 }
-                                res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                if (count == update.Orders.length) {
+                                        await Cart.findOneAndDelete({ userId: req.user._id });
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                }
                         }
                 } else {
                         return res.status(404).json({ message: "No data found", data: {} });
