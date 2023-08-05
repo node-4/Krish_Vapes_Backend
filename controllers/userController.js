@@ -946,8 +946,8 @@ exports.placeOrder = async (req, res) => {
                 if (findUserOrder) {
                         const session = await stripe.checkout.sessions.create({
                                 payment_method_types: ["card"],
-                                success_url: `localhost:3001/order-success/${findUserOrder.orderId}`,
-                                cancel_url: `localhost:3001/order-failure/${findUserOrder.orderId}`,
+                                success_url: `https://krish-vapes.vercel.app/order-success/${findUserOrder.orderId}`,
+                                cancel_url: `https://krish-vapes.vercel.app/order-failure/${findUserOrder.orderId}`,
                                 customer_email: req.user.email,
                                 client_reference_id: findUserOrder.orderId,
                                 line_items: [
