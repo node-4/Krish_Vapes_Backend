@@ -19,7 +19,7 @@ const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
 const PDFDocument = require('pdfkit');
 const doc1 = new PDFDocument();
-const stripe = require("stripe")('sk_test_51LuUyiSGFCPQyNwInJXcm8J9tYQvLYqRPQLJGnWulquPVQigXQnVq8qrnwoVIYu4P76m1DZpCWsFsonUzOf4xTHG00lgJyVCb4');
+const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc');
 exports.registration = async (req, res) => {
         const { courtesyTitle, dob, email, firstName, lastName, password, company, vatNumber, vatUsed, country, phone } = req.body;
         try {
@@ -137,11 +137,6 @@ exports.addAdress = async (req, res) => {
                 } else {
                         let obj = {
                                 userId: user._id,
-                                firstName: firstName,
-                                lastName: lastName,
-                                alias: alias,
-                                company: company,
-                                vatNumber: vatNumber,
                                 address: address,
                                 addressComplement: addressComplement,
                                 city: city,
