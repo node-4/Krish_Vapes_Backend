@@ -314,9 +314,9 @@ exports.addToCart = async (req, res) => {
                                                                                                                         total: Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                                                         paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                                                 }
-                                                                                                                totalTax = totalTax + (tax * req.body.quantity)
+                                                                                                                totalTax = findCart.tax + (tax * req.body.quantity)
                                                                                                                 let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
-                                                                                                                let paidAmount = findCart.paidAmount + (Number((findProduct.price * req.body.quantity).toFixed(2)) + totalTax);
+                                                                                                                let paidAmount = findCart.paidAmount + (Number((findProduct.price * req.body.quantity).toFixed(2)) + (tax * req.body.quantity));
                                                                                                                 let totalItem = findCart.totalItem + 1;
                                                                                                                 let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount, tax: totalTax }, $push: { products: obj } }, { new: true })
                                                                                                                 return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
@@ -325,7 +325,8 @@ exports.addToCart = async (req, res) => {
                                                                                         } else {
                                                                                                 return res.status(409).send({ status: 409, message: "Currently no size available." });
                                                                                         }
-                                                                                } else {
+                                                                                }
+                                                                                else {
                                                                                         console.log("---------------------------------280------------");
                                                                                         let tax = 0, totalTax = 0;
                                                                                         if (findProduct.taxInclude == true) {
@@ -345,19 +346,21 @@ exports.addToCart = async (req, res) => {
                                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                                 paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                         }
-                                                                                        totalTax = totalTax + (tax * req.body.quantity)
+                                                                                        totalTax = findCart.tax + (tax * req.body.quantity)
                                                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
-                                                                                        let paidAmount = findCart.paidAmount + (Number((findProduct.price * req.body.quantity).toFixed(2)) + totalTax);
+                                                                                        let paidAmount = findCart.paidAmount + (Number((findProduct.price * req.body.quantity).toFixed(2)) + (tax * req.body.quantity));
                                                                                         let totalItem = findCart.totalItem + 1;
                                                                                         let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount, tax: totalTax }, $push: { products: obj } }, { new: true })
                                                                                         return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                 }
-                                                                        } else {
+                                                                        }
+                                                                        else {
                                                                                 return res.status(404).send({ status: 404, message: "Color not found." });
                                                                         }
-                                                                } else {
+                                                                }
+                                                                else {
                                                                         console.log("322================");
-                                                                        let tax = 0, totalTax = 0;
+                                                                        let tax = 0;
                                                                         if (findProduct.taxInclude == true) {
                                                                                 tax = findProduct.tax;
                                                                         } else {
@@ -374,19 +377,26 @@ exports.addToCart = async (req, res) => {
                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                 paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                         }
-                                                                        totalTax = totalTax + (tax * req.body.quantity)
-                                                                        let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
-                                                                        let paidAmount = findCart.paidAmount + (Number((findProduct.price * req.body.quantity).toFixed(2)) + totalTax);
-                                                                        let totalItem = findCart.totalItem + 1;
-                                                                        let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount, tax: totalTax }, $push: { products: obj } }, { new: true })
-                                                                        return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
+                                                                        let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $push: { products: obj } }, { new: true });
+                                                                        if (update) {
+                                                                                let totalAmount = 0, totalTax = 0, paidAmount = 0;
+                                                                                for (let j = 0; j < update.products.length; j++) {
+                                                                                        totalAmount = totalAmount + update.products[j].total,
+                                                                                                totalTax = totalTax + update.products[j].totalTax,
+                                                                                                paidAmount = paidAmount + update.products[j].paidAmount
+                                                                                }
+                                                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totalAmount, paidAmount: paidAmount, tax: totalTax, totalItem: update.products.length } }, { new: true });
+                                                                                return res.status(200).json({ status: 200, message: "Product add to cart.", data: update1 })
+                                                                        }
                                                                 }
                                                         }
                                                 }
-                                        } else {
+                                        }
+                                        else {
                                                 if (findProduct.colorActive == true) {
                                                         let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
                                                         if (findColor) {
+                                                                
                                                                 console.log("---------------------------------271------------");
                                                                 if (findColor.size == true) {
                                                                         console.log("---------------------------------273------------");
@@ -425,14 +435,16 @@ exports.addToCart = async (req, res) => {
                                                                         } else {
                                                                                 return res.status(409).send({ status: 409, message: "Currently no size available." });
                                                                         }
-                                                                } else {
+                                                                }
+                                                                else {
                                                                         console.log("---------------------------------280------------");
-                                                                        let tax = 0, totalTax = 0;
+                                                                        let products = [], tax = 0, totalTax = 0;
                                                                         if (findProduct.taxInclude == true) {
                                                                                 tax = findProduct.tax;
                                                                         } else {
                                                                                 tax = tax;
                                                                         }
+                                                                        totalTax = totalTax + (tax * req.body.quantity)
                                                                         let obj = {
                                                                                 categoryId: findProduct.categoryId,
                                                                                 subcategoryId: findProduct.subcategoryId,
@@ -445,24 +457,26 @@ exports.addToCart = async (req, res) => {
                                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                                 paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                         }
-                                                                        totalTax = totalTax + (tax * req.body.quantity)
                                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
-                                                                        let paidAmount = findCart.paidAmount + (Number((findProduct.price * req.body.quantity).toFixed(2)) + totalTax);
+                                                                        let paidAmount = (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2));
                                                                         let totalItem = findCart.totalItem + 1;
                                                                         let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount, tax: totalTax }, $push: { products: obj } }, { new: true })
                                                                         return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                 }
-                                                        } else {
+                                                        }
+                                                        else {
                                                                 return res.status(404).send({ status: 404, message: "Color not found." });
                                                         }
-                                                } else {
+                                                }
+                                                else {
                                                         console.log("322================");
-                                                        let tax = 0, totalTax = 0;
+                                                        let products = [], tax = 0, totalTax = 0;
                                                         if (findProduct.taxInclude == true) {
                                                                 tax = findProduct.tax;
                                                         } else {
                                                                 tax = tax;
                                                         }
+                                                        totalTax = totalTax + (tax * req.body.quantity)
                                                         let obj = {
                                                                 categoryId: findProduct.categoryId,
                                                                 subcategoryId: findProduct.subcategoryId,
@@ -474,15 +488,15 @@ exports.addToCart = async (req, res) => {
                                                                 total: Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                                 paidAmount: (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2)),
                                                         }
-                                                        totalTax = totalTax + (tax * req.body.quantity)
                                                         let totalAmount = findCart.totalAmount + Number((findProduct.price * req.body.quantity).toFixed(2));
-                                                        let paidAmount = findCart.paidAmount + (Number((findProduct.price * req.body.quantity).toFixed(2)) + totalTax);
+                                                        let paidAmount = (tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2));
                                                         let totalItem = findCart.totalItem + 1;
                                                         let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount, tax: totalTax }, $push: { products: obj } }, { new: true })
                                                         return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                 }
                                         }
-                                } else {
+                                }
+                                else {
                                         return res.status(404).send({ status: 404, message: "Product not found." });
                                 }
                         }
@@ -535,7 +549,8 @@ exports.addToCart = async (req, res) => {
                                                                 } else {
                                                                         return res.status(409).send({ status: 409, message: "Currently no size available." });
                                                                 }
-                                                        } else {
+                                                        }
+                                                        else {
                                                                 console.log("Color====208====", findColor);
                                                                 let products = [], tax = 0, totalTax = 0;
                                                                 if (findProduct.taxInclude == true) {
@@ -569,10 +584,12 @@ exports.addToCart = async (req, res) => {
                                                                 const cartCreate = await Cart.create(cartObj);
                                                                 return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
                                                         }
-                                                } else {
+                                                }
+                                                else {
                                                         return res.status(404).send({ status: 404, message: "Color not found." });
                                                 }
-                                        } else {
+                                        }
+                                        else {
                                                 console.log("214================");
                                                 let products = [], tax = 0, totalTax = 0;
                                                 if (findProduct.taxInclude == true) {
@@ -605,7 +622,8 @@ exports.addToCart = async (req, res) => {
                                                 const cartCreate = await Cart.create(cartObj);
                                                 return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
                                         }
-                                } else {
+                                }
+                                else {
                                         return res.status(404).send({ status: 404, message: "Product not found." });
                                 }
                         }
@@ -832,6 +850,19 @@ exports.updateQuantity = async (req, res) => {
                                 let products = [], count = 0, productLength = findCart.products.length;
                                 for (var i = 0; i < findCart.products.length; i++) {
                                         if ((findCart.products[i]._id).toString() === req.body.products_id) {
+                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0;
+                                                let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
+                                                if (findProduct.taxInclude == true) {
+                                                        tax = findProduct.tax;
+                                                        totalTax = findProduct.tax * req.body.quantity;
+                                                        total = Number((findProduct.price * req.body.quantity).toFixed(2));
+                                                        paidAmount = (findProduct.tax * req.body.quantity) + Number((findProduct.price * req.body.quantity).toFixed(2))
+                                                } else {
+                                                        tax = tax;
+                                                        totalTax = totalTax;
+                                                        total = Number((findProduct.price * req.body.quantity).toFixed(2));
+                                                        paidAmount = Number((findProduct.price * req.body.quantity).toFixed(2))
+                                                }
                                                 let obj = {
                                                         categoryId: findCart.products[i].categoryId,
                                                         subcategoryId: findCart.products[i].subcategoryId,
@@ -840,11 +871,27 @@ exports.updateQuantity = async (req, res) => {
                                                         productSize: findCart.products[i].productSize,
                                                         productPrice: findCart.products[i].productPrice,
                                                         quantity: req.body.quantity,
-                                                        total: Number((findCart.products[i].productPrice * req.body.quantity).toFixed(2)),
+                                                        tax: tax,
+                                                        totalTax: totalTax,
+                                                        total: total,
+                                                        paidAmount: paidAmount,
                                                 }
                                                 products.push(obj)
                                                 count++
                                         } else {
+                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0;
+                                                let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
+                                                if (findProduct.taxInclude == true) {
+                                                        tax = findProduct.tax;
+                                                        totalTax = findProduct.tax * findCart.products[i].quantity;
+                                                        total = Number((findProduct.price * findCart.products[i].quantity).toFixed(2));
+                                                        paidAmount = (findProduct.tax * findCart.products[i].quantity) + Number((findProduct.price * findCart.products[i].quantity).toFixed(2))
+                                                } else {
+                                                        tax = tax;
+                                                        totalTax = totalTax;
+                                                        total = Number((findProduct.price * findCart.products[i].quantity).toFixed(2));
+                                                        paidAmount = Number((findProduct.price * findCart.products[i].quantity).toFixed(2))
+                                                }
                                                 let obj = {
                                                         categoryId: findCart.products[i].categoryId,
                                                         subcategoryId: findCart.products[i].subcategoryId,
@@ -853,21 +900,26 @@ exports.updateQuantity = async (req, res) => {
                                                         productSize: findCart.products[i].productSize,
                                                         productPrice: findCart.products[i].productPrice,
                                                         quantity: findCart.products[i].quantity,
-                                                        total: Number((findCart.products[i].productPrice * findCart.products[i].quantity).toFixed(2)),
+                                                        tax: tax,
+                                                        totalTax: totalTax,
+                                                        total: total,
+                                                        paidAmount: paidAmount,
                                                 }
                                                 products.push(obj)
                                                 count++
                                         }
                                 }
+                                console.log(products);
                                 if (count == productLength) {
                                         let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
                                         if (update) {
-                                                let totals = 0;
+                                                let totalAmount = 0, totalTax = 0, paidAmount = 0;
                                                 for (let j = 0; j < update.products.length; j++) {
-                                                        totals = totals + update.products[j].total
+                                                        totalAmount = totalAmount + update.products[j].total,
+                                                                totalTax = totalTax + update.products[j].totalTax,
+                                                                paidAmount = paidAmount + update.products[j].paidAmount
                                                 }
-                                                console.log(totals);
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, paidAmount: totals, totalItem: update.products.length } }, { new: true });
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totalAmount, paidAmount: paidAmount, tax: totalTax, totalItem: update.products.length } }, { new: true });
                                                 return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
                                         }
                                 }
