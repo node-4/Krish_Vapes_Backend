@@ -17,8 +17,9 @@ const User = require("../model/userModel");
 const userAddress = require("../model/userAddress");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
-const PDFDocument = require('pdfkit');
-const doc1 = new PDFDocument();
+const PDFDocument = require("pdfkit-table");
+const doc = new PDFDocument({ margin: 30, size: 'A4' });
+const nodemailer = require('nodemailer')
 // const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc'); // live
 const stripe = require("stripe")('sk_test_51NYCJcArS6Dr0SQY0UJ5ZOoiPHQ8R5jNOyCMOkjxpl4BHkG4DcAGAU8tjBw6TSOSfimDSELa6BVyCVSo9CGLXlyX00GkGDAQFo'); // test
 exports.registration = async (req, res) => {
@@ -396,7 +397,7 @@ exports.addToCart = async (req, res) => {
                                                 if (findProduct.colorActive == true) {
                                                         let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
                                                         if (findColor) {
-                                                                
+
                                                                 console.log("---------------------------------271------------");
                                                                 if (findColor.size == true) {
                                                                         console.log("---------------------------------273------------");
@@ -653,83 +654,10 @@ exports.getCart = async (req, res) => {
 };
 exports.checkout = async (req, res) => {
         try {
-                let findOrder = await userOrders.find({ user: req.user.id, orderStatus: "unconfirmed" });
-                if (findOrder.length > 0) {
-                        for (let i = 0; i < findOrder.length; i++) {
-                                await userOrders.findOneAndDelete({ orderId: findOrder[i].orderId });
-                                let findOrders = await userOrders.find({ orderId: findOrder[i].orderId });
-                                if (findOrders.length > 0) {
-                                        for (let i = 0; i < findOrders.length; i++) {
-                                                await userOrders.findByIdAndDelete({ _id: findOrders[i]._id });
-                                        }
-                                }
-                        }
-                        let findCart = await Cart.findOne({ userId: req.user.id });
-                        if (findCart) {
-                                let findAddress = await userAddress.find({ _id: req.body.addressId });
-                                if (findAddress) {
-                                        let orderId = await reffralCode();
-                                        for (let i = 0; i < findCart.products.length; i++) {
-                                                let obj = {
-                                                        orderId: orderId,
-                                                        userId: findCart.userId,
-                                                        categoryId: findCart.products[i].categoryId,
-                                                        subcategoryId: findCart.products[i].subcategoryId,
-                                                        productId: findCart.products[i].productId,
-                                                        productColorId: findCart.products[i].productColorId,
-                                                        productSize: findCart.products[i].productSize,
-                                                        productPrice: findCart.products[i].productPrice,
-                                                        quantity: findCart.products[i].quantity,
-                                                        tax: findCart.products[i].tax,
-                                                        totalTax: findCart.products[i].totalTax,
-                                                        total: findCart.products[i].total,
-                                                        paidAmount: findCart.products[i].paidAmount,
-                                                        company: req.user.company,
-                                                        vatNumber: req.user.vatNumber,
-                                                        address: {
-                                                                address: findAddress.address,
-                                                                addressComplement: findAddress.addressComplement,
-                                                                city: findAddress.city,
-                                                                pincode: findAddress.pincode,
-                                                                country: findAddress.country,
-                                                                phone: findAddress.phone
-                                                        },
-                                                }
-                                                const Data = await order.create(obj);
-                                                if (Data) {
-                                                        let findUserOrder = await userOrders.findOne({ orderId: orderId });
-                                                        if (findUserOrder) {
-                                                                await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $push: { Orders: Data._id } }, { new: true });
-                                                        } else {
-                                                                let Orders = [];
-                                                                Orders.push(Data._id)
-                                                                let obj1 = {
-                                                                        userId: findCart.userId,
-                                                                        orderId: orderId,
-                                                                        Orders: Orders,
-                                                                        address: {
-                                                                                address: findAddress.address,
-                                                                                addressComplement: findAddress.addressComplement,
-                                                                                city: findAddress.city,
-                                                                                pincode: findAddress.pincode,
-                                                                                country: findAddress.country,
-                                                                                phone: findAddress.phone
-                                                                        },
-                                                                        total: findCart.totalAmount,
-                                                                        totalItem: findCart.totalItem
-                                                                };
-                                                                await userOrders.create(obj1);
-                                                        }
-                                                }
-                                        }
-                                        let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
-                                        res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
-                                } else {
-                                        res.status(404).json({ status: 404, message: "Address not found. ", data: {} })
-                                }
-                        }
-                } else {
-                        let findCart = await Cart.findOne({ userId: req.user.id });
+                console.log(req.user._id);
+                let findOrder = await userOrders.find({ user: req.user._id, orderStatus: "unconfirmed" });
+                if (findOrder.length == 0) {
+                        let findCart = await Cart.findOne({ userId: req.user._id });
                         if (findCart) {
                                 let findAddress = await userAddress.findById({ _id: req.body.addressId });
                                 if (findAddress) {
@@ -752,14 +680,11 @@ exports.checkout = async (req, res) => {
                                                         paidAmount: findCart.products[i].paidAmount,
                                                         company: req.user.company,
                                                         vatNumber: req.user.vatNumber,
-                                                        address: {
-                                                                address: findAddress.address,
-                                                                addressComplement: findAddress.addressComplement,
-                                                                city: findAddress.city,
-                                                                pincode: findAddress.pincode,
-                                                                country: findAddress.country,
-                                                                phone: findAddress.phone
-                                                        },
+                                                        address: findAddress.address,
+                                                        addressComplement: findAddress.addressComplement,
+                                                        city: findAddress.city,
+                                                        pincode: findAddress.pincode,
+                                                        country: findAddress.country,
                                                 }
                                                 const Data = await order.create(obj);
                                                 if (Data) {
@@ -773,19 +698,85 @@ exports.checkout = async (req, res) => {
                                                                         userId: findCart.userId,
                                                                         orderId: orderId,
                                                                         Orders: Orders,
-                                                                        address: {
-                                                                                address: findAddress.address,
-                                                                                addressComplement: findAddress.addressComplement,
-                                                                                city: findAddress.city,
-                                                                                pincode: findAddress.pincode,
-                                                                                country: findAddress.country,
-                                                                                phone: findAddress.phone
-                                                                        },
+                                                                        address: findAddress.address,
+                                                                        addressComplement: findAddress.addressComplement,
+                                                                        city: findAddress.city,
+                                                                        pincode: findAddress.pincode,
+                                                                        country: findAddress.country,
+                                                                        phone: findAddress.phone,
                                                                         total: findCart.totalAmount,
                                                                         totalItem: findCart.totalItem,
                                                                         tax: findCart.tax,
-                                                                        totalTax: findCart.totalTax,
                                                                         paidAmount: findCart.paidAmount
+                                                                };
+                                                                await userOrders.create(obj1);
+                                                        }
+                                                }
+                                        }
+                                        let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
+                                        res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
+                                } else {
+                                        res.status(404).json({ status: 404, message: "Address not found. ", data: {} })
+                                }
+                        }
+                } else {
+                        for (let i = 0; i < findOrder.length; i++) {
+                                await userOrders.findOneAndDelete({ orderId: findOrder[i].orderId });
+                                let findOrders = await order.find({ orderId: findOrder[i].orderId });
+                                if (findOrders.length > 0) {
+                                        for (let j = 0; j < findOrders.length; j++) {
+                                                await order.findByIdAndDelete({ _id: findOrders[j]._id });
+                                        }
+                                }
+                        }
+                        let findCart = await Cart.findOne({ userId: req.user._id });
+                        if (findCart) {
+                                let findAddress = await userAddress.find({ _id: req.body.addressId });
+                                if (findAddress) {
+                                        let orderId = await reffralCode();
+                                        for (let i = 0; i < findCart.products.length; i++) {
+                                                let obj = {
+                                                        orderId: orderId,
+                                                        userId: findCart.userId,
+                                                        categoryId: findCart.products[i].categoryId,
+                                                        subcategoryId: findCart.products[i].subcategoryId,
+                                                        productId: findCart.products[i].productId,
+                                                        productColorId: findCart.products[i].productColorId,
+                                                        productSize: findCart.products[i].productSize,
+                                                        productPrice: findCart.products[i].productPrice,
+                                                        quantity: findCart.products[i].quantity,
+                                                        tax: findCart.products[i].tax,
+                                                        totalTax: findCart.products[i].totalTax,
+                                                        total: findCart.products[i].total,
+                                                        paidAmount: findCart.products[i].paidAmount,
+                                                        company: req.user.company,
+                                                        vatNumber: req.user.vatNumber,
+                                                        address: findAddress.address,
+                                                        addressComplement: findAddress.addressComplement,
+                                                        city: findAddress.city,
+                                                        pincode: findAddress.pincode,
+                                                        country: findAddress.country,
+                                                }
+                                                const Data = await order.create(obj);
+                                                if (Data) {
+                                                        let findUserOrder = await userOrders.findOne({ orderId: orderId });
+                                                        if (findUserOrder) {
+                                                                await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $push: { Orders: Data._id } }, { new: true });
+                                                        } else {
+                                                                let Orders = [];
+                                                                Orders.push(Data._id)
+                                                                let obj1 = {
+                                                                        userId: findCart.userId,
+                                                                        orderId: orderId,
+                                                                        Orders: Orders,
+                                                                        address: findAddress.address,
+                                                                        addressComplement: findAddress.addressComplement,
+                                                                        city: findAddress.city,
+                                                                        pincode: findAddress.pincode,
+                                                                        country: findAddress.country,
+                                                                        tax: findCart.tax,
+                                                                        total: findCart.totalAmount,
+                                                                        totalItem: findCart.totalItem
                                                                 };
                                                                 await userOrders.create(obj1);
                                                         }
@@ -996,51 +987,36 @@ exports.placeOrder = async (req, res) => {
         try {
                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
                 if (findUserOrder) {
+                        let line_items = [];
+                        for (let i = 0; i < findUserOrder.Orders.length; i++) {
+                                let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+                                if (findu) {
+                                        let findProduct = await Product.findById({ _id: findu.productId });
+                                        if (findProduct) {
+                                                let obj2 = {
+                                                        price_data: {
+                                                                currency: "inr",
+                                                                product_data: {
+                                                                        name: `${findProduct.name}`,
+                                                                },
+                                                                unit_amount: `${findu.paidAmount * 100}`,
+                                                        },
+                                                        quantity: findu.quantity,
+                                                }
+                                                line_items.push(obj2)
+                                        }
+                                }
+                        }
                         const session = await stripe.checkout.sessions.create({
                                 payment_method_types: ["card"],
                                 success_url: `https://krish-vapes.vercel.app/order-success/${findUserOrder.orderId}`,
                                 cancel_url: `https://krish-vapes.vercel.app/order-failure/${findUserOrder.orderId}`,
                                 customer_email: req.user.email,
                                 client_reference_id: findUserOrder.orderId,
-                                line_items: [
-                                        {
-                                                price_data: {
-                                                        currency: "inr",
-                                                        product_data: {
-                                                                name: req.params.orderId,
-                                                        },
-                                                        unit_amount: `${findUserOrder.paidAmount * 100}`,
-                                                },
-                                                quantity: 1,
-                                        },
-                                ],
+                                line_items: line_items,
                                 mode: "payment",
                         });
                         res.status(200).json({ status: "success", session: session, });
-                } else {
-                        return res.status(404).json({ message: "No data found", data: {} });
-                }
-        } catch (error) {
-                console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
-        }
-};
-exports.successOrder = async (req, res) => {
-        try {
-                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
-                if (findUserOrder) {
-                        let update = await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
-                        if (update) {
-                                let count = 0;
-                                for (let i = 0; i < update.Orders.length; i++) {
-                                        await order.findByIdAndUpdate({ _id: update.Orders[i]._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
-                                        count++;
-                                }
-                                if (count == update.Orders.length) {
-                                        await Cart.findOneAndDelete({ userId: req.user._id });
-                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
-                                }
-                        }
                 } else {
                         return res.status(404).json({ message: "No data found", data: {} });
                 }
@@ -1062,6 +1038,174 @@ exports.cancelOrder = async (req, res) => {
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
+exports.successOrder = async (req, res) => {
+        try {
+                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+                if (findUserOrder) {
+                        let update = await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+                        if (update) {
+                                let line_items = [];
+                                for (let i = 0; i < findUserOrder.Orders.length; i++) {
+                                        let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+                                        if (findu) {
+                                                let product, description, color, obj2;
+                                                let findProduct = await Product.findById({ _id: findu.productId });
+                                                if (findProduct) {
+                                                        product = findProduct.name;
+                                                        description = findProduct.description;
+                                                }
+                                                if (findu.productColorId != (null || undefined)) {
+                                                        let findColor = await ProductColor.findOne({ _id: findu.productColorId });
+                                                        if (findColor) {
+                                                                color = findColor.color;
+                                                                obj2 = {
+                                                                        product: product,
+                                                                        description: description,
+                                                                        ProductColor: color,
+                                                                        productSize: findu.productSize || "",
+                                                                        productPrice: findu.productPrice,
+                                                                        quantity: findu.quantity,
+                                                                        tax: findu.tax,
+                                                                        totalTax: findu.totalTax,
+                                                                        paidAmount: findu.paidAmount
+                                                                }
+                                                                line_items.push(obj2)
+                                                        }
+                                                } else {
+                                                        obj2 = {
+                                                                product: product,
+                                                                description: description,
+                                                                productPrice: findu.productPrice,
+                                                                quantity: findu.quantity,
+                                                                tax: findu.tax,
+                                                                totalTax: findu.totalTax,
+                                                                paidAmount: findu.paidAmount
+                                                        }
+                                                        line_items.push(obj2)
+                                                }
+                                                await order.findByIdAndUpdate({ _id: findUserOrder.Orders[i] }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+                                        }
+                                }
+                                let hr = new Date(Date.now()).getHours();
+                                let date = new Date(Date.now()).getDate();
+                                if (date < 10) {
+                                        date = '' + 0 + parseInt(date);
+                                } else {
+                                        date = parseInt(date);
+                                }
+                                let month = new Date(Date.now()).getMonth() + 1;
+                                if (month < 10) {
+                                        month = '' + 0 + parseInt(month);
+                                } else {
+                                        month = parseInt(month);
+                                }
+                                let year = new Date(Date.now()).getFullYear();
+                                let fullDate = (`${date}/${month}/${year}`).toString();
+                                let min = new Date(Date.now()).getMinutes();
+                                if (hr < 10) {
+                                        hr = '' + 0 + parseInt(hr);
+                                } else {
+                                        hr = parseInt(hr);
+                                }
+                                if (min < 10) {
+                                        min = '' + 0 + parseInt(min);
+                                } else {
+                                        min = parseInt(min);
+                                }
+                                let shipping = {
+                                        address: findUserOrder.address,
+                                        addressComplement: findUserOrder.addressComplement,
+                                        city: findUserOrder.city,
+                                        pincode: findUserOrder.pincode,
+                                        country: findUserOrder.country
+                                };
+                                let table1 = [
+                                        ["Invoice Number", `${findUserOrder.orderId}`, "", `${req.user.firstName} ${req.user.lastName}`],
+                                        ["Invoice Date", `${fullDate} ${hr}:${min}`, "", `${shipping.address} ${shipping.city}`],
+                                        ["Total item", line_items.length, "", `${shipping.country} ${shipping.pincode}`],
+                                ]
+                                const tableArray = {
+                                        title: "INVOICE",
+                                        headers: ["", "", "", ""],
+                                        rows: table1,
+                                };
+                                doc.table(tableArray, { width: 450 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+                                doc.moveDown();
+                                const table = {
+                                        headers: [
+                                                { label: "Product Name", property: 'product', width: 60, renderer: null },
+                                                { label: "Description", property: 'description', width: 250, renderer: null },
+                                                { label: "Color", property: 'ProductColor', width: 25, renderer: null },
+                                                { label: " Size", property: 'productSize', width: 25, renderer: null },
+                                                { label: "Price", property: 'productPrice', width: 25, renderer: null },
+                                                { label: "Qty", property: 'quantity', width: 20, renderer: null },
+                                                { label: "tax", property: 'tax', width: 20, renderer: null },
+                                                { label: "totalTax", property: 'totalTax', width: 35, renderer: null },
+                                                {
+                                                        label: "Paid Amount", property: 'paidAmount', width: 100,
+                                                        renderer: (value, indexColumn, indexRow, row) => { return `U$ ${Number(value).toFixed(2)}` }
+                                                },
+                                        ],
+                                        datas: line_items,
+                                };
+                                doc.table(table, {
+                                        prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
+                                        prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
+                                });
+                                doc.moveDown();
+                                let table2 = [
+                                        ["Sub Total", findUserOrder.total],
+                                        ["Tax", findUserOrder.tax],
+                                        ["Total", findUserOrder.paidAmount],
+                                ]
+                                const tableArray1 = {
+                                        headers: ["", ""],
+                                        rows: table2,
+                                };
+                                doc.table(tableArray1, { width: 150, x: 400, y: 0 });
+
+                                let pdfBuffer = await new Promise((resolve) => {
+                                        let chunks = [];
+                                        doc.on('data', (chunk) => chunks.push(chunk));
+                                        doc.on('end', () => resolve(Buffer.concat(chunks)));
+                                        doc.end();
+                                });
+                                let transporter = nodemailer.createTransport({
+                                        service: 'gmail',
+                                        auth: {
+                                                "user": "vcjagal1994@gmail.com",
+                                                "pass": "iyekdwwhkrthvklq"
+                                        }
+                                });
+                                var mailOptions = {
+                                        from: 'vcjagal1994@gmail.com',
+                                        to: 'vcjagal1994@gmail.com',
+                                        subject: 'PDF Attachment',
+                                        text: 'Please find the attached PDF.',
+                                        attachments: {
+                                                filename: 'document.pdf',
+                                                content: pdfBuffer,
+                                                contentType: 'application/pdf',
+                                        },
+                                };
+                                let info = await transporter.sendMail(mailOptions);
+                                if (info) {
+                                        await Cart.findOneAndDelete({ userId: req.user._id });
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                } else {
+                                        await Cart.findOneAndDelete({ userId: req.user._id });
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                }
+                        }
+                } else {
+                        return res.status(404).json({ message: "No data found", data: {} });
+                }
+
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
 const reffralCode = async () => {
         var digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let OTP = '';
@@ -1070,3 +1214,172 @@ const reffralCode = async () => {
         }
         return OTP;
 }
+// exports.successOrder = async (req, res) => {
+//         try {
+//                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+//                 if (findUserOrder) {
+//                         let update = await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+//                         if (update) {
+//                                 let count = 0, line_items = [];
+//                                 for (let i = 0; i < update.Orders.length; i++) {
+//                                         let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+//                                         if (findu) {
+//                                                 let product, description, color, obj2;
+//                                                 let findProduct = await Product.findById({ _id: findu.productId });
+//                                                 if (findProduct) {
+//                                                         product = findProduct.name;
+//                                                         description = findProduct.description;
+//                                                 }
+//                                                 if (findu.productColorId != (null || undefined)) {
+//                                                         let findColor = await ProductColor.findOne({ _id: findu.productColorId });
+//                                                         if (findColor) {
+//                                                                 color = findColor.color;
+//                                                                 obj2 = {
+//                                                                         product: product,
+//                                                                         description: description,
+//                                                                         ProductColor: color,
+//                                                                         productSize: findu.productSize || "",
+//                                                                         productPrice: findu.productPrice,
+//                                                                         quantity: findu.quantity,
+//                                                                         tax: findu.tax,
+//                                                                         totalTax: findu.totalTax,
+//                                                                         paidAmount: findu.paidAmount
+//                                                                 }
+//                                                                 line_items.push(obj2)
+//                                                         }
+//                                                 } else {
+//                                                         obj2 = {
+//                                                                 product: product,
+//                                                                 description: description,
+//                                                                 productPrice: findu.productPrice,
+//                                                                 quantity: findu.quantity,
+//                                                                 tax: findu.tax,
+//                                                                 totalTax: findu.totalTax,
+//                                                                 paidAmount: findu.paidAmount
+//                                                         }
+//                                                         line_items.push(obj2)
+//                                                 }
+//                                                 await order.findByIdAndUpdate({ _id: update.Orders[i]._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+//                                                 count++;
+//                                         }
+//                                 }
+//                                 let invoice = {
+//                                         shipping: {
+//                                                 address: findUserOrder.address.address,
+//                                                 addressComplement: findUserOrder.addressComplement,
+//                                                 city: findUserOrder.city,
+//                                                 pincode: findUserOrder.pincode,
+//                                                 country: findUserOrder.country
+//                                         },
+//                                         items: line_items,
+//                                         totalTax: findUserOrder.totalTax,
+//                                         subtotal: findUserOrder.total,
+//                                         paid: findUserOrder.paidAmount,
+//                                         invoice_nr: findUserOrder.orderId,
+//                                 };
+
+//                                 await generateInvoiceTable(doc, invoice)
+//                                 await generateCustomerInformation(doc, invoice)
+//                                 await generateHeader(doc)
+//                                 await generateFooter(doc)
+//                                 function generateCustomerInformation(doc, invoice) {
+//                                         const shipping = invoice.shipping;
+//                                         doc.text(`Invoice Number: ${invoice.invoice_nr}`, 50, 200)
+//                                                 .text(`Invoice Date: ${new Date()}`, 50, 215)
+//                                                 .text(`Tax: ${invoice.totalTax}`, 50, 130)
+//                                                 .text(`Sub Total Due: ${invoice.subtotal}`, 50, 130)
+//                                                 .text(`Total: ${invoice.paid}`, 50, 130)
+//                                                 .text(shipping.name, 400, 200)
+//                                                 .text(shipping.address, 400, 215)
+//                                                 .text(`${shipping.city}, ${shipping.country} (${shipping.pincode})`, 300, 130,)
+//                                                 .moveDown();
+//                                 }
+//                                 function generateTableRow(doc, y, c1, c2, c3, c4, c5) {
+//                                         doc.fontSize(10)
+//                                                 .text(c1, 50, y)
+//                                                 .text(c2, 150, y)
+//                                                 .text(c3, 280, y, { width: 90, align: 'right' })
+//                                                 .text(c4, 370, y, { width: 90, align: 'right' })
+//                                                 .text(c5, 0, y, { align: 'right' });
+//                                 }
+//                                 function generateInvoiceTable(doc, invoice) {
+//                                         let i, invoiceTableTop = 330;
+//                                         for (i = 0; i < invoice.items.length; i++) {
+//                                                 const item = invoice.items[i];
+//                                                 const position = invoiceTableTop + (i + 1) * 30;
+//                                                 generateTableRow(
+//                                                         doc,
+//                                                         position,
+//                                                         item.product,
+//                                                         item.ProductColor,
+//                                                         item.description,
+//                                                         item.productSize,
+//                                                         item.productPrice,
+//                                                         item.quantity,
+//                                                         item.tax,
+//                                                         item.totalTax,
+//                                                         item.paidAmount,
+//                                                 );
+//                                         }
+//                                 }
+//                                 function generateHeader(doc) {
+//                                         // doc.image('logo.png', 50, 45, { width: 50 })
+//                                         doc.fillColor('#444444')
+//                                                 .fontSize(20)
+//                                                 .text('ACME Inc.', 110, 57)
+//                                                 .fontSize(10)
+//                                                 .text('123 Main Street', 200, 65, { align: 'right' })
+//                                                 .text('New York, NY, 10025', 200, 80, { align: 'right' })
+//                                                 .moveDown();
+//                                 }
+//                                 function generateFooter(doc) {
+//                                         doc.fontSize(
+//                                                 10,
+//                                         ).text(
+//                                                 'Payment is due within 15 days. Thank you for your business.',
+//                                                 50,
+//                                                 780,
+//                                                 { align: 'center', width: 500 },
+//                                         );
+//                                 }
+//                                 const pdfBuffer = await new Promise((resolve) => {
+//                                         const chunks = [];
+//                                         doc.on('data', (chunk) => chunks.push(chunk));
+//                                         doc.on('end', () => resolve(Buffer.concat(chunks)));
+//                                         doc.end();
+//                                 });
+//                                 let transporter = nodemailer.createTransport({
+//                                         service: 'gmail',
+//                                         auth: {
+//                                                 "user": "vcjagal1994@gmail.com",
+//                                                 "pass": "iyekdwwhkrthvklq"
+//                                         }
+//                                 });
+//                                 var mailOptions = {
+//                                         from: 'vcjagal1994@gmail.com',
+//                                         to: 'vcjagal1994@gmail.com',
+//                                         subject: 'PDF Attachment',
+//                                         text: 'Please find the attached PDF.',
+//                                         attachments: {
+//                                                 filename: 'document.pdf',
+//                                                 content: pdfBuffer,
+//                                                 contentType: 'application/pdf',
+//                                         },
+//                                 };
+//                                 let info = await transporter.sendMail(mailOptions);
+//                                 if (info) {
+//                                         await Cart.findOneAndDelete({ userId: req.user._id });
+//                                         res.status(200).json({ message: "Payment success.", status: 200, data: update });
+//                                 } else {
+//                                         await Cart.findOneAndDelete({ userId: req.user._id });
+//                                         res.status(200).json({ message: "Payment success.", status: 200, data: update });
+//                                 }
+//                         }
+//                 } else {
+//                         return res.status(404).json({ message: "No data found", data: {} });
+//                 }
+//         } catch (error) {
+//                 console.log(error);
+//                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
+//         }
+// };

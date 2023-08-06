@@ -13,30 +13,24 @@ const DocumentSchema = schema({
     ref: "order",
   }],
   address: {
-    address: {
-      type: String,
-    },
-    addressComplement: {
-      type: String,
-    },
-    city: {
-      type: String,
-    },
-    pincode: {
-      type: Number,
-    },
-    country: {
-      type: String,
-    },
-    phone: {
-      type: String,
-    },
+    type: String,
+  },
+  addressComplement: {
+    type: String,
+  },
+  city: {
+    type: String,
+  },
+  pincode: {
+    type: Number,
+  },
+  country: {
+    type: String,
+  },
+  phone: {
+    type: String,
   },
   tax: {
-    type: Number,
-    default: 0
-  },
-  totalTax: {
     type: Number,
     default: 0
   },

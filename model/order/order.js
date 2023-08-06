@@ -61,24 +61,22 @@ const DocumentSchema = schema({
                 maxLength: 17,
         },
         address: {
-                address: {
-                        type: String,
-                },
-                addressComplement: {
-                        type: String,
-                },
-                city: {
-                        type: String,
-                },
-                pincode: {
-                        type: Number,
-                },
-                country: {
-                        type: String,
-                },
-                phone: {
-                        type: String,
-                },
+                type: String,
+        },
+        addressComplement: {
+                type: String,
+        },
+        city: {
+                type: String,
+        },
+        pincode: {
+                type: Number,
+        },
+        country: {
+                type: String,
+        },
+        phone: {
+                type: String,
         },
         orderStatus: {
                 type: String,
