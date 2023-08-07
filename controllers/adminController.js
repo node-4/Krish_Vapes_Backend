@@ -1624,3 +1624,15 @@ exports.paginateAllOrdersSearch = async (req, res) => {
                 return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };
+exports.getOrderbyId = async (req, res, next) => {
+        try {
+                const orders = await userOrders.findById({ _id: req.params.id }).populate({ path: "Orders", populate: [{ path: "categoryId", model: "Category", select: "name", }, { path: "subcategoryId", model: "subcategory", select: "name", }, { path: "productId", model: "Product", }, { path: "productColorId", model: "ProductColor", select: 'color' },], })
+                if (!orders) {
+                        return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                }
+                return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};

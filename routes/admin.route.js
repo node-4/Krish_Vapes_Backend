@@ -65,4 +65,5 @@ router.get("/admin/Orders", [authJwt.verifyToken], auth.getOrders);
 router.get("/admin/paginate/OrdersSearch", auth.paginateOrdersSearch);
 router.get("/NewsLetter/allNewsLetter", auth.allNewsLetter);
 router.get("/admin/paginateAllOrdersSearch/OrdersSearch", auth.paginateAllOrdersSearch);
+router.get("/admin/viewOrder/:id", auth.getOrderbyId);
 module.exports = router;
