@@ -1009,8 +1009,8 @@ exports.placeOrder = async (req, res) => {
                         }
                         const session = await stripe.checkout.sessions.create({
                                 payment_method_types: ["card"],
-                                success_url: `https://prismatic-kelpie-8c9551.netlify.app/order-success/${findUserOrder.orderId}`,
-                                cancel_url: `https://prismatic-kelpie-8c9551.netlify.app/order-failure/${findUserOrder.orderId}`,
+                                success_url: `https://krishwholesale.co.uk/order-success/${findUserOrder.orderId}`,
+                                cancel_url: `https://krishwholesale.co.uk/order-failure/${findUserOrder.orderId}`,
                                 customer_email: req.user.email,
                                 client_reference_id: findUserOrder.orderId,
                                 line_items: line_items,
