@@ -1590,3 +1590,37 @@ exports.paginateOrdersSearch = async (req, res) => {
                 return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };
+exports.paginateAllOrdersSearch = async (req, res) => {
+        try {
+                console.log("------------------------");
+                const { search, fromDate, toDate, page, limit } = req.query;
+                let query = { orderStatus: "confirmed" };
+                if (search) {
+                        query.$or = [
+                                { "orderId": { $regex: req.query.search, $options: "i" }, },
+                        ]
+                }
+                if (fromDate && !toDate) {
+                        query.createdAt = { $gte: fromDate };
+                }
+                if (!fromDate && toDate) {
+                        query.createdAt = { $lte: toDate };
+                }
+                if (fromDate && toDate) {
+                        query.$and = [
+                                { createdAt: { $gte: fromDate } },
+                                { createdAt: { $lte: toDate } },
+                        ]
+                }
+                let options = {
+                        page: Number(page) || 1,
+                        limit: Number(limit) || 10,
+                        sort: { createdAt: -1 },
+                };
+                let data = await userOrders.paginate(query, options);
+                return res.status(200).json({ status: 200, message: "Orders data found.", data: data });
+
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};

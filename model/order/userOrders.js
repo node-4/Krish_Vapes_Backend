@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate");
+const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const DocumentSchema = schema({
   userId: {
@@ -56,4 +58,6 @@ const DocumentSchema = schema({
     default: "pending"
   },
 }, { timestamps: true })
+DocumentSchema.plugin(mongoosePaginate);
+DocumentSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model("userOrder", DocumentSchema);
