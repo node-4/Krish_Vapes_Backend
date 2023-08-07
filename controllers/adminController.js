@@ -1626,7 +1626,15 @@ exports.paginateAllOrdersSearch = async (req, res) => {
 };
 exports.getOrderbyId = async (req, res, next) => {
         try {
-                const orders = await userOrders.findById({ _id: req.params.id }).populate({ path: "Orders", populate: [{ path: "categoryId", model: "Category", select: "name", }, { path: "subcategoryId", model: "subcategory", select: "name", }, { path: "productId", model: "Product", }, { path: "productColorId", model: "ProductColor", select: 'color' },], })
+                const orders = await userOrders.findById({ _id: req.params.id }).populate(
+                        [{
+                                path: "Orders", populate:
+                                        [{ path: "categoryId", model: "Category", select: "name", },
+                                        { path: "subcategoryId", model: "subcategory", select: "name", },
+                                        { path: "productId", model: "Product", },
+                                        { path: "productColorId", model: "ProductColor", select: 'color' },
+                                        ],
+                        }, { path: "userId", select: 'firstName lastName' }])
                 if (!orders) {
                         return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
                 }
