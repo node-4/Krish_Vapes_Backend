@@ -1170,7 +1170,7 @@ exports.successOrder = async (req, res) => {
                                         headers: ["", ""],
                                         rows: table2,
                                 };
-                                doc.table(tableArray1, { width: 150, x: 400, y: 0 });
+                                doc.table(tableArray1, { width: 150, x: 450, y: 0 });
                                 let pdfBuffer = await new Promise((resolve) => {
                                         let chunks = [];
                                         doc.on('data', (chunk) => chunks.push(chunk));
@@ -1291,16 +1291,22 @@ exports.successOrder1 = async (req, res) => {
                                 country: findUserOrder.country
                         };
                         let table1 = [
-                                ["Invoice Number :", `${findUserOrder.orderId}`, "", "", "Name :", `${req.user.firstName} ${req.user.lastName}`],
-                                ["Invoice Date :", `${fullDate} ${hr}:${min}`, "Address :", `${shipping.address} ${shipping.city}`],
-                                ["Total item :", line_items.length, "", `${shipping.country} ${shipping.pincode}`],
+                                ["Invoice Number :", `${findUserOrder.orderId}`, "", "", "Name:", `${req.user.firstName} ${req.user.lastName}`],
+                                ["Invoice Date :", `${fullDate} ${hr}:${min}`, "", "", "Address :", `${shipping.address} ${shipping.city}`],
+                                ["Total item :", line_items.length, "", "", "", `${shipping.country} ${shipping.pincode}`],
                         ]
                         const tableArray = {
                                 title: "INVOICE",
                                 headers: ["", "", "", "", "", ""],
                                 rows: table1,
                         };
-                        doc.table(tableArray, { width: 550 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.table(tableArray, { width: 536 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
                         doc.moveDown();
                         const table = {
                                 headers: [
@@ -1328,6 +1334,8 @@ exports.successOrder1 = async (req, res) => {
                                 ],
                                 datas: line_items,
                         };
+                        doc.moveDown();
+                        doc.moveDown();
                         doc.table(table, {
                                 prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
                                 prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
@@ -1342,7 +1350,7 @@ exports.successOrder1 = async (req, res) => {
                                 headers: ["", ""],
                                 rows: table2,
                         };
-                        doc.table(tableArray1, { width: 150, x: 400, y: 0 });
+                        doc.table(tableArray1, { width: 116, x: 450, y: 0 });
                         let pdfBuffer = await new Promise((resolve) => {
                                 let chunks = [];
                                 doc.on('data', (chunk) => chunks.push(chunk));

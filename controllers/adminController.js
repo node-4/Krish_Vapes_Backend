@@ -712,13 +712,16 @@ exports.editProduct = async (req, res) => {
                 let images = [];
                 if (req.body.colorActive == 'true') {
                         if (req.body.size == 'true') {
-                                let obj = {
-                                        img: Image[i].path,
-                                        publicId: Image[i].filename,
-                                        color: req.body.color[i],
-                                        size: req.body.size
+                                let Image = req.files['images'];
+                                for (let i = 0; i < Image.length; i++) {
+                                        let obj = {
+                                                img: Image[i].path,
+                                                publicId: Image[i].filename,
+                                                color: req.body.color[i],
+                                                size: req.body.size
+                                        }
+                                        images.push(obj)
                                 }
-                                images.push(obj)
                         } else {
                                 let statu;
                                 if (req.body.arrayQuantity[i] > 0) { statu = "STOCK" }
