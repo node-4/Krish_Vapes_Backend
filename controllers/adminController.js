@@ -733,7 +733,7 @@ exports.editProduct = async (req, res) => {
                                                 publicId: Image[i].filename,
                                                 color: req.body.color[i],
                                                 size: req.body.size,
-                                                quantity: req.body.quantity[i],
+                                                quantity: req.body.arrayQuantity[i],
                                                 status: statu
                                         }
                                         images.push(obj)

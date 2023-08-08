@@ -1283,7 +1283,14 @@ exports.successOrder1 = async (req, res) => {
                         } else {
                                 min = parseInt(min);
                         }
-                        // https://res.cloudinary.com/djgrqoefp/image/upload/v1691481341/images/banner/yi9qnnqetchhn7n5ogr9.png
+                        doc.image('https://res.cloudinary.com/djgrqoefp/image/upload/v1691481341/images/banner/yi9qnnqetchhn7n5ogr9.png', {
+                                fit: [250, 300],
+                                align: 'center',
+                                valign: 'center'
+                        });
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
                         let shipping = {
                                 address: findUserOrder.address,
                                 addressComplement: findUserOrder.addressComplement,
