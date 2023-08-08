@@ -1337,7 +1337,6 @@ exports.successOrder1 = async (req, res) => {
                                 rows: table2,
                         };
                         doc.table(tableArray1, { width: 150, x: 400, y: 0 });
-
                         let pdfBuffer = await new Promise((resolve) => {
                                 let chunks = [];
                                 doc.on('data', (chunk) => chunks.push(chunk));
@@ -1347,13 +1346,13 @@ exports.successOrder1 = async (req, res) => {
                         let transporter = nodemailer.createTransport({
                                 service: 'gmail',
                                 auth: {
-                                        "user": "vcjagal1994@gmail.com",
-                                        "pass": "iyekdwwhkrthvklq"
+                                        "user": "node4@flyweis.technology",
+                                        "pass": "pngecegghdunkqvo"
                                 }
                         });
                         var mailOptions = {
-                                from: 'vcjagal1994@gmail.com',
-                                to: 'vcjagal1994@gmail.com',
+                                from: 'node4@flyweis.technology',
+                                to: `${req.user.email}`,
                                 subject: 'PDF Attachment',
                                 text: 'Please find the attached PDF.',
                                 attachments: {

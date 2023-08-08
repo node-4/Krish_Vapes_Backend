@@ -106,14 +106,14 @@ exports.approveRejectUser = async (req, res) => {
                         var transporter = nodemailer.createTransport({
                                 service: 'gmail',
                                 auth: {
-                                        "user": "vcjagal1994@gmail.com",
-                                        "pass": "iyekdwwhkrthvklq"
+                                        "user": "node4@flyweis.technology",
+                                        "pass": "pngecegghdunkqvo"
                                 }
                         });
                         let mailOptions;
                         if (update.status == "Approved") {
                                 mailOptions = {
-                                        from: 'vcjagal1994@gmail.com',
+                                        from: 'node4@flyweis.technology',
                                         to: update.email,
                                         subject: 'Approved',
                                         text: 'Your Account has been approved by admin',
@@ -121,7 +121,7 @@ exports.approveRejectUser = async (req, res) => {
                         }
                         if (update.status == "Reject") {
                                 mailOptions = {
-                                        from: 'vcjagal1994@gmail.com',
+                                        from: 'node4@flyweis.technology',
                                         to: update.email,
                                         subject: 'Reject',
                                         text: 'Your Account has been Reject by admin',
