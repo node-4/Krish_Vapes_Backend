@@ -1083,7 +1083,6 @@ exports.successOrder = async (req, res) => {
                                                         }
                                                         line_items.push(obj2)
                                                 }
-                                                await order.findByIdAndUpdate({ _id: findUserOrder.Orders[i] }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
                                         }
                                 }
                                 let hr = new Date(Date.now()).getHours();
@@ -1120,30 +1119,39 @@ exports.successOrder = async (req, res) => {
                                         country: findUserOrder.country
                                 };
                                 let table1 = [
-                                        ["Invoice Number", `${findUserOrder.orderId}`, "", `${req.user.firstName} ${req.user.lastName}`],
-                                        ["Invoice Date", `${fullDate} ${hr}:${min}`, "", `${shipping.address} ${shipping.city}`],
-                                        ["Total item", line_items.length, "", `${shipping.country} ${shipping.pincode}`],
+                                        ["Invoice Number :", `${findUserOrder.orderId}`, "", "", "Name :", `${req.user.firstName} ${req.user.lastName}`],
+                                        ["Invoice Date :", `${fullDate} ${hr}:${min}`, "Address :", `${shipping.address} ${shipping.city}`],
+                                        ["Total item :", line_items.length, "", `${shipping.country} ${shipping.pincode}`],
                                 ]
                                 const tableArray = {
                                         title: "INVOICE",
-                                        headers: ["", "", "", ""],
+                                        headers: ["", "", "", "", "", ""],
                                         rows: table1,
                                 };
-                                doc.table(tableArray, { width: 450 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+                                doc.table(tableArray, { width: 550 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
                                 doc.moveDown();
                                 const table = {
                                         headers: [
                                                 { label: "Product Name", property: 'product', width: 60, renderer: null },
-                                                { label: "Description", property: 'description', width: 250, renderer: null },
+                                                { label: "Description", property: 'description', width: 240, renderer: null },
                                                 { label: "Color", property: 'ProductColor', width: 25, renderer: null },
                                                 { label: " Size", property: 'productSize', width: 25, renderer: null },
-                                                { label: "Price", property: 'productPrice', width: 25, renderer: null },
-                                                { label: "Qty", property: 'quantity', width: 20, renderer: null },
-                                                { label: "tax", property: 'tax', width: 20, renderer: null },
-                                                { label: "totalTax", property: 'totalTax', width: 35, renderer: null },
                                                 {
-                                                        label: "Paid Amount", property: 'paidAmount', width: 100,
-                                                        renderer: (value, indexColumn, indexRow, row) => { return `U$ ${Number(value).toFixed(2)}` }
+                                                        label: "Price", property: 'productPrice', width: 35,
+                                                        renderer: (value, indexColumn, indexRow, row) => { return `€ ${Number(value).toFixed(2)}` }
+                                                },
+                                                { label: "Qty", property: 'quantity', width: 20, renderer: null },
+                                                {
+                                                        label: "Vat", property: 'tax', width: 35,
+                                                        renderer: (value, indexColumn, indexRow, row) => { return `€ ${Number(value).toFixed(2)}` }
+                                                },
+                                                {
+                                                        label: "Total Vat", property: 'totalTax', width: 38,
+                                                        renderer: (value, indexColumn, indexRow, row) => { return `€ ${Number(value).toFixed(2)}` }
+                                                },
+                                                {
+                                                        label: "Paid Amount", property: 'paidAmount', width: 55,
+                                                        renderer: (value, indexColumn, indexRow, row) => { return `€ ${Number(value).toFixed(2)}` }
                                                 },
                                         ],
                                         datas: line_items,
@@ -1154,16 +1162,15 @@ exports.successOrder = async (req, res) => {
                                 });
                                 doc.moveDown();
                                 let table2 = [
-                                        ["Sub Total", findUserOrder.total],
-                                        ["Tax", findUserOrder.tax],
-                                        ["Total", findUserOrder.paidAmount],
+                                        ["Sub Total", `€ ${findUserOrder.total}`],
+                                        ["Vat", `€ ${findUserOrder.tax}`],
+                                        ["Total", `€ ${findUserOrder.paidAmount}`],
                                 ]
                                 const tableArray1 = {
                                         headers: ["", ""],
                                         rows: table2,
                                 };
                                 doc.table(tableArray1, { width: 150, x: 400, y: 0 });
-
                                 let pdfBuffer = await new Promise((resolve) => {
                                         let chunks = [];
                                         doc.on('data', (chunk) => chunks.push(chunk));
@@ -1173,13 +1180,13 @@ exports.successOrder = async (req, res) => {
                                 let transporter = nodemailer.createTransport({
                                         service: 'gmail',
                                         auth: {
-                                                "user": "vcjagal1994@gmail.com",
-                                                "pass": "iyekdwwhkrthvklq"
+                                                "user": "node4@flyweis.technology",
+                                                "pass": "pngecegghdunkqvo"
                                         }
                                 });
                                 var mailOptions = {
-                                        from: 'vcjagal1994@gmail.com',
-                                        to: 'vcjagal1994@gmail.com',
+                                        from: 'node4@flyweis.technology',
+                                        to: `${req.user.email}`,
                                         subject: 'PDF Attachment',
                                         text: 'Please find the attached PDF.',
                                         attachments: {
@@ -1191,16 +1198,15 @@ exports.successOrder = async (req, res) => {
                                 let info = await transporter.sendMail(mailOptions);
                                 if (info) {
                                         await Cart.findOneAndDelete({ userId: req.user._id });
-                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: {} });
                                 } else {
                                         await Cart.findOneAndDelete({ userId: req.user._id });
-                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: {} });
                                 }
                         }
                 } else {
                         return res.status(404).json({ message: "No data found", data: {} });
                 }
-
         } catch (error) {
                 console.log(error);
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
@@ -1369,7 +1375,6 @@ exports.successOrder1 = async (req, res) => {
                                 await Cart.findOneAndDelete({ userId: req.user._id });
                                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
                         }
-
                 } else {
                         return res.status(404).json({ message: "No data found", data: {} });
                 }
