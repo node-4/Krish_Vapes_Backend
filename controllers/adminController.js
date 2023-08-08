@@ -762,7 +762,7 @@ exports.editProduct = async (req, res) => {
                 }
                 let update = await Product.findByIdAndUpdate({ _id: data._id }, { $set: obj }, { new: true })
                 if (update) {
-                        if (req.body.color == true) {
+                        if (req.body.colorActive == 'true') {
                                 if (images.length > 0) {
                                         let count = 0;
                                         for (let k = 0; k < images.length; k++) {
