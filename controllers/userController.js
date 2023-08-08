@@ -1180,12 +1180,12 @@ exports.cancelOrder = async (req, res) => {
 //                                 let transporter = nodemailer.createTransport({
 //                                         service: 'gmail',
 //                                         auth: {
-//                                                 "user": "node4@flyweis.technology",
-//                                                 "pass": "pngecegghdunkqvo"
+//                                                 "user": "krishvapes@gmail.com",
+//                                                 "pass": "fggmdyhrilxhmyig"
 //                                         }
 //                                 });
 //                                 var mailOptions = {
-//                                         from: 'node4@flyweis.technology',
+//                                         from: 'krishvapes@gmail.com',
 //                                         to: `${req.user.email}`,
 //                                         subject: 'PDF Attachment',
 //                                         text: 'Please find the attached PDF.',
@@ -1369,12 +1369,12 @@ exports.successOrder = async (req, res) => {
                         let transporter = nodemailer.createTransport({
                                 service: 'gmail',
                                 auth: {
-                                        "user": "node4@flyweis.technology",
-                                        "pass": "pngecegghdunkqvo"
+                                        "user": "krishvapes@gmail.com",
+                                        "pass": "fggmdyhrilxhmyig"
                                 }
                         });
                         var mailOptions = {
-                                from: 'node4@flyweis.technology',
+                                from: 'krishvapes@gmail.com',
                                 to: `${req.user.email}`,
                                 subject: 'PDF Attachment',
                                 text: 'Please find the attached PDF.',

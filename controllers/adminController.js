@@ -106,14 +106,14 @@ exports.approveRejectUser = async (req, res) => {
                         var transporter = nodemailer.createTransport({
                                 service: 'gmail',
                                 auth: {
-                                        "user": "node4@flyweis.technology",
-                                        "pass": "pngecegghdunkqvo"
+                                        "user": "krishvapes@gmail.com",
+                                        "pass": "fggmdyhrilxhmyig"
                                 }
                         });
                         let mailOptions;
                         if (update.status == "Approved") {
                                 mailOptions = {
-                                        from: 'node4@flyweis.technology',
+                                        from: 'krishvapes@gmail.com',
                                         to: update.email,
                                         subject: 'Approved',
                                         text: 'Your Account has been approved by admin',
@@ -121,7 +121,7 @@ exports.approveRejectUser = async (req, res) => {
                         }
                         if (update.status == "Reject") {
                                 mailOptions = {
-                                        from: 'node4@flyweis.technology',
+                                        from: 'krishvapes@gmail.com',
                                         to: update.email,
                                         subject: 'Reject',
                                         text: 'Your Account has been Reject by admin',
@@ -446,7 +446,6 @@ exports.createProduct = async (req, res) => {
                                         if (req.body.size == 'true') {
                                                 let count = 0;
                                                 for (let k = 0; k < images.length; k++) {
-                                                        let quantity = Number(images[k].quantity)
                                                         let obj = {
                                                                 productId: ProductCreated._id,
                                                                 img: images[k].img,
@@ -465,7 +464,6 @@ exports.createProduct = async (req, res) => {
                                         } else {
                                                 let count = 0;
                                                 for (let k = 0; k < images.length; k++) {
-                                                        let quantity = Number(images[k].quantity)
                                                         let obj = {
                                                                 productId: ProductCreated._id,
                                                                 img: images[k].img,
@@ -842,11 +840,11 @@ exports.addProductColorSize = async (req, res) => {
                                                         if (req.body.quantity[i] <= 0) { status = "OUTOFSTOCK" }
                                                         let obj = {
                                                                 size: req.body.size[i],
-                                                                quantity: req.body.quantity[i],
+                                                                quantity: Number(req.body.quantity[i]),
                                                                 status: status
                                                         }
                                                         colorSize.push(obj)
-                                                        quantity = quantity + req.body.quantity[i];
+                                                        quantity = quantity + Number(req.body.quantity[i]);
                                                 }
                                                 let statu;
                                                 if (quantity > 0) { statu = "STOCK" }
@@ -879,7 +877,7 @@ exports.addProductColorSize = async (req, res) => {
                                                                 status: status
                                                         }
                                                         colorSize.push(obj)
-                                                        quantity = quantity + req.body.quantity[i];
+                                                        quantity = quantity + Number(req.body.quantity[i]);
                                                 }
                                                 let statu;
                                                 if (quantity > 0) { statu = "STOCK" }
@@ -1056,7 +1054,7 @@ exports.editProductColorSize = async (req, res) => {
                                                 if (update) {
                                                         let quantity = 0
                                                         for (let k = 0; k < update.colorSize.length; k++) {
-                                                                quantity = quantity + update.colorSize[k].quantity
+                                                                quantity = quantity + Number(update.colorSize[k].quantity)
                                                         }
                                                         let statu;
                                                         if (quantity > 0) { statu = "STOCK" }
