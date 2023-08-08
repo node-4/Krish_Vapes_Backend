@@ -773,7 +773,7 @@ exports.editProduct = async (req, res) => {
                                                         count++;
                                                 } else {
                                                         let obj = {
-                                                                productId: ProductCreated._id,
+                                                                productId: update._id,
                                                                 img: images[k].img,
                                                                 publicId: images[k].publicId,
                                                                 color: images[k].color,

@@ -1283,11 +1283,24 @@ exports.successOrder1 = async (req, res) => {
                         } else {
                                 min = parseInt(min);
                         }
-                        doc.image('https://res.cloudinary.com/djgrqoefp/image/upload/v1691481341/images/banner/yi9qnnqetchhn7n5ogr9.png', {
-                                fit: [250, 300],
-                                align: 'center',
-                                valign: 'center'
-                        });
+                        let findcontactDetails = await contact.findOne({});
+                        if (!findcontactDetails) {
+                                return res.status(404).json({ message: "Contact detail not found.", status: 404, data: {} });
+                        }
+                        // doc.image('https://res.cloudinary.com/djgrqoefp/image/upload/v1691481341/images/banner/yi9qnnqetchhn7n5ogr9.png', {
+                        //         fit: [250, 300],
+                        //         align: 'center',
+                        //         valign: 'center'
+                        // });
+                        // doc.image('logo.png', 50, 45, { width: 50 })
+                        // doc.fillColor('#444444')
+                        //         .fontSize(20)
+                        //         .text('ACME Inc.', 110, 57)
+                        //         .fontSize(10)
+                        //         .text('123 Main Street', 200, 65, { align: 'right' })
+                        //         .text('New York, NY, 10025', 200, 80, { align: 'right' })
+                        //         .moveDown();
+
                         doc.moveDown();
                         doc.moveDown();
                         doc.moveDown();
