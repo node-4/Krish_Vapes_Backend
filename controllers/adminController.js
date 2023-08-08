@@ -723,18 +723,21 @@ exports.editProduct = async (req, res) => {
                                         images.push(obj)
                                 }
                         } else {
-                                let statu;
-                                if (req.body.arrayQuantity[i] > 0) { statu = "STOCK" }
-                                if (req.body.arrayQuantity[i] <= 0) { statu = "OUTOFSTOCK" }
-                                let obj = {
-                                        img: Image[i].path,
-                                        publicId: Image[i].filename,
-                                        color: req.body.color[i],
-                                        size: req.body.size,
-                                        quantity: req.body.quantity[i],
-                                        status: statu
+                                let Image = req.files['images'];
+                                for (let i = 0; i < Image.length; i++) {
+                                        let statu;
+                                        if (req.body.arrayQuantity[i] > 0) { statu = "STOCK" }
+                                        if (req.body.arrayQuantity[i] <= 0) { statu = "OUTOFSTOCK" }
+                                        let obj = {
+                                                img: Image[i].path,
+                                                publicId: Image[i].filename,
+                                                color: req.body.color[i],
+                                                size: req.body.size,
+                                                quantity: req.body.quantity[i],
+                                                status: statu
+                                        }
+                                        images.push(obj)
                                 }
-                                images.push(obj)
                         }
                 } else {
                         if (req.files['image']) {
@@ -1645,5 +1648,16 @@ exports.getOrderbyId = async (req, res, next) => {
         } catch (error) {
                 console.log(error);
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+
+exports.createBanner1 = async (req, res) => {
+        try {
+                if (req.file.path) {
+                        return res.status(200).json({ message: "Banner add successfully.", status: 200, data: req.file.path });
+                }
+
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
         }
 };

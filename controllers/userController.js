@@ -1283,6 +1283,7 @@ exports.successOrder1 = async (req, res) => {
                         } else {
                                 min = parseInt(min);
                         }
+                        // https://res.cloudinary.com/djgrqoefp/image/upload/v1691481341/images/banner/yi9qnnqetchhn7n5ogr9.png
                         let shipping = {
                                 address: findUserOrder.address,
                                 addressComplement: findUserOrder.addressComplement,
