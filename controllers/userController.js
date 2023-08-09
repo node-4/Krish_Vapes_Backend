@@ -795,9 +795,10 @@ exports.checkout = async (req, res) => {
                                                                         city: findAddress.city,
                                                                         pincode: findAddress.pincode,
                                                                         country: findAddress.country,
-                                                                        tax: findCart.tax,
                                                                         total: findCart.totalAmount,
-                                                                        totalItem: findCart.totalItem
+                                                                        totalItem: findCart.totalItem,
+                                                                        tax: findCart.tax,
+                                                                        paidAmount: findCart.paidAmount
                                                                 };
                                                                 await userOrders.create(obj1);
                                                         }
@@ -1022,12 +1023,13 @@ exports.placeOrder = async (req, res) => {
                                                                 },
                                                                 unit_amount: `${findu.paidAmount * 100}`,
                                                         },
-                                                        quantity: findu.quantity,
+                                                        quantity: 1,
                                                 }
                                                 line_items.push(obj2)
                                         }
                                 }
                         }
+                        console.log(line_items);
                         const session = await stripe.checkout.sessions.create({
                                 payment_method_types: ["card"],
                                 success_url: `https://krishwholesale.co.uk/order-success/${findUserOrder.orderId}`,
