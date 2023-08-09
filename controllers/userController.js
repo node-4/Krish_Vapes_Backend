@@ -95,6 +95,7 @@ exports.forgetPassword = async (req, res) => {
                 if (!data) {
                         return res.status(400).send({ msg: "not found" });
                 } else {
+                        let otp = newOTP.generate(4, { alphabets: false, upperCase: false, specialChar: false, });
                         var transporter = nodemailer.createTransport({
                                 service: 'gmail',
                                 auth: {
@@ -105,14 +106,13 @@ exports.forgetPassword = async (req, res) => {
                         let mailOptions;
                         mailOptions = {
                                 from: 'krishvapes@gmail.com',
-                                to: data.email,
+                                to: req.body.email,
                                 subject: 'Forget password verification',
                                 text: `Your Account Verification Code is ${otp}`,
                         };
                         let info = await transporter.sendMail(mailOptions);
                         if (info) {
                                 let accountVerification = false;
-                                let otp = newOTP.generate(4, { alphabets: false, upperCase: false, specialChar: false, });
                                 let otpExpiration = new Date(Date.now() + 5 * 60 * 1000);
                                 const updated = await User.findOneAndUpdate({ _id: data._id }, { $set: { accountVerification: accountVerification, otp: otp, otpExpiration: otpExpiration } }, { new: true, });
                                 if (updated) {
