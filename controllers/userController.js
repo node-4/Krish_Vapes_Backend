@@ -104,7 +104,7 @@ exports.getProfile = async (req, res) => {
 };
 exports.update = async (req, res) => {
         try {
-                const { firstName, lastName, email, dob, password, courtesyTitle } = req.body;
+                const { firstName, lastName, email, dob, password, courtesyTitle, company, vatNumber } = req.body;
                 const user = await User.findById(req.user._id);
                 if (!user) {
                         return res.status(404).send({ message: "not found" });
@@ -114,6 +114,8 @@ exports.update = async (req, res) => {
                 user.email = email || user.email;
                 user.dob = dob || user.dob;
                 user.courtesyTitle = courtesyTitle || user.courtesyTitle;
+                user.company = company || user.company;
+                user.vatNumber = vatNumber || user.vatNumber;
                 user.fullName = `${firstName || user.firstName} ${lastName || user.lastName}`;
                 if (req.body.password) {
                         user.password = bcrypt.hashSync(password, 8) || user.password;
@@ -510,6 +512,7 @@ exports.addToCart = async (req, res) => {
                                         if (findProduct.colorActive == true) {
                                                 let findColor = await ProductColor.findOne({ productId: findProduct._id, _id: req.body.colorId });
                                                 if (findColor) {
+                                                        // Done
                                                         if (findColor.size == true) {
                                                                 if (findColor.colorSize.length > 0) {
                                                                         for (let i = 0; i < findColor.colorSize.length; i++) {
@@ -546,8 +549,9 @@ exports.addToCart = async (req, res) => {
                                                                                                 paidAmount: Number(productPaid).toFixed(2),
                                                                                                 totalItem: 1,
                                                                                         }
-                                                                                        // const cartCreate = await Cart.create(cartObj);
-                                                                                        // return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
+                                                                                        console.log(cartObj);
+                                                                                        const cartCreate = await Cart.create(cartObj);
+                                                                                        return res.status(200).send({ message: "Product add to cart.", data: cartCreate, });
                                                                                 }
                                                                         }
                                                                 } else {
