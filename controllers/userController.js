@@ -1489,7 +1489,7 @@ exports.successOrder = async (req, res) => {
                                 }
                         });
                         var mailOptions = {
-                                from: 'krishvapes@gmail.com',
+                                from: "<do_not_reply@gmail.com>",
                                 to: `${req.user.email}`,
                                 subject: 'PDF Attachment',
                                 text: 'Please find the attached PDF.',
@@ -1501,8 +1501,17 @@ exports.successOrder = async (req, res) => {
                         };
                         let info = await transporter.sendMail(mailOptions);
                         if (info) {
-                                await Cart.findOneAndDelete({ userId: req.user._id });
-                                res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                                var mailOptions1 = {
+                                        from: "<do_not_reply@gmail.com>",
+                                        to: `krishvapes@gmail.com`,
+                                        subject: 'Order Received',
+                                        text: `New order has been recived orderId ${findUserOrder.orderId}`,
+                                };
+                                let info1 = await transporter.sendMail(mailOptions1);
+                                if (info1) {
+                                        await Cart.findOneAndDelete({ userId: req.user._id });
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                                }
                         } else {
                                 await Cart.findOneAndDelete({ userId: req.user._id });
                                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
