@@ -1015,13 +1015,14 @@ exports.placeOrder = async (req, res) => {
                                 if (findu) {
                                         let findProduct = await Product.findById({ _id: findu.productId });
                                         if (findProduct) {
+                                                let price = Number(findu.paidAmount).toFixed(0);
                                                 let obj2 = {
                                                         price_data: {
                                                                 currency: "inr",
                                                                 product_data: {
                                                                         name: `${findProduct.name}`,
                                                                 },
-                                                                unit_amount: `${findu.paidAmount * 100}`,
+                                                                unit_amount: `${price * 100}`,
                                                         },
                                                         quantity: 1,
                                                 }
@@ -1029,7 +1030,6 @@ exports.placeOrder = async (req, res) => {
                                         }
                                 }
                         }
-                        console.log(line_items);
                         const session = await stripe.checkout.sessions.create({
                                 payment_method_types: ["card"],
                                 success_url: `https://krishwholesale.co.uk/order-success/${findUserOrder.orderId}`,
@@ -1061,180 +1061,6 @@ exports.cancelOrder = async (req, res) => {
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
-// exports.successOrder = async (req, res) => {
-//         try {
-//                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
-//                 if (findUserOrder) {
-//                         let update = await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
-//                         if (update) {
-//                                 let line_items = [];
-//                                 for (let i = 0; i < findUserOrder.Orders.length; i++) {
-//                                         let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
-//                                         if (findu) {
-//                                                 let product, description, color, obj2;
-//                                                 let findProduct = await Product.findById({ _id: findu.productId });
-//                                                 if (findProduct) {
-//                                                         product = findProduct.name;
-//                                                         description = findProduct.description;
-//                                                 }
-//                                                 if (findu.productColorId != (null || undefined)) {
-//                                                         let findColor = await ProductColor.findOne({ _id: findu.productColorId });
-//                                                         if (findColor) {
-//                                                                 color = findColor.color;
-//                                                                 obj2 = {
-//                                                                         product: product,
-//                                                                         description: description,
-//                                                                         ProductColor: color,
-//                                                                         productSize: findu.productSize || "",
-//                                                                         productPrice: findu.productPrice,
-//                                                                         quantity: findu.quantity,
-//                                                                         tax: findu.tax,
-//                                                                         totalTax: findu.totalTax,
-//                                                                         paidAmount: findu.paidAmount
-//                                                                 }
-//                                                                 line_items.push(obj2)
-//                                                         }
-//                                                 } else {
-//                                                         obj2 = {
-//                                                                 product: product,
-//                                                                 description: description,
-//                                                                 productPrice: findu.productPrice,
-//                                                                 quantity: findu.quantity,
-//                                                                 tax: findu.tax,
-//                                                                 totalTax: findu.totalTax,
-//                                                                 paidAmount: findu.paidAmount
-//                                                         }
-//                                                         line_items.push(obj2)
-//                                                 }
-//                                         }
-//                                 }
-//                                 let hr = new Date(Date.now()).getHours();
-//                                 let date = new Date(Date.now()).getDate();
-//                                 if (date < 10) {
-//                                         date = '' + 0 + parseInt(date);
-//                                 } else {
-//                                         date = parseInt(date);
-//                                 }
-//                                 let month = new Date(Date.now()).getMonth() + 1;
-//                                 if (month < 10) {
-//                                         month = '' + 0 + parseInt(month);
-//                                 } else {
-//                                         month = parseInt(month);
-//                                 }
-//                                 let year = new Date(Date.now()).getFullYear();
-//                                 let fullDate = (`${date}/${month}/${year}`).toString();
-//                                 let min = new Date(Date.now()).getMinutes();
-//                                 if (hr < 10) {
-//                                         hr = '' + 0 + parseInt(hr);
-//                                 } else {
-//                                         hr = parseInt(hr);
-//                                 }
-//                                 if (min < 10) {
-//                                         min = '' + 0 + parseInt(min);
-//                                 } else {
-//                                         min = parseInt(min);
-//                                 }
-//                                 let shipping = {
-//                                         address: findUserOrder.address,
-//                                         addressComplement: findUserOrder.addressComplement,
-//                                         city: findUserOrder.city,
-//                                         pincode: findUserOrder.pincode,
-//                                         country: findUserOrder.country
-//                                 };
-//                                 let table1 = [
-//                                         ["Invoice Number :", `${findUserOrder.orderId}`, "", "", "Name :", `${req.user.firstName} ${req.user.lastName}`],
-//                                         ["Invoice Date :", `${fullDate} ${hr}:${min}`, "Address :", `${shipping.address} ${shipping.city}`],
-//                                         ["Total item :", line_items.length, "", `${shipping.country} ${shipping.pincode}`],
-//                                 ]
-//                                 const tableArray = {
-//                                         title: "INVOICE",
-//                                         headers: ["", "", "", "", "", ""],
-//                                         rows: table1,
-//                                 };
-//                                 doc.table(tableArray, { width: 550 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
-//                                 doc.moveDown();
-//                                 const table = {
-//                                         headers: [
-//                                                 { label: "Product Name", property: 'product', width: 60, renderer: null },
-//                                                 { label: "Description", property: 'description', width: 240, renderer: null },
-//                                                 { label: "Color", property: 'ProductColor', width: 25, renderer: null },
-//                                                 { label: " Size", property: 'productSize', width: 25, renderer: null },
-//                                                 {
-//                                                         label: "Price", property: 'productPrice', width: 35,
-//                                                         renderer: (value, indexColumn, indexRow, row) => { return `€ ${Number(value).toFixed(2)}` }
-//                                                 },
-//                                                 { label: "Qty", property: 'quantity', width: 20, renderer: null },
-//                                                 {
-//                                                         label: "Vat", property: 'tax', width: 35,
-//                                                         renderer: (value, indexColumn, indexRow, row) => { return `€ ${Number(value).toFixed(2)}` }
-//                                                 },
-//                                                 {
-//                                                         label: "Total Vat", property: 'totalTax', width: 38,
-//                                                         renderer: (value, indexColumn, indexRow, row) => { return `€ ${Number(value).toFixed(2)}` }
-//                                                 },
-//                                                 {
-//                                                         label: "Paid Amount", property: 'paidAmount', width: 55,
-//                                                         renderer: (value, indexColumn, indexRow, row) => { return `€ ${Number(value).toFixed(2)}` }
-//                                                 },
-//                                         ],
-//                                         datas: line_items,
-//                                 };
-//                                 doc.table(table, {
-//                                         prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-//                                         prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
-//                                 });
-//                                 doc.moveDown();
-//                                 let table2 = [
-//                                         ["Sub Total", `€ ${findUserOrder.total}`],
-//                                         ["Vat", `€ ${findUserOrder.tax}`],
-//                                         ["Total", `€ ${findUserOrder.paidAmount}`],
-//                                 ]
-//                                 const tableArray1 = {
-//                                         headers: ["", ""],
-//                                         rows: table2,
-//                                 };
-//                                 doc.table(tableArray1, { width: 150, x: 450, y: 0 });
-//                                 let pdfBuffer = await new Promise((resolve) => {
-//                                         let chunks = [];
-//                                         doc.on('data', (chunk) => chunks.push(chunk));
-//                                         doc.on('end', () => resolve(Buffer.concat(chunks)));
-//                                         doc.end();
-//                                 });
-//                                 let transporter = nodemailer.createTransport({
-//                                         service: 'gmail',
-//                                         auth: {
-//                                                 "user": "krishvapes@gmail.com",
-//                                                 "pass": "fggmdyhrilxhmyig"
-//                                         }
-//                                 });
-//                                 var mailOptions = {
-//                                         from: 'krishvapes@gmail.com',
-//                                         to: `${req.user.email}`,
-//                                         subject: 'PDF Attachment',
-//                                         text: 'Please find the attached PDF.',
-//                                         attachments: {
-//                                                 filename: 'document.pdf',
-//                                                 content: pdfBuffer,
-//                                                 contentType: 'application/pdf',
-//                                         },
-//                                 };
-//                                 let info = await transporter.sendMail(mailOptions);
-//                                 if (info) {
-//                                         await Cart.findOneAndDelete({ userId: req.user._id });
-//                                         res.status(200).json({ message: "Payment success.", status: 200, data: {} });
-//                                 } else {
-//                                         await Cart.findOneAndDelete({ userId: req.user._id });
-//                                         res.status(200).json({ message: "Payment success.", status: 200, data: {} });
-//                                 }
-//                         }
-//                 } else {
-//                         return res.status(404).json({ message: "No data found", data: {} });
-//                 }
-//         } catch (error) {
-//                 console.log(error);
-//                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
-//         }
-// };
 exports.successOrder = async (req, res) => {
         try {
                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
@@ -1413,6 +1239,198 @@ exports.successOrder = async (req, res) => {
                                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
                         } else {
                                 await Cart.findOneAndDelete({ userId: req.user._id });
+                                res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                        }
+                } else {
+                        return res.status(404).json({ message: "No data found", data: {} });
+                }
+
+        } catch (error) {
+                console.log(error);
+                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+
+
+
+
+
+
+exports.successOrder1 = async (req, res) => {
+        try {
+                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+                if (findUserOrder) {
+                        let line_items = [];
+                        for (let i = 0; i < findUserOrder.Orders.length; i++) {
+                                let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+                                if (findu) {
+                                        let product, description, color, obj2, quantity = 0;
+                                        let findProduct = await Product.findById({ _id: findu.productId });
+                                        if (findProduct) {
+                                                product = findProduct.name;
+                                                description = findProduct.description;
+                                        }
+                                        if (findu.productColorId != (null || undefined)) {
+                                                let findColor = await ProductColor.findOne({ _id: findu.productColorId });
+                                                if (findColor) {
+                                                        color = findColor.color;
+                                                        obj2 = {
+                                                                Sno: i + 1,
+                                                                product: product,
+                                                                description: description,
+                                                                ProductColor: color,
+                                                                productSize: findu.productSize || "",
+                                                                productPrice: findu.productPrice,
+                                                                quantity: findu.quantity,
+                                                                tax: findu.tax,
+                                                                totalTax: findu.totalTax,
+                                                                paidAmount: findu.paidAmount,
+                                                                total: findu.total,
+                                                        }
+                                                        line_items.push(obj2)
+                                                }
+                                        } else {
+                                                obj2 = {
+                                                        Sno: i + 1,
+                                                        product: product,
+                                                        description: description,
+                                                        productPrice: findu.productPrice,
+                                                        quantity: findu.quantity,
+                                                        tax: findu.tax,
+                                                        totalTax: findu.totalTax,
+                                                        paidAmount: findu.paidAmount,
+                                                        total: findu.total
+                                                }
+                                                line_items.push(obj2)
+                                        }
+                                }
+                        }
+                        let hr = new Date(Date.now()).getHours();
+                        let date = new Date(Date.now()).getDate();
+                        if (date < 10) {
+                                date = '' + 0 + parseInt(date);
+                        } else {
+                                date = parseInt(date);
+                        }
+                        let month = new Date(Date.now()).getMonth() + 1;
+                        if (month < 10) {
+                                month = '' + 0 + parseInt(month);
+                        } else {
+                                month = parseInt(month);
+                        }
+                        let year = new Date(Date.now()).getFullYear();
+                        let fullDate = (`${date}/${month}/${year}`).toString();
+                        let min = new Date(Date.now()).getMinutes();
+                        if (hr < 10) {
+                                hr = '' + 0 + parseInt(hr);
+                        } else {
+                                hr = parseInt(hr);
+                        }
+                        if (min < 10) {
+                                min = '' + 0 + parseInt(min);
+                        } else {
+                                min = parseInt(min);
+                        }
+                        let findcontactDetails = await contact.findOne({});
+                        if (!findcontactDetails) {
+                                return res.status(404).json({ message: "Contact detail not found.", status: 404, data: {} });
+                        }
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        let shipping = {
+                                address: findUserOrder.address,
+                                addressComplement: findUserOrder.addressComplement,
+                                city: findUserOrder.city,
+                                pincode: findUserOrder.pincode,
+                                country: findUserOrder.country
+                        };
+                        let table1 = [
+                                ["Invoice Number :", `${findUserOrder.orderId}`, "", "", "Name:", `${req.user.firstName} ${req.user.lastName}`],
+                                ["Invoice Date :", `${fullDate} ${hr}:${min}`, "", "", "Address :", `${shipping.address} ${shipping.city}`],
+                                ["Total item :", line_items.length, "", "", "", `${shipping.country} ${shipping.pincode}`],
+                        ]
+                        const tableArray = {
+                                title: "INVOICE",
+                                headers: ["", "", "", "", "", ""],
+                                rows: table1,
+                        };
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.table(tableArray, { width: 536 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+                        doc.moveDown();
+                        const table = {
+                                headers: [
+                                        { label: "#", property: 'Sno', width: 15, renderer: null },
+                                        { label: "Description", property: 'product', width: 200, renderer: null },
+                                        { label: "Color", property: 'ProductColor', width: 55, renderer: null },
+                                        { label: "Qty", property: 'quantity', width: 55, renderer: null },
+                                        {
+                                                label: "Price", property: 'productPrice', width: 35,
+                                                renderer: (value, indexColumn, indexRow, row) => { return `${Number(value).toFixed(2)}` }
+                                        },
+                                        {
+                                                label: "Amount", property: 'total', width: 55,
+                                                renderer: (value, indexColumn, indexRow, row) => { return `${Number(value).toFixed(2)}` }
+                                        },
+                                        {
+                                                label: "VAT", property: 'totalTax', width: 55,
+                                                renderer: (value, indexColumn, indexRow, row) => { return `${Number(value).toFixed(2)}` }
+                                        },
+                                        { label: "V Code", property: 'productSize', width: 55, renderer: null },
+
+                                ],
+                                datas: line_items,
+                        };
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.table(table, {
+                                prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
+                                prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
+                        });
+                        doc.moveDown();
+                        let table2 = [
+                                ["Sub Total", `€ ${findUserOrder.total}`],
+                                ["Vat", `€ ${findUserOrder.tax}`],
+                                ["Total", `€ ${findUserOrder.paidAmount}`],
+                        ]
+                        const tableArray1 = {
+                                headers: ["", ""],
+                                rows: table2,
+                        };
+                        doc.table(tableArray1, { width: 116, x: 450, y: 0 });
+                        let pdfBuffer = await new Promise((resolve) => {
+                                let chunks = [];
+                                doc.on('data', (chunk) => chunks.push(chunk));
+                                doc.on('end', () => resolve(Buffer.concat(chunks)));
+                                doc.end();
+                        });
+                        let transporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                        "user": "krishvapes@gmail.com",
+                                        "pass": "fggmdyhrilxhmyig"
+                                }
+                        });
+                        var mailOptions = {
+                                from: 'krishvapes@gmail.com',
+                                to: `${req.user.email}`,
+                                subject: 'PDF Attachment',
+                                text: 'Please find the attached PDF.',
+                                attachments: {
+                                        filename: 'document.pdf',
+                                        content: pdfBuffer,
+                                        contentType: 'application/pdf',
+                                },
+                        };
+                        let info = await transporter.sendMail(mailOptions);
+                        if (info) {
+                                res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                        } else {
                                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
                         }
                 } else {

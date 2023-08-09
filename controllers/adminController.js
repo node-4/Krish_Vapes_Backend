@@ -1638,7 +1638,7 @@ exports.getOrderbyId = async (req, res, next) => {
                                         { path: "productId", model: "Product", },
                                         { path: "productColorId", model: "ProductColor", select: 'color' },
                                         ],
-                        }, { path: "userId", select: 'firstName lastName' }])
+                        }, { path: "userId", select: 'firstName lastName vatNumber company phone' }])
                 if (!orders) {
                         return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
                 }
