@@ -7,6 +7,7 @@ const Cart = require("../model/cartModel");
 const Category = require("../model/categoryModel");
 const contact = require("../model/contactDetail");
 const helpandSupport = require("../model/helpAndSupport");
+var newOTP = require("otp-generators");
 const order = require("../model/order/order");
 const userOrders = require("../model/order/userOrders");
 const ProductColor = require("../model/ProductColor");
