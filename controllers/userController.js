@@ -88,6 +88,65 @@ exports.signin = async (req, res) => {
                 return res.status(500).send({ message: "Server error" + error.message });
         }
 };
+exports.forgetPassword = async (req, res) => {
+        try {
+                const data = await User.findOne({ email: req.body.email });
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                } else {
+                        var transporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                        "user": "krishvapes@gmail.com",
+                                        "pass": "fggmdyhrilxhmyig"
+                                }
+                        });
+                        let mailOptions;
+                        mailOptions = {
+                                from: 'krishvapes@gmail.com',
+                                to: data.email,
+                                subject: 'Forget password verification',
+                                text: `Your Account Verification Code is ${otp}`,
+                        };
+                        let info = await transporter.sendMail(mailOptions);
+                        if (info) {
+                                let accountVerification = false;
+                                let otp = newOTP.generate(4, { alphabets: false, upperCase: false, specialChar: false, });
+                                let otpExpiration = new Date(Date.now() + 5 * 60 * 1000);
+                                const updated = await User.findOneAndUpdate({ _id: data._id }, { $set: { accountVerification: accountVerification, otp: otp, otpExpiration: otpExpiration } }, { new: true, });
+                                if (updated) {
+                                        res.status(200).json({ message: "Otp send to your email.", status: 200, data: {} });
+                                }
+                        } else {
+                                res.status(200).json({ message: "Otp not send on your mail please check.", status: 200, data: {} });
+                        }
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.changePassword = async (req, res) => {
+        try {
+                const user = await User.findOne({ email: req.body.email });
+                if (user) {
+                        if (user.otp !== req.body.otp || user.otpExpiration < Date.now()) {
+                                return res.status(400).json({ message: "Invalid OTP" });
+                        }
+                        if (req.body.newPassword == req.body.confirmPassword) {
+                                const updated = await User.findOneAndUpdate({ _id: user._id }, { $set: { password: bcrypt.hashSync(req.body.newPassword), accountVerification: true } }, { new: true });
+                                return res.status(200).send({ message: "Password update successfully.", data: updated, });
+                        } else {
+                                return res.status(501).send({ message: "Password Not matched.", data: {}, });
+                        }
+                } else {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
 exports.getProfile = async (req, res) => {
         try {
                 const user = await User.findById(req.user._id);
@@ -1260,7 +1319,7 @@ exports.successOrder1 = async (req, res) => {
         try {
                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
                 if (findUserOrder) {
-                        let line_items = [];
+                        let line_items = [], TotalQua = 0;
                         for (let i = 0; i < findUserOrder.Orders.length; i++) {
                                 let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
                                 if (findu) {
@@ -1287,6 +1346,7 @@ exports.successOrder1 = async (req, res) => {
                                                                 paidAmount: findu.paidAmount,
                                                                 total: findu.total,
                                                         }
+                                                        TotalQua = TotalQua + findu.quantity;
                                                         line_items.push(obj2)
                                                 }
                                         } else {
@@ -1302,6 +1362,7 @@ exports.successOrder1 = async (req, res) => {
                                                         total: findu.total
                                                 }
                                                 line_items.push(obj2)
+                                                TotalQua = TotalQua + findu.quantity;
                                         }
                                 }
                         }
@@ -1392,17 +1453,25 @@ exports.successOrder1 = async (req, res) => {
                                 prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
                                 prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
                         });
-                        doc.moveDown();
-                        let table2 = [
-                                ["Sub Total", `€ ${findUserOrder.total}`],
-                                ["Vat", `€ ${findUserOrder.tax}`],
-                                ["Total", `€ ${findUserOrder.paidAmount}`],
+                        let table3 = [
+                                ["On Trolley", "1", "Items Type", `${line_items.length}`, "Total", `${TotalQua}`],
                         ]
-                        const tableArray1 = {
-                                headers: ["", ""],
-                                rows: table2,
+                        const tableArray3 = {
+                                headers: ["", "", "", "", "", ""],
+                                rows: table3,
                         };
-                        doc.table(tableArray1, { width: 116, x: 450, y: 0 });
+                        doc.table(tableArray3, { width: 250, x: 300, y: 0 });
+                        doc.moveDown();
+                        // let table2 = [
+                        //         ["Sub Total", `€ ${findUserOrder.total}`],
+                        //         ["Vat", `€ ${findUserOrder.tax}`],
+                        //         ["Total", `€ ${findUserOrder.paidAmount}`],
+                        // ]
+                        // const tableArray1 = {
+                        //         headers: ["", ""],
+                        //         rows: table2,
+                        // };
+                        // doc.table(tableArray1, { width: 116, x: 450, y: 0 });
                         let pdfBuffer = await new Promise((resolve) => {
                                 let chunks = [];
                                 doc.on('data', (chunk) => chunks.push(chunk));

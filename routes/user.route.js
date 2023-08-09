@@ -3,6 +3,8 @@ const authJwt = require("../middewares/authJwt");
 const express = require("express");
 const router = express()
 router.post("/user/registration", auth.registration);
+router.post("/user/forgetPassword", auth.forgetPassword);
+router.post("/user/changePassword", auth.changePassword);
 router.post("/user/login", auth.signin);
 router.get("/user/getProfile", [authJwt.verifyToken], auth.getProfile);
 router.put("/user/update", [authJwt.verifyToken], auth.update);
