@@ -33,16 +33,13 @@ const DocumentSchema = schema({
     type: String,
   },
   tax: {
-    type: Number,
-    default: 0
+    type: String,
   },
   total: {
-    type: Number,
-    default: 0
+    type: String,
   },
   paidAmount: {
-    type: Number,
-    default: 0
+    type: String,
   },
   totalItem: {
     type: Number

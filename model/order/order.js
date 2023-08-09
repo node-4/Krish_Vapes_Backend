@@ -30,27 +30,23 @@ const DocumentSchema = schema({
                 type: String,
         },
         productPrice: {
-                type: Number
+                type: String,
         },
         quantity: {
                 type: Number,
                 default: 1
         },
         tax: {
-                type: Number,
-                default: 0
+                type: String,
         },
         totalTax: {
-                type: Number,
-                default: 0
+                type: String,
         },
         total: {
-                type: Number,
-                default: 0
+                type: String,
         },
         paidAmount: {
-                type: Number,
-                default: 0
+                type: String,
         },
         company: {
                 type: String,
