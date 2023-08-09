@@ -16,10 +16,15 @@ var userSchema = new schema(
                         type: String,
                 },
                 pincode: {
-                        type: Number,
+                        type: String,
                 },
                 country: {
                         type: String,
+                },
+                phone: {
+                        type: String,
+                        minLength: 8,
+                        maxLength: 12,
                 },
         },
         { timestamps: true }
