@@ -1075,15 +1075,15 @@ exports.placeOrder = async (req, res) => {
                                 if (findu) {
                                         let findProduct = await Product.findById({ _id: findu.productId });
                                         if (findProduct) {
-                                                let price = Number(findu.paidAmount).toFixed(0);
+                                                let price = Number(findu.paidAmount);
                                                 console.log(price);
                                                 let obj2 = {
                                                         price_data: {
-                                                                currency: "inr",
+                                                                currency: "gbp",
                                                                 product_data: {
                                                                         name: `${findProduct.name}`,
                                                                 },
-                                                                unit_amount: `${price * 10000}`,
+                                                                unit_amount: `${Math.round(price * 100)}`,
                                                         },
                                                         quantity: 1,
                                                 }
