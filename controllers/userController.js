@@ -21,6 +21,7 @@ const Wishlist = require("../model/WishlistModel");
 const PDFDocument = require("pdfkit-table");
 const doc = new PDFDocument({ margin: 30, size: 'A4' });
 const nodemailer = require('nodemailer')
+const puppeteer = require('puppeteer');
 var html_to_pdf = require('html-pdf-node');
 // const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc'); // live
 const stripe = require("stripe")('sk_test_51NYCJcArS6Dr0SQY0UJ5ZOoiPHQ8R5jNOyCMOkjxpl4BHkG4DcAGAU8tjBw6TSOSfimDSELa6BVyCVSo9CGLXlyX00GkGDAQFo'); // test
@@ -1209,11 +1210,11 @@ exports.successOrder = async (req, res) => {
                                 return res.status(404).json({ message: "Contact detail not found.", status: 404, data: {} });
                         }
                         const tableArray0 = {
-                                headers: [""],
+                                headers: ["", "","","",""],
                                 title: "KRISH BUSINESS SERVICE LTD",
                                 subtitle: "UNIT 7, NEW MAN ROAD CROYDON CR0 3JX Mob:07472078196",
                         };
-                        doc.table(tableArray0, { Height: 250, width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+                        doc.table(tableArray0, { Height: 250, width: 560 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
                         doc.moveDown();
                         doc.moveDown();
                         doc.moveDown();
@@ -1221,8 +1222,8 @@ exports.successOrder = async (req, res) => {
                                 ["Day: 1", "", "", "", "", "Invoice No: ", `${findUserOrder.orderId}`],
                                 [`${findUserOrder.address}${findUserOrder.city}`, "", "", "", "", "Invoice Date :", `${fullDate} ${hr}:${min}`],
                                 [`${findUserOrder.country} ${findUserOrder.pincode}`, "", "", "", "", "Cusstomer Acc :", `233445`],
-                                ["Tel:", `${user.phone}`, "", "", "", "Cashier :", `SS`],
-                                [`VAT NO:${user.vatNumber}`, "", "", "", "", "POS ID :", `0`],
+                                [`Tel: ${user.phone|| "XXXXX"}`, "", "","", "", "Cashier :", `SS`],
+                                [`VAT NO:${user.vatNumber || "XXXXX"}`, "", "", "", "", "POS ID :", `0`],
                         ]
                         const tableArray = {
                                 headers: ["INVOICE To", "", "", "", "", "", "INVOICE", ""],
@@ -1271,6 +1272,49 @@ exports.successOrder = async (req, res) => {
                                 rows: table3,
                         };
                         doc.table(tableArray3, { width: 250, x: 300, y: 0 });
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();     
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        doc.moveDown();
+                        let table13 = [  
+                                 ["HSBC",  "Z=0 % S=20 %", "R=5 %", "",  "",  "AMOUNT","","VAT AMOUNT"],
+                                 ["KRISH Business", "Service Ltd", "", "",  "", `£${findUserOrder?.total}`,"",`£${findUserOrder?.tax}`],
+                                 ["Sort Code:","40-46-15", "", "", "", "Delivery Charges", "", `TOTAL TO PAY`],
+                                 ["Acc No:81440977", "", "", "","",  "0", "", `£${findUserOrder?.paidAmount}`],
+                        ]
+                        const tableArray4 = {
+                                headers: ["", "", "", "", "", "", "", ""],
+                                rows: table13,
+                        };
+                        doc.table(tableArray4, { width: 550, x: 10, y: 0 }); 
+                        let table14 = [  
+                                ["","VAT NO: GB", "350971689", "CO RegNo:", "1139394", "AWRS NO:", "XVAW00000113046", ""]
+                                               ]
+                       const tableArray5 = {
+                        headers: ["", "", "", "", "", "", "", ""],
+                        rows: table14,
+                       };
+                       doc.table(tableArray5, { width: 550, x: 10, y: 0 }); 
+                       let table15 = [  
+                        ["GOODS WITHOUT ENGLISH INGREDIENTS","SHOULD BE LABELLED ACCORDINGLY","BEFORE SALE"],
+                        ["The goods once sold will not be returnable unless" ,"agreed. Pallet must be returned or a charge will be","made"]
+                                       ]
+               const tableArray6 = {
+                headers: [ "","THANK YOU FOR YOUR VALUE CUSTOM","",  ""],
+                rows: table15,
+               };
+               doc.table(tableArray6, { width: 550, x: 10, y: 0 }); 
+
                         let pdfBuffer = await new Promise((resolve) => {
                                 let chunks = [];
                                 doc.on('data', (chunk) => chunks.push(chunk));
@@ -1286,7 +1330,7 @@ exports.successOrder = async (req, res) => {
                         });
                         var mailOptions = {
                                 from: "<do_not_reply@gmail.com>",
-                                to: `${req.user.email}`,
+                                to: `vcjagal1994@gmail.com`,
                                 subject: 'PDF Attachment',
                                 text: 'Please find the attached PDF.',
                                 attachments: {
@@ -1329,6 +1373,7 @@ const reffralCode = async () => {
         }
         return OTP;
 }
+
 // exports.successOrder1 = async (req, res) => {
 //         try {
 //                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
@@ -1682,3 +1727,1108 @@ const reffralCode = async () => {
 //                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
 //         }
 // };
+// exports.successOrder3 = async (req, res) => {
+//         try {
+//                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+//                 if (findUserOrder) {
+//                         const user = await User.findById({ _id: req.user._id });
+//                         if (!user) {
+//                                 return res.status(404).send({ status: 404, message: "User not found or token expired." });
+//                         }
+//                         await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+//                         let line_items = [], total = findUserOrder.paidAmount, paidAmount = findUserOrder.paidAmount, tax = findUserOrder.tax, TotalQua = 0, address = findUserOrder.address, pincode = findUserOrder?.pincode, city = findUserOrder?.city, country = findUserOrder?.country;
+//                         let date = "35+", orderId = req.params.orderId;
+//                         for (let i = 0; i < findUserOrder.Orders.length; i++) {
+//                                 let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+//                                 if (findu) {
+//                                         await order.findByIdAndUpdate({ _id: findu._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+//                                         let product, description, color, obj2;
+//                                         let findProduct = await Product.findById({ _id: findu.productId });
+//                                         if (findProduct) {
+//                                                 product = findProduct.name;
+//                                                 description = findProduct.description;
+//                                         }
+//                                         if (findu.productColorId != (null || undefined)) {
+//                                                 let findColor = await ProductColor.findOne({ _id: findu.productColorId });
+//                                                 if (findColor) {
+//                                                         color = findColor.color;
+//                                                         obj2 = {
+//                                                                 Sno: i + 1,
+//                                                                 product: product,
+//                                                                 description: description,
+//                                                                 ProductColor: color,
+//                                                                 productSize: findu.productSize || "",
+//                                                                 productPrice: findu.productPrice,
+//                                                                 quantity: findu.quantity,
+//                                                                 tax: findu.tax,
+//                                                                 totalTax: findu.totalTax,
+//                                                                 paidAmount: findu.paidAmount,
+//                                                                 total: findu.total,
+//                                                         }
+//                                                         TotalQua = TotalQua + findu.quantity;
+//                                                         line_items.push(obj2)
+//                                                 }
+//                                         } else {
+//                                                 obj2 = {
+//                                                         Sno: i + 1,
+//                                                         product: product,
+//                                                         description: description,
+//                                                         productPrice: findu.productPrice,
+//                                                         quantity: findu.quantity,
+//                                                         tax: findu.tax,
+//                                                         totalTax: findu.totalTax,
+//                                                         paidAmount: findu.paidAmount,
+//                                                         total: findu.total
+//                                                 }
+//                                                 line_items.push(obj2)
+//                                                 TotalQua = TotalQua + findu.quantity;
+//                                         }
+//                                 }
+//                         }
+//                         let html = `<!DOCTYPE HTML
+//                         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+//                       <head>
+//                         <style type="text/css">
+//                           body {
+//                             margin: 0;
+//                             padding: 0;
+//                           }
+                      
+//                           @media screen {
+//                             .Heading-Container {
+//                               display: flex;
+//                               align-items: center;
+//                             }
+                      
+//                             .Heading-Container img {
+//                               width: 100px;
+//                             }
+                      
+//                             .Heading-Container .content {
+//                                 width: 80%;
+//                                 text-align: center;
+//                               }
+                      
+//                             .Heading-Container .content1 {
+//                               width: 10%;
+//                               text-align: center;
+//                             }
+                      
+//                             .Heading-Container .content2 {
+//                               width: 10%;
+//                               text-align: center;
+//                               padding-left: 50rem;
+//                             }
+                      
+//                             .Heading-Container .content h2 {
+//                               margin: 0;
+//                               font-weight: bold;
+//                               font-size: 25px;
+//                             }
+                      
+//                             .Heading-Container .content p {
+//                               margin: 0;
+//                               font-size: 14px;
+//                               font-weight: 600;
+//                               color: #a8a1a1;
+//                             }
+                      
+//                             .two-cont {
+//                               display: flex;
+//                               justify-content: space-between;
+//                               padding-top: 10px;
+//                               gap: 50px;
+//                               padding-left: 3rem;
+//                               padding-right: 3rem;
+//                             }
+                      
+//                             .two-cont p {
+//                               margin: 0;
+//                             }
+                      
+//                             .two-cont .left {
+//                               width: 40%;
+//                             }
+                      
+//                             .two-cont .left h6 {
+//                               font-size: 14px;
+//                               font-weight: bold;
+//                             }
+                      
+//                             .two-cont .left .box {
+//                               border: 2px solid black;
+//                               width: 100%;
+//                               padding: 8px;
+//                             }
+                      
+//                             .two-cont .left .box p {
+//                               font-size: 15px;
+//                             }
+                      
+//                             .two-cont .left .box .strong {
+//                               font-weight: bold;
+//                             }
+                      
+//                             .two-cont .left .box p {
+//                               font-weight: 600;
+//                             }
+                      
+//                             .two-cont .right {
+//                               width: 60%;
+//                               border: 2px solid black;
+//                               padding: 10px;
+//                             }
+                      
+//                             .two-cont .right table {
+//                               width: 100%;
+//                               table-layout: fixed;
+//                             }
+                      
+//                             .two-cont .right td {
+//                               font-weight: 900 !important;
+//                               padding: 5px;
+//                             }
+                      
+//                             .empty {
+//                               background-color: #000;
+//                               height: 2px;
+//                               margin-top: 20px;
+//                             }
+                      
+//                             .Table {
+//                               width: 100%;
+//                               margin-top: 0px;
+//                               padding-left: 3rem;
+//                               padding-right: 3rem;
+//                             }
+                      
+//                             .Table tbody tr {
+//                               border: 1px solid black;
+//                             }
+                      
+//                             .Table tbody tr td {
+//                               padding: 5px;
+//                               padding-bottom: 10px;
+//                             }
+                      
+//                             .Main_Table {
+//                               display: flex;
+//                               justify-content: flex-end;
+//                               align-items: center;
+//                               padding-top: 10px;
+//                               gap: 49px;
+//                               align-items: center;
+//                               padding-right: 10rem;
+//                             }
+                      
+//                             .Main_Table p {
+//                               font-weight: 900;
+//                             }
+//                             .below_Div .four-sec {
+//                               display: flex;
+//                               justify-content: space-evenly;
+//                               border-top: 2px solid black;
+//                               border-bottom: 2px solid black;
+//                               padding: 4px;
+//                             }
+                      
+//                             .below_Div .four-sec p {
+//                               margin: 0;
+//                               font-size: 13px;
+//                               text-align: center;
+//                             }
+                      
+//                             .below_Div .four-sec .stronger {
+//                               font-weight: bold;
+//                             }
+                      
+                      
+//                             .below_Div .four-sec1 {
+//                               display: flex;
+//                               justify-content: space-evenly;
+//                               border-top: 2px solid black;
+//                               border-bottom: 2px solid black;
+//                               padding: 10px;
+//                               margin-top: 16rem;
+//                             }
+                      
+//                             .below_Div .four-sec1 p {
+//                               margin: 0;
+//                               font-size: 13px;
+//                               text-align: center;
+//                             }
+                      
+//                             .below_Div .four-sec1 .stronger {
+//                               font-weight: bold;
+//                             }
+                      
+//                             .below_Div .big_Head {
+//                               font-size: 25px;
+//                               background-color: #85827b;
+//                               text-align: center;
+//                               font-weight: bold;
+//                               color: #fff;
+//                               padding: 0;
+//                               margin: 0;
+//                               padding-bottom: 10px;
+//                             }
+                      
+//                             .below_Div .text-cont p {
+//                               margin: 0;
+//                               font-weight: 700;
+//                               font-size: 14px;
+//                               color: #85827b;
+//                             }
+                      
+//                             .below_Div .text-cont {
+//                               text-align: center;
+//                             }
+                      
+//                             .below_Div .text-cont h5 {
+//                               margin: 0;
+//                               font-weight: 900;
+//                             }
+                      
+//                             .so2 {
+//                               width: 100%;
+//                             }
+                      
+//                             .so4 {
+//                               display: flex;
+//                               justify-content: space-between;
+//                             }
+                      
+//                             .so4 p {
+//                               margin: 0;
+//                             }
+                      
+//                             .so5 {
+//                               margin-top: 20px;
+//                               width: 98;
+//                               margin-left: 1%;
+//                             }
+                      
+//                             .so5 table {
+//                               width: 100%;
+//                             }
+                      
+//                             .so5 table th,
+//                             td {
+//                               font-size: 13px;
+//                               font-weight: 600;
+//                             }
+                      
+//                             .so6 {
+//                               margin-top: 40px;
+//                               margin-left: 65%;
+//                               width: 30%;
+//                             }
+                      
+//                             .so7 {
+//                               display: flex;
+//                               justify-content: space-between;
+//                               width: 80%;
+//                             }
+                      
+//                             .so7 p {
+//                               margin: 0;
+//                             }
+                      
+                      
+                      
+//                           }
+//                         </style>
+//                       </head>
+                      
+//                       <body>
+//                         <div class="upper-div">
+//                           <div class="Heading-Container">
+//                             <img class="content1"
+//                               src='https://res.cloudinary.com/djgrqoefp/image/upload/v1691481341/images/banner/yi9qnnqetchhn7n5ogr9.png'
+//                               alt="" />
+//                             <div class="content">
+//                               <h2>KRISH BUSINESS SERVICE LTD</h2>
+//                               <p>UNIT 7, NEW MAN ROAD CROYDON CR0 3JX Mob:07472078196</p>
+//                             </div>
+//                           </div>
+//                           <div class="Heading-Container">
+//                             <!-- <img src="" alt="" /> -->
+//                             <div class="content2">
+//                               <h2>INVOICE</h2>
+//                             </div>
+//                           </div>
+                      
+//                           <div class="two-cont">
+//                             <div class="left">
+//                               <h6>INVOICE TO </h6>
+//                               <div class="box">
+//                                 <p class="strong">Address : </p>
+//                                 <p style={{ textTransform: "capitalize" }}>
+//                                   {" "}
+//                                   ${address} , ${pincode} , ${city} ,{" "}
+//                                   ${country}{" "}
+//                                 </p>
+//                                 <p class="strong"> Tel : </p>
+//                                 <p class="strong"> VAT Number : </p>
+//                               </div>
+//                             </div>
+                      
+//                             <div class="right">
+//                               <table>
+//                                 <tbody>
+//                                   <tr>
+//                                     <td class="bordererd">INVOICE NO </td>
+//                                     <td class="text-center"> ${orderId} </td>
+//                                   </tr>
+//                                   <tr>
+//                                     <td class="bordererd">INVOICE DATE </td>
+//                                     <td class="text-center">
+//                                       {" "}
+//                                       ${date}{" "}
+//                                     </td>
+//                                   </tr>
+//                                   <tr>
+//                                     <td class="bordererd">CUSTOMER ACC </td>
+//                                     <td class="text-center">10307</td>
+//                                   </tr>
+//                                   <tr>
+//                                     <td class="bordererd">CASHIER </td>
+//                                     <td class="text-center"> SS </td>
+//                                   </tr>
+//                                   <tr>
+//                                     <td class="bordererd">POS ID </td>
+//                                     <td class="text-center">0 </td>
+//                                   </tr>
+//                                 </tbody>
+//                               </table>
+//                             </div>
+//                           </div>
+                      
+//                           <div class="empty"></div>
+                      
+//                           <table class="Table">
+//                             <thead>
+//                               <tr>
+//                                 <th style={{ padding: "10px" }}>#</th>
+//                                 <th>DESCRIPTION</th>
+//                                 <th>QTY</th>
+//                                 <th>PRICE</th>
+//                                 <th>AMOUNT</th>
+//                                 <th>VAT</th>
+//                                 <th>V CODE </th>
+//                               </tr>
+//                             </thead>
+//                             <tbody>
+                           
+//                             </tbody>
+//                           </table>
+                      
+//                           <div class="Main_Table">
+//                             <p>On Trolley </p>
+//                             <p>1</p>
+//                             <p>Item Type</p>
+//                             <p> ${TotalQua} </p>
+//                             <p>Total</p>
+//                             <p>{calculateTotalQuantity()}</p>
+//                           </div>
+//                         </div>
+                      
+//                         <div class="below_Div">
+//                           <div class="four-sec1">
+//                             <p class="stronger">
+//                               HSBC <br />
+//                               KRISH Business Service Ltd
+//                               <br />
+//                               Sort Code:40-46-15
+//                               <br />
+//                               Acc No:81440977
+//                             </p>
+                      
+//                             <p> Z=0 % S=20 % R=5 % </p>
+                      
+//                             <p class="stronger">
+//                               AMOUNT <br />£${total}
+//                               <br />
+//                               DELIVERY CHARGES
+//                               <br />0
+//                             </p>
+                      
+//                             <p class="stronger">
+//                               VAT AMOUNT <br />£${tax}
+//                               <br />
+//                               TOTAL TO PAY
+//                               <br />£${paidAmount}
+//                             </p>
+//                           </div>
+//                           <div class="four-sec">
+//                             <p> VAT NO: GB 350971689 </p>
+//                             <p>CO RegNo : 1139394 </p>
+//                             <p> AWRS NO:XVAW00000113046 </p>
+//                           </div>
+                      
+//                           <p class="big_Head">THANK YOU FOR YOUR VALUED CUSTOM</p>
+                      
+//                           <div class="text-cont">
+//                             <h5>
+//                               GOODS WITHOUT ENGLISH INGREDIENTS SHOULD BE LABELLED ACCORDINGLY
+//                               BEFORE SALE
+//                             </h5>
+//                             <p>
+//                               The goods once sold will not be returnable unless agreed. Pallet
+//                               must be returned or a charge will be made
+//                             </p>
+//                           </div>
+//                         </div>
+//                         </div>
+//                       </body>
+                      
+//                       </html>`
+
+
+
+//                         let options = { format: 'A4' };
+//                         let file = { content: html };
+
+//                         html_to_pdf.create(file, options).toBuffer((err, buffer) => {
+//                                 if (err) {
+//                                         res.json(responses.genericError(500, 'Internal server error.'));
+//                                 } else {
+//                                         console.log("---------------------------------------");
+//                                         res.type('application/pdf');
+
+//                                 }
+//                         })
+
+
+
+
+
+
+
+//                         html_to_pdf.generatePdf(file, options)
+//                                 .then(async pdfBuffer => {
+//                                         console.log("---------------------------------------");
+//                                         // let transporter = nodemailer.createTransport({
+//                                         //         service: 'gmail',
+//                                         //         auth: {
+//                                         //                 "user": "krishvapes@gmail.com",
+//                                         //                 "pass": "fggmdyhrilxhmyig"
+//                                         //         }
+//                                         // });
+//                                         // var mailOptions = {
+//                                         //         from: "<do_not_reply@gmail.com>",
+//                                         //         to: `vcjagal1994@gmail.com`,
+//                                         //         subject: 'PDF Attachment',
+//                                         //         text: 'Please find the attached PDF.',
+//                                         //         attachments: {
+//                                         //                 filename: 'document.pdf',
+//                                         //                 content: pdfBuffer,
+//                                         //                 contentType: 'application/pdf',
+//                                         //         },
+//                                         // };
+//                                         // let info = await transporter.sendMail(mailOptions);
+//                                         // if (info) {
+//                                         //         var mailOptions1 = {
+//                                         //                 from: "<do_not_reply@gmail.com>",
+//                                         //                 to: `krishvapes@gmail.com`,
+//                                         //                 subject: 'Order Received',
+//                                         //                 text: `New order has been recived orderId`,
+//                                         //         };
+//                                         //         let info1 = await transporter.sendMail(mailOptions1);
+//                                         //         if (info1) {
+//                                         //                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+//                                         //         }
+//                                         // } else {
+//                                         //         res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+//                                         // }
+//                                 }).catch(async error => {
+//                                         console.log("error", error);
+//                                 });
+//                 } else {
+//                         return res.status(404).json({ message: "No data found", data: {} });
+//                 }
+
+
+//         } catch (error) {
+//                 console.log(error);
+//                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
+//         }
+// };
+
+// exports.successOrder2 = async (req, res) => {
+//         try {
+//                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+//                 if (findUserOrder) {
+//                         const user = await User.findById({ _id: req.user._id });
+//                         if (!user) {
+//                                 return res.status(404).send({ status: 404, message: "User not found or token expired." });
+//                         }
+//                         await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+//                         let line_items = [], total = findUserOrder.total, paidAmount = findUserOrder.paidAmount, tax = findUserOrder.tax, TotalQua = 0, address = findUserOrder.address, pincode = findUserOrder?.pincode, city = findUserOrder?.city, country = findUserOrder?.country;
+//                         let hr = new Date(findUserOrder.updatedAt).getHours();
+//                         let date = new Date(findUserOrder.updatedAt).getDate();
+//                         if (date < 10) {
+//                                 date = '' + 0 + parseInt(date);
+//                         } else {
+//                                 date = parseInt(date);
+//                         }
+//                         let month = new Date(findUserOrder.updatedAt).getMonth() + 1;
+//                         if (month < 10) {
+//                                 month = '' + 0 + parseInt(month);
+//                         } else {
+//                                 month = parseInt(month);
+//                         }
+//                         let year = new Date(findUserOrder.updatedAt).getFullYear();
+//                         let fullDate = (`${date}/${month}/${year}`).toString();
+//                         let min = new Date(Date.now()).getMinutes();
+//                         if (hr < 10) {
+//                                 hr = '' + 0 + parseInt(hr);
+//                         } else {
+//                                 hr = parseInt(hr);
+//                         }
+//                         if (min < 10) {
+//                                 min = '' + 0 + parseInt(min);
+//                         } else {
+//                                 min = parseInt(min);
+//                         }
+//                        let orderId = req.params.orderId;
+//                         for (let i = 0; i < findUserOrder.Orders.length; i++) {
+//                                 let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+//                                 if (findu) {
+//                                         await order.findByIdAndUpdate({ _id: findu._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+//                                         let product, description, color, obj2;
+//                                         let findProduct = await Product.findById({ _id: findu.productId });
+//                                         if (findProduct) {
+//                                                 product = findProduct.name;
+//                                                 description = findProduct.description;
+//                                         }
+//                                         if (findu.productColorId != (null || undefined)) {
+//                                                 let findColor = await ProductColor.findOne({ _id: findu.productColorId });
+//                                                 if (findColor) {
+//                                                         color = findColor.color;
+//                                                         obj2 = {
+//                                                                 Sno: i + 1,
+//                                                                 product: product,
+//                                                                 description: description,
+//                                                                 ProductColor: color,
+//                                                                 productSize: findu.productSize || "",
+//                                                                 productPrice: findu.productPrice,
+//                                                                 quantity: findu.quantity,
+//                                                                 tax: findu.tax,
+//                                                                 totalTax: findu.totalTax,
+//                                                                 paidAmount: findu.paidAmount,
+//                                                                 total: findu.total,
+//                                                         }
+//                                                         TotalQua = TotalQua + findu.quantity;
+//                                                         line_items.push(obj2)
+//                                                 }
+//                                         } else {
+//                                                 obj2 = {
+//                                                         Sno: i + 1,
+//                                                         product: product,
+//                                                         description: description,
+//                                                         productPrice: findu.productPrice,
+//                                                         quantity: findu.quantity,
+//                                                         tax: findu.tax,
+//                                                         totalTax: findu.totalTax,
+//                                                         paidAmount: findu.paidAmount,
+//                                                         total: findu.total
+//                                                 }
+//                                                 line_items.push(obj2)
+//                                                 TotalQua = TotalQua + findu.quantity;
+//                                         }
+//                                 }
+//                         }
+
+//                         let htmlContent = `<!DOCTYPE HTML
+//                         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+//                         <head>
+//                         <style type="text/css">
+//                                 body {
+//                                         margin: 0;
+//                                         padding: 0;
+//                                 }
+                
+//                                 @media screen {
+//                                         .Heading-Container {
+//                                                 display: flex;
+//                                                 align-items: center;
+//                                         }
+                
+//                                         .Heading-Container img {
+//                                                 width: 100px;
+//                                         }
+                
+//                                         .Heading-Container .content {
+//                                                 width: 80%;
+//                                                 text-align: center;
+//                                                 padding-right: 15rem;
+//                                         }
+                
+//                                         .Heading-Container .content1 {
+//                                                 width: 10%;
+//                                                 text-align: center;
+//                                                 padding-left: 100px;
+//                                         }
+                
+//                                         .Heading-Container .content2 {
+//                                                 width: 10%;
+//                                                 text-align: center;
+//                                                 padding-left: 50rem;
+//                                         }
+                
+//                                         .Heading-Container .content h2 {
+//                                                 margin: 0;
+//                                                 font-weight: bold;
+//                                                 font-size: 25px;
+//                                         }
+                
+//                                         .Heading-Container .content p {
+//                                                 margin: 0;
+//                                                 font-size: 14px;
+//                                                 font-weight: 600;
+//                                                 color: #a8a1a1;
+//                                         }
+                
+//                                         .two-cont {
+//                                                 display: flex;
+//                                                 justify-content: space-between;
+//                                                 padding-top: 10px;
+//                                                 gap: 50px;
+//                                                 padding-left: 3rem;
+//                                                 padding-right: 3rem;
+//                                         }
+                
+//                                         .two-cont p {
+//                                                 margin: 0;
+//                                         }
+                
+//                                         .two-cont .left {
+//                                                 width: 40%;
+//                                         }
+                
+//                                         .two-cont .left h6 {
+//                                                 font-size: 14px;
+//                                                 font-weight: bold;
+//                                         }
+                
+//                                         .two-cont .left .box {
+//                                                 border: 2px solid black;
+//                                                 width: 100%;
+//                                                 padding: 8px;
+//                                         }
+                
+//                                         .two-cont .left .box p {
+//                                                 font-size: 15px;
+//                                         }
+                
+//                                         .two-cont .left .box .strong {
+//                                                 font-weight: bold;
+//                                         }
+                
+//                                         .two-cont .left .box p {
+//                                                 font-weight: 600;
+//                                         }
+                
+//                                         .two-cont .right {
+//                                                 width: 60%;
+//                                                 border: 2px solid black;
+//                                                 padding: 10px;
+//                                         }
+                
+//                                         .two-cont .right table {
+//                                                 width: 100%;
+//                                                 table-layout: fixed;
+//                                         }
+                
+//                                         .two-cont .right td {
+//                                                 font-weight: 900 !important;
+//                                                 padding: 5px;
+//                                         }
+                
+//                                         .empty {
+//                                                 background-color: #000;
+//                                                 height: 2px;
+//                                                 margin-top: 20px;
+//                                         }
+                
+//                                         .Table {
+//                                                 width: 100%;
+//                                                 margin-top: 0px;
+//                                                 padding-left: 3rem;
+//                                                 padding-right: 3rem;
+//                                         }
+                
+//                                         .Table tbody tr {
+//                                                 border: 1px solid black;
+//                                         }
+                
+//                                         .Table tbody tr td {
+//                                                 padding: 5px;
+//                                                 padding-bottom: 10px;
+//                                         }
+                
+//                                         .Main_Table {
+//                                                 display: flex;
+//                                                 justify-content: flex-end;
+//                                                 align-items: center;
+//                                                 padding-top: 10px;
+//                                                 gap: 49px;
+//                                                 align-items: center;
+//                                                 padding-right: 10rem;
+//                                         }
+                
+//                                         .Main_Table p {
+//                                                 font-weight: 900;
+//                                         }
+                
+                
+                
+                
+                
+                
+                
+                
+//                                         .below_Div .four-sec {
+//                                                 display: flex;
+//                                                 justify-content: space-evenly;
+//                                                 border-top: 2px solid black;
+//                                                 border-bottom: 2px solid black;
+//                                                 padding: 4px;
+//                                         }
+                
+//                                         .below_Div .four-sec p {
+//                                                 margin: 0;
+//                                                 font-size: 13px;
+//                                                 text-align: center;
+//                                         }
+                
+//                                         .below_Div .four-sec .stronger {
+//                                                 font-weight: bold;
+//                                         }
+                
+                
+//                                         .below_Div .four-sec1 {
+//                                                 display: flex;
+//                                                 justify-content: space-evenly;
+//                                                 border-top: 2px solid black;
+//                                                 border-bottom: 2px solid black;
+//                                                 padding: 10px;
+//                                                 margin-top: 16rem;
+//                                         }
+                
+//                                         .below_Div .four-sec1 p {
+//                                                 margin: 0;
+//                                                 font-size: 13px;
+//                                                 text-align: center;
+//                                         }
+                
+//                                         .below_Div .four-sec1 .stronger {
+//                                                 font-weight: bold;
+//                                         }
+                
+//                                         .below_Div .big_Head {
+//                                                 font-size: 25px;
+//                                                 background-color: #85827b;
+//                                                 text-align: center;
+//                                                 font-weight: bold;
+//                                                 color: #fff;
+//                                                 padding: 0;
+//                                                 margin: 0;
+//                                                 padding-bottom: 10px;
+//                                         }
+                
+//                                         .below_Div .text-cont p {
+//                                                 margin: 0;
+//                                                 font-weight: 700;
+//                                                 font-size: 14px;
+//                                                 color: #85827b;
+//                                         }
+                
+//                                         .below_Div .text-cont {
+//                                                 text-align: center;
+//                                         }
+                
+//                                         .below_Div .text-cont h5 {
+//                                                 margin: 0;
+//                                                 font-weight: 900;
+//                                         }
+                
+//                                         .so2 {
+//                                                 width: 100%;
+//                                         }
+                
+//                                         .so4 {
+//                                                 display: flex;
+//                                                 justify-content: space-between;
+//                                         }
+                
+//                                         .so4 p {
+//                                                 margin: 0;
+//                                         }
+                
+//                                         .so5 {
+//                                                 margin-top: 20px;
+//                                                 width: 98;
+//                                                 margin-left: 1%;
+//                                         }
+                
+//                                         .so5 table {
+//                                                 width: 100%;
+//                                         }
+                
+//                                         .so5 table th,
+//                                         td {
+//                                                 font-size: 13px;
+//                                                 font-weight: 600;
+//                                         }
+                
+//                                         .so6 {
+//                                                 margin-top: 40px;
+//                                                 margin-left: 65%;
+//                                                 width: 30%;
+//                                         }
+                
+//                                         .so7 {
+//                                                 display: flex;
+//                                                 justify-content: space-between;
+//                                                 width: 80%;
+//                                         }
+                
+//                                         .so7 p {
+//                                                 margin: 0;
+//                                         }
+                
+                
+                
+//                                 }
+//                         </style>
+//                 </head>
+                
+//                 <body>
+//                         <div class="upper-div">
+//                                 <div class="Heading-Container">
+//                                         <img class="content1"
+//                                                 src='https://res.cloudinary.com/djgrqoefp/image/upload/v1691481341/images/banner/yi9qnnqetchhn7n5ogr9.png'
+//                                                 alt="" />
+//                                         <div class="content">
+//                                                 <h2>KRISH BUSINESS SERVICE LTD</h2>
+//                                                 <p>UNIT 7, NEW MAN ROAD CROYDON CR0 3JX Mob:07472078196</p>
+//                                         </div>
+//                                 </div>
+//                                 <div class="Heading-Container">
+//                                         <!-- <img src="" alt="" /> -->
+//                                         <div class="content2">
+//                                                 <h2>INVOICE</h2>
+//                                         </div>
+//                                 </div>
+                
+//                                 <div class="two-cont">
+//                                         <div class="left">
+//                                                 <h6>INVOICE TO </h6>
+//                                                 <div class="box">
+//                                                         <p class="strong">Address : </p>
+//                                                         <p style={{ textTransform: "capitalize" }}>
+//                                                                 ${address} , ${pincode} , ${city},
+//                                                                 ${country}
+//                                                         </p>
+//                                                         <p class="strong"> Tel : </p>
+//                                                         <p class="strong"> VAT Number : </p>
+//                                                 </div>
+//                                         </div>
+                
+//                                         <div class="right">
+//                                                 <table>
+//                                                         <tbody>
+//                                                                 <tr>
+//                                                                         <td class="bordererd">INVOICE NO </td>
+//                                                                         <td class="text-center"> ${orderId} </td>
+//                                                                 </tr>
+//                                                                 <tr>
+//                                                                         <td class="bordererd">INVOICE DATE </td>
+//                                                                         <td class="text-center">
+//                                                                                 ${fullDate} ${hr}:${min}
+//                                                                         </td>
+//                                                                 </tr>
+//                                                                 <tr>
+//                                                                         <td class="bordererd">CUSTOMER ACC </td>
+//                                                                         <td class="text-center">10307</td>
+//                                                                 </tr>
+//                                                                 <tr>
+//                                                                         <td class="bordererd">CASHIER </td>
+//                                                                         <td class="text-center"> SS </td>
+//                                                                 </tr>
+//                                                                 <tr>
+//                                                                         <td class="bordererd">POS ID </td>
+//                                                                         <td class="text-center">0 </td>
+//                                                                 </tr>
+//                                                         </tbody>
+//                                                 </table>
+//                                         </div>
+//                                 </div>
+                
+//                                 <div class="empty"></div>
+                
+//                                 <table class="Table">
+//                                         <thead>
+//                                                 <tr>
+//                                                         <th style={{ padding: "10px" }}>#</th>
+//                                                         <th>DESCRIPTION</th>
+//                                                         <th>QTY</th>
+//                                                         <th>PRICE</th>
+//                                                         <th>AMOUNT</th>
+//                                                         <th>VAT</th>
+//                                                         <th>V CODE </th>
+//                                                 </tr>
+//                                         </thead>
+//                                         <tbody>
+//                                                 {orders?.map((i, index) => (
+//                                                 <tr key={index}>
+//                                                         <td> {index + 1} </td>
+//                                                         <td> {i.productId?.name} </td>
+//                                                         <td> {i.quantity} </td>
+//                                                         <td> {i.productId?.price} </td>
+//                                                         <td> {i.total} </td>
+//                                                         <td> {i.totalTax} </td>
+//                                                         <td> {i.productSize} </td>
+//                                                 </tr>
+//                                                 ))}
+//                                         </tbody>
+//                                 </table>
+                
+//                                 <div class="Main_Table">
+//                                         <p>On Trolley </p>
+//                                         <p>1</p>
+//                                         <p>Item Type</p>
+//                                         <p> ${line_items.length} </p>
+//                                         <p>Total</p>
+//                                         <p>${TotalQua}</p>
+//                                 </div>
+//                         </div>
+                
+//                         <div class="below_Div">
+//                                 <div class="four-sec1">
+//                                         <p class="stronger" style={{ border: "1px solid black" , padding: "5px" }}>
+//                                                 HSBC <br />
+//                                                 KRISH Business Service Ltd
+//                                                 <br />
+//                                                 Sort Code:40-46-15
+//                                                 <br />
+//                                                 Acc No:81440977
+//                                         </p>
+                
+//                                         <p> Z=0 % S=20 % R=5 % </p>
+                
+//                                         <p class="stronger">
+//                                                 AMOUNT <br />£${total}
+//                                                 <br />
+//                                                 DELIVERY CHARGES
+//                                                 <br />0
+//                                         </p>
+                
+//                                         <p class="stronger">
+//                                                 VAT AMOUNT <br />£${tax}
+//                                                 <br />
+//                                                 TOTAL TO PAY
+//                                                 <br />£${paidAmount}
+//                                         </p>
+//                                 </div>
+//                                 <div class="four-sec" style={{ border: "none" , padding: "5px" }}>
+//                                         <p> VAT NO: GB 350971689 </p>
+//                                         <p>CO RegNo : 1139394 </p>
+//                                         <p> AWRS NO:XVAW00000113046 </p>
+//                                 </div>
+                
+//                                 <p class="big_Head">THANK YOU FOR YOUR VALUED CUSTOM</p>
+                
+//                                 <div class="text-cont">
+//                                         <h5>
+//                                                 GOODS WITHOUT ENGLISH INGREDIENTS SHOULD BE LABELLED ACCORDINGLY
+//                                                 BEFORE SALE
+//                                         </h5>
+//                                         <p>
+//                                                 The goods once sold will not be returnable unless agreed. Pallet
+//                                                 must be returned or a charge will be made
+//                                         </p>
+//                                 </div>
+//                         </div>
+//                         </div>
+//                 </body>
+                      
+//                       </html>`
+//                         generatePDFFromHTML(htmlContent)
+//                                 .then(async pdfBuffer => {
+//                                         // Now you have the PDF buffer to work with
+//                                         // For example, you can send the buffer over a network, manipulate it, etc.
+//                                         // const dataUrl = 'data:application/pdf;base64,' + pdfBuffer.toString('base64');
+//                                         // console.log('PDF generated as buffer:', dataUrl);
+//                                         // return res.status(404).json({ message: "No data found", data: dataUrl });
+//                                         let transporter = nodemailer.createTransport({
+//                                                 service: 'gmail',
+//                                                 auth: {
+//                                                         "user": "krishvapes@gmail.com",
+//                                                         "pass": "fggmdyhrilxhmyig"
+//                                                 }
+//                                         });
+//                                         var mailOptions = {
+//                                                 from: "<do_not_reply@gmail.com>",
+//                                                 to: `vcjagal1994@gmail.com`,
+//                                                 subject: 'PDF Attachment',
+//                                                 text: 'Please find the attached PDF.',
+//                                                 attachments: {
+//                                                         filename: 'document.pdf',
+//                                                         content: pdfBuffer,
+//                                                         contentType: 'application/pdf',
+//                                                 },
+//                                         };
+//                                         let info = await transporter.sendMail(mailOptions);
+//                                         if (info) {
+//                                                 var mailOptions1 = {
+//                                                         from: "<do_not_reply@gmail.com>",
+//                                                         to: `krishvapes@gmail.com`,
+//                                                         subject: 'Order Received',
+//                                                         text: `New order has been recived orderId ${findUserOrder.orderId}`,
+//                                                 };
+//                                                 let info1 = await transporter.sendMail(mailOptions1);
+//                                                 if (info1) {
+//                                                         // await Cart.findOneAndDelete({ userId: req.user._id });
+//                                                         res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+//                                                 }
+//                                         } else {
+//                                                 // await Cart.findOneAndDelete({ userId: req.user._id });
+//                                                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+//                                         }
+//                                 })
+//                                 .catch(err => {
+//                                         console.error('Error generating PDF:', err);
+//                                 });
+
+//                         // .then(() => { console.log(`PDF generated and saved to ${outputPath}`); }).catch(err => { console.error('Error generating PDF:', err); });
+//                 } else {
+//                         return res.status(404).json({ message: "No data found", data: {} });
+//                 }
+
+
+//         } catch (error) {
+//                 console.log(error);
+//                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
+//         }
+// };
+// async function generatePDFFromHTML(htmlContent) {
+//         const browser = await puppeteer.launch();
+//         const page = await browser.newPage();
+//         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+//         await page.setViewport({
+//                 width: 1920, // Adjust the width as needed
+//                 height: 1080, // Adjust the height as needed
+//                 deviceScaleFactor: 1,
+//         });
+//         const pdfBuffer = await page.pdf({
+//                 format: 'A4', width: '210mm',  // Adjust the width
+//                 height: '297mm', // Adjust the height
+//                 margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+//         });
+
+//         return pdfBuffer;
+// }
+
