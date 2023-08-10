@@ -21,6 +21,7 @@ const Wishlist = require("../model/WishlistModel");
 const PDFDocument = require("pdfkit-table");
 const doc = new PDFDocument({ margin: 30, size: 'A4' });
 const nodemailer = require('nodemailer')
+var html_to_pdf = require('html-pdf-node');
 // const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc'); // live
 const stripe = require("stripe")('sk_test_51NYCJcArS6Dr0SQY0UJ5ZOoiPHQ8R5jNOyCMOkjxpl4BHkG4DcAGAU8tjBw6TSOSfimDSELa6BVyCVSo9CGLXlyX00GkGDAQFo'); // test
 exports.registration = async (req, res) => {
@@ -1122,209 +1123,6 @@ exports.cancelOrder = async (req, res) => {
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
-// exports.successOrder = async (req, res) => {
-//         try {
-//                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
-//                 if (findUserOrder) {
-//                         await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
-//                         let line_items = [], TotalQua = 0;
-//                         for (let i = 0; i < findUserOrder.Orders.length; i++) {
-//                                 let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
-//                                 if (findu) {
-//                                         await order.findByIdAndUpdate({ _id: findu._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
-//                                         let product, description, color, obj2;
-//                                         let findProduct = await Product.findById({ _id: findu.productId });
-//                                         if (findProduct) {
-//                                                 product = findProduct.name;
-//                                                 description = findProduct.description;
-//                                         }
-//                                         if (findu.productColorId != (null || undefined)) {
-//                                                 let findColor = await ProductColor.findOne({ _id: findu.productColorId });
-//                                                 if (findColor) {
-//                                                         color = findColor.color;
-//                                                         obj2 = {
-//                                                                 Sno: i + 1,
-//                                                                 product: product,
-//                                                                 description: description,
-//                                                                 ProductColor: color,
-//                                                                 productSize: findu.productSize || "",
-//                                                                 productPrice: findu.productPrice,
-//                                                                 quantity: findu.quantity,
-//                                                                 tax: findu.tax,
-//                                                                 totalTax: findu.totalTax,
-//                                                                 paidAmount: findu.paidAmount,
-//                                                                 total: findu.total,
-//                                                         }
-//                                                         TotalQua = TotalQua + findu.quantity;
-//                                                         line_items.push(obj2)
-//                                                 }
-//                                         } else {
-//                                                 obj2 = {
-//                                                         Sno: i + 1,
-//                                                         product: product,
-//                                                         description: description,
-//                                                         productPrice: findu.productPrice,
-//                                                         quantity: findu.quantity,
-//                                                         tax: findu.tax,
-//                                                         totalTax: findu.totalTax,
-//                                                         paidAmount: findu.paidAmount,
-//                                                         total: findu.total
-//                                                 }
-//                                                 line_items.push(obj2)
-//                                                 TotalQua = TotalQua + findu.quantity;
-//                                         }
-//                                 }
-//                         }
-//                         let hr = new Date(Date.now()).getHours();
-//                         let date = new Date(Date.now()).getDate();
-//                         if (date < 10) {
-//                                 date = '' + 0 + parseInt(date);
-//                         } else {
-//                                 date = parseInt(date);
-//                         }
-//                         let month = new Date(Date.now()).getMonth() + 1;
-//                         if (month < 10) {
-//                                 month = '' + 0 + parseInt(month);
-//                         } else {
-//                                 month = parseInt(month);
-//                         }
-//                         let year = new Date(Date.now()).getFullYear();
-//                         let fullDate = (`${date}/${month}/${year}`).toString();
-//                         let min = new Date(Date.now()).getMinutes();
-//                         if (hr < 10) {
-//                                 hr = '' + 0 + parseInt(hr);
-//                         } else {
-//                                 hr = parseInt(hr);
-//                         }
-//                         if (min < 10) {
-//                                 min = '' + 0 + parseInt(min);
-//                         } else {
-//                                 min = parseInt(min);
-//                         }
-//                         let findcontactDetails = await contact.findOne({});
-//                         if (!findcontactDetails) {
-//                                 return res.status(404).json({ message: "Contact detail not found.", status: 404, data: {} });
-//                         }
-//                         doc.moveDown();
-//                         doc.moveDown();
-//                         doc.moveDown();
-//                         let shipping = {
-//                                 address: findUserOrder.address,
-//                                 addressComplement: findUserOrder.addressComplement,
-//                                 city: findUserOrder.city,
-//                                 pincode: findUserOrder.pincode,
-//                                 country: findUserOrder.country
-//                         };
-//                         let table1 = [
-//                                 ["Invoice Number :", `${findUserOrder.orderId}`, "", "", "Name:", `${req.user.firstName} ${req.user.lastName}`],
-//                                 ["Invoice Date :", `${fullDate} ${hr}:${min}`, "", "", "Address :", `${shipping.address} ${shipping.city}`],
-//                                 ["Total item :", line_items.length, "", "", "", `${shipping.country} ${shipping.pincode}`],
-//                         ]
-//                         const tableArray = {
-//                                 title: "INVOICE",
-//                                 headers: ["", "", "", "", "", ""],
-//                                 rows: table1,
-//                         };
-//                         doc.moveDown();
-//                         doc.moveDown();
-//                         doc.moveDown();
-//                         doc.moveDown();
-//                         doc.moveDown();
-//                         doc.moveDown();
-//                         doc.table(tableArray, { width: 536 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
-//                         doc.moveDown();
-//                         const table = {
-//                                 headers: [
-//                                         { label: "#", property: 'Sno', width: 15, renderer: null },
-//                                         { label: "Description", property: 'product', width: 200, renderer: null },
-//                                         { label: "Color", property: 'ProductColor', width: 55, renderer: null },
-//                                         { label: "Qty", property: 'quantity', width: 55, renderer: null },
-//                                         {
-//                                                 label: "Price", property: 'productPrice', width: 35,
-//                                                 renderer: (value, indexColumn, indexRow, row) => { return `${Number(value).toFixed(2)}` }
-//                                         },
-//                                         {
-//                                                 label: "Amount", property: 'total', width: 55,
-//                                                 renderer: (value, indexColumn, indexRow, row) => { return `${Number(value).toFixed(2)}` }
-//                                         },
-//                                         {
-//                                                 label: "VAT", property: 'totalTax', width: 55,
-//                                                 renderer: (value, indexColumn, indexRow, row) => { return `${Number(value).toFixed(2)}` }
-//                                         },
-//                                         { label: "V Code", property: 'productSize', width: 55, renderer: null },
-
-//                                 ],
-//                                 datas: line_items,
-//                         };
-//                         doc.moveDown();
-//                         doc.moveDown();
-//                         doc.table(table, {
-//                                 prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-//                                 prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
-//                         });
-//                         doc.moveDown();
-//                         doc.table(table, {
-//                                 prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-//                                 prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
-//                         });
-//                         let table3 = [
-//                                 ["On Trolley", "1", "Items Type", `${line_items.length}`, "Total", `${TotalQua}`],
-//                         ]
-//                         const tableArray3 = {
-//                                 headers: ["", "", "", "", "", ""],
-//                                 rows: table3,
-//                         };
-//                         doc.table(tableArray3, { width: 250, x: 300, y: 0 });
-//                         // let table2 = [
-//                         //         ["Sub Total", `€ ${findUserOrder.total}`],
-//                         //         ["Vat", `€ ${findUserOrder.tax}`],
-//                         //         ["Total", `€ ${findUserOrder.paidAmount}`],
-//                         // ]
-//                         // const tableArray1 = {
-//                         //         headers: ["", ""],
-//                         //         rows: table2,
-//                         // };
-//                         // doc.table(tableArray1, { width: 116, x: 450, y: 0 });
-//                         let pdfBuffer = await new Promise((resolve) => {
-//                                 let chunks = [];
-//                                 doc.on('data', (chunk) => chunks.push(chunk));
-//                                 doc.on('end', () => resolve(Buffer.concat(chunks)));
-//                                 doc.end();
-//                         });
-//                         let transporter = nodemailer.createTransport({
-//                                 service: 'gmail',
-//                                 auth: {
-//                                         "user": "krishvapes@gmail.com",
-//                                         "pass": "fggmdyhrilxhmyig"
-//                                 }
-//                         });
-//                         var mailOptions = {
-//                                 from: 'krishvapes@gmail.com',
-//                                 to: `${req.user.email}`,
-//                                 subject: 'PDF Attachment',
-//                                 text: 'Please find the attached PDF.',
-//                                 attachments: {
-//                                         filename: 'document.pdf',
-//                                         content: pdfBuffer,
-//                                         contentType: 'application/pdf',
-//                                 },
-//                         };
-//                         let info = await transporter.sendMail(mailOptions);
-//                         if (info) {
-//                                 await Cart.findOneAndDelete({ userId: req.user._id });
-//                                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
-//                         } else {
-//                                 await Cart.findOneAndDelete({ userId: req.user._id });
-//                                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
-//                         }
-//                 } else {
-//                         return res.status(404).json({ message: "No data found", data: {} });
-//                 }
-//         } catch (error) {
-//                 console.log(error);
-//                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
-//         }
-// };
 exports.successOrder = async (req, res) => {
         try {
                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
@@ -1350,7 +1148,6 @@ exports.successOrder = async (req, res) => {
                                                 if (findColor) {
                                                         color = findColor.color;
                                                         obj2 = {
-                                                                Sno: i + 1,
                                                                 product: product,
                                                                 description: description,
                                                                 ProductColor: color,
@@ -1367,7 +1164,6 @@ exports.successOrder = async (req, res) => {
                                                 }
                                         } else {
                                                 obj2 = {
-                                                        Sno: i + 1,
                                                         product: product,
                                                         description: description,
                                                         productPrice: findu.productPrice,
@@ -1533,3 +1329,356 @@ const reffralCode = async () => {
         }
         return OTP;
 }
+// exports.successOrder1 = async (req, res) => {
+//         try {
+//                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+//                 if (findUserOrder) {
+//                         const user = await User.findById({ _id: req.user._id });
+//                         if (!user) {
+//                                 return res.status(404).send({ status: 404, message: "User not found or token expired." });
+//                         }
+//                         await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+//                         let line_items = [], total = findUserOrder.paidAmount, paidAmount = findUserOrderpaidAmount, tax = findUserOrder.tax, TotalQua = 0, address = findUserOrder.address, pincode = findUserOrder?.pincode, city = findUserOrder?.city, country = findUserOrder?.country;
+//                         let date = "35+";
+//                         for (let i = 0; i < findUserOrder.Orders.length; i++) {
+//                                 let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+//                                 if (findu) {
+//                                         await order.findByIdAndUpdate({ _id: findu._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+//                                         let product, description, color, obj2;
+//                                         let findProduct = await Product.findById({ _id: findu.productId });
+//                                         if (findProduct) {
+//                                                 product = findProduct.name;
+//                                                 description = findProduct.description;
+//                                         }
+//                                         if (findu.productColorId != (null || undefined)) {
+//                                                 let findColor = await ProductColor.findOne({ _id: findu.productColorId });
+//                                                 if (findColor) {
+//                                                         color = findColor.color;
+//                                                         obj2 = {
+//                                                                 Sno: i + 1,
+//                                                                 product: product,
+//                                                                 description: description,
+//                                                                 ProductColor: color,
+//                                                                 productSize: findu.productSize || "",
+//                                                                 productPrice: findu.productPrice,
+//                                                                 quantity: findu.quantity,
+//                                                                 tax: findu.tax,
+//                                                                 totalTax: findu.totalTax,
+//                                                                 paidAmount: findu.paidAmount,
+//                                                                 total: findu.total,
+//                                                         }
+//                                                         TotalQua = TotalQua + findu.quantity;
+//                                                         line_items.push(obj2)
+//                                                 }
+//                                         } else {
+//                                                 obj2 = {
+//                                                         Sno: i + 1,
+//                                                         product: product,
+//                                                         description: description,
+//                                                         productPrice: findu.productPrice,
+//                                                         quantity: findu.quantity,
+//                                                         tax: findu.tax,
+//                                                         totalTax: findu.totalTax,
+//                                                         paidAmount: findu.paidAmount,
+//                                                         total: findu.total
+//                                                 }
+//                                                 line_items.push(obj2)
+//                                                 TotalQua = TotalQua + findu.quantity;
+//                                         }
+//                                 }
+//                         }
+//                         let html = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+//                         <head>
+//                         <!--[if gte mso 9]>
+//                         <xml>
+//                           <o:OfficeDocumentSettings>
+//                             <o:AllowPNG/>
+//                             <o:PixelsPerInch>96</o:PixelsPerInch>
+//                           </o:OfficeDocumentSettings>
+//                         </xml>
+//                         <![endif]-->
+//                           <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+//                           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//                           <meta name="x-apple-disable-message-reformatting">
+//                           <!--[if !mso]><!--><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]-->
+//                           <title></title>
+                          
+//                             <style type="text/css">
+//                               table, td { color: #000000; } @media only screen and (min-width: 670px) {
+//                           .u-row {
+//                             width: 650px !important;
+//                           }
+//                           .u-row .u-col {
+//                             vertical-align: top;
+//                           }
+                        
+//                           .u-row .u-col-100 {
+//                             width: 650px !important;
+//                           }
+                        
+//                         }
+                        
+//                         @media (max-width: 670px) {
+//                           .u-row-container {
+//                             max-width: 100% !important;
+//                             padding-left: 0px !important;
+//                             padding-right: 0px !important;
+//                           }
+//                           .u-row .u-col {
+//                             min-width: 320px !important;
+//                             max-width: 100% !important;
+//                             display: block !important;
+//                           }
+//                           .u-row {
+//                             width: calc(100% - 40px) !important;
+//                           }
+//                           .u-col {
+//                             width: 100% !important;
+//                           }
+//                           .u-col > div {
+//                             margin: 0 auto;
+//                           }
+//                         }
+//                         body {
+//                           margin: 0;
+//                           padding: 0;
+//                         }
+                        
+//                         table,
+//                         tr,
+//                         td {
+//                           vertical-align: top;
+//                           border-collapse: collapse;
+//                         }
+                        
+//                         p {
+//                           margin: 0;
+//                         }
+                        
+//                         .ie-container table,
+//                         .mso-container table {
+//                           table-layout: fixed;
+//                         }
+                        
+//                         * {
+//                           line-height: inherit;
+//                         }
+                        
+//                         a[x-apple-data-detectors='true'] {
+//                           color: inherit !important;
+//                           text-decoration: none !important;
+//                         }
+                        
+//                         </style>
+                          
+                          
+                        
+//                         <!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]-->
+                        
+//                         </head>
+                        
+//                         <body class="clean-body u_body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #ffffff;color: #000000">
+//                           <!--[if IE]><div class="ie-container"><![endif]-->
+//                           <!--[if mso]><div class="mso-container"><![endif]-->
+//                           <table style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #ffffff;width:100%" cellpadding="0" cellspacing="0">
+//                           <tbody>
+//                           <tr style="vertical-align: top">
+//                             <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+//                             <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: #ffffff;"><![endif]-->
+                            
+                        
+//                         <div class="u-row-container" style="padding: 0px;background-color: transparent">
+//                           <div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 650px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #dff1ff;">
+//                             <div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">
+//                               <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:650px;"><tr style="background-color: #dff1ff;"><![endif]-->
+                              
+//                         <!--[if (mso)|(IE)]><td align="center" width="650" style="background-color: #ffffff;width: 650px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->
+//                         <div class="u-col u-col-100" style="max-width: 320px;min-width: 650px;display: table-cell;vertical-align: top;">
+//                           <div style="background-color: #ffffff;width: 100% !important;">
+//                           <!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->
+                          
+//                         <table style="font-family:'Montserrat',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+//                           <tbody>
+//                             <tr>
+//                               <td style="overflow-wrap:break-word;word-break:break-word;padding:13px 0px 15px;font-family:'Montserrat',sans-serif;" align="left">
+                                
+//                         <table width="100%" cellpadding="0" cellspacing="0" border="0">
+//                           <tr>
+//                             <td style="padding-right: 0px;padding-left: 0px;" align="center">
+                             
+//                             <img align="center" border="0"
+//                             src="https://res.cloudinary.com/listyourpics/image/upload/v1653630166/i0fugotwu56jouwyrmje.png"
+//                             alt="Image" title="Image"
+//                             style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 54%;max-width: 100px;"
+//                             width="100" />
+                              
+//                             </td>
+//                           </tr>
+//                         </table>
+                        
+//                               </td>
+//                             </tr>
+//                           </tbody>
+//                         </table>
+                        
+//                           <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
+//                           </div>
+//                         </div>
+//                         <!--[if (mso)|(IE)]></td><![endif]-->
+//                               <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+//                             </div>
+//                           </div>
+//                         </div>
+                        
+                        
+                        
+//                         <div class="u-row-container" style="padding: 0px;background-color: transparent">
+//                           <div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 650px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #f3fbfd;">
+//                             <div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">
+//                               <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:650px;"><tr style="background-color: #f3fbfd;"><![endif]-->
+                              
+//                         <!--[if (mso)|(IE)]><td align="center" width="650" style="width: 650px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->
+//                         <div class="u-col u-col-100" style="max-width: 320px;min-width: 650px;display: table-cell;vertical-align: top;">
+//                           <div style="width: 100% !important;">
+//                           <!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->
+                          
+//                         <table style="font-family:'Montserrat',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+//                           <tbody>
+//                             <tr>
+//                               <td style="overflow-wrap:break-word;word-break:break-word;padding:40px 10px 10px;font-family:'Montserrat',sans-serif;" align="left">
+                                
+//                           <div style="color: #1b262c; line-height: 140%; text-align: center; word-wrap: break-word;">
+//                             <p style="font-size: 14px; line-height: 140%;"><strong><span style="font-size: 24px; line-height: 33.6px;">Welcome to ListYourPics</span></strong></p>
+//                           </div>
+                        
+//                               </td>
+//                             </tr>
+//                           </tbody>
+//                         </table>
+                        
+//                         <table style="font-family:'Montserrat',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+//                           <tbody>
+//                             <tr>
+//                               <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 50px 20px;font-family:'Montserrat',sans-serif;" align="left">
+                                
+//                           <div style="color: #1b262c; line-height: 140%; text-align: left; word-wrap: break-word;">
+//                             <p style="font-size: 14px; line-height: 140%;">
+//                             Dear ${userName},
+//                             <br><br>
+//                             OTP for your E-mail verification is  ${text}. Please use this  OTP (One-Time-Password) to login to your own ListYourPics and access the unlimited possibilities of ListYourPics.
+//                             <br><br>
+//                             This OTP is valid for the next 05 minutes and can be used only once.<br><br>
+                    
+//                             <br><br>
+//                             Thanks and regards <br>
+//                             Team Listyourpic
+//                             </p>
+//                           </div>
+                        
+//                               </td>
+//                             </tr>
+//                           </tbody>
+//                         </table>
+                        
+//                           <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
+//                           </div>
+//                         </div>
+//                         <!--[if (mso)|(IE)]></td><![endif]-->
+//                               <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+//                             </div>
+//                           </div>
+//                         </div>
+                        
+                        
+                        
+//                         <div class="u-row-container" style="padding: 0px;background-color: transparent">
+//                           <div class="u-row" style="Margin: 0 auto;min-width: 320px;max-width: 650px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #151418;">
+//                             <div style="border-collapse: collapse;display: table;width: 100%;background-color: transparent;">
+//                               <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:650px;"><tr style="background-color: #151418;"><![endif]-->
+                              
+//                         <!--[if (mso)|(IE)]><td align="center" width="650" style="width: 650px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;" valign="top"><![endif]-->
+//                         <div class="u-col u-col-100" style="max-width: 320px;min-width: 650px;display: table-cell;vertical-align: top;">
+//                           <div style="width: 100% !important;">
+//                           <!--[if (!mso)&(!IE)]><!--><div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->
+                          
+//                         <table style="font-family:'Montserrat',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+//                           <tbody>
+//                             <tr>
+//                               <td style="overflow-wrap:break-word;word-break:break-word;padding:18px;font-family:'Montserrat',sans-serif;" align="left">
+                                
+//                           <div style="color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word;">
+//                             <p dir="rtl" style="font-size: 14px; line-height: 140%;"><span style="font-size: 14px; line-height: 19.6px;">Copyright @ 2022 ListYourPics | All RIghts Reserved</span></p>
+//                           </div>
+                        
+//                               </td>
+//                             </tr>
+//                           </tbody>
+//                         </table>
+                        
+//                           <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
+//                           </div>
+//                         </div>
+//                         <!--[if (mso)|(IE)]></td><![endif]-->
+//                               <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+//                             </div>
+//                           </div>
+//                         </div>
+                        
+                        
+//                             <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+//                             </td>
+//                           </tr>
+//                           </tbody>
+//                           </table>
+//                           <!--[if mso]></div><![endif]-->
+//                           <!--[if IE]></div><![endif]-->
+//                         </body>
+//                         </html>`
+
+//                         let options = { format: 'A4' };
+//                         let file = { content: html };
+//                         html_to_pdf.generatePdf(file, options).then(async pdfBuffer => {
+//                                 let transporter = nodemailer.createTransport({
+//                                         service: 'gmail',
+//                                         auth: {
+//                                                 "user": "krishvapes@gmail.com",
+//                                                 "pass": "fggmdyhrilxhmyig"
+//                                         }
+//                                 });
+//                                 var mailOptions = {
+//                                         from: "<do_not_reply@gmail.com>",
+//                                         to: `vcjagal1994@gmail.com`,
+//                                         subject: 'PDF Attachment',
+//                                         text: 'Please find the attached PDF.',
+//                                         attachments: {
+//                                                 filename: 'document.pdf',
+//                                                 content: pdfBuffer,
+//                                                 contentType: 'application/pdf',
+//                                         },
+//                                 };
+//                                 let info = await transporter.sendMail(mailOptions);
+//                                 if (info) {
+//                                         var mailOptions1 = {
+//                                                 from: "<do_not_reply@gmail.com>",
+//                                                 to: `krishvapes@gmail.com`,
+//                                                 subject: 'Order Received',
+//                                                 text: `New order has been recived orderId`,
+//                                         };
+//                                         let info1 = await transporter.sendMail(mailOptions1);
+//                                         if (info1) {
+//                                                 res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+//                                         }
+//                                 } else {
+//                                         res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+//                                 }
+//                         });
+//                 } else {
+//                         return res.status(404).json({ message: "No data found", data: {} });
+//                 }
+
+
+//         } catch (error) {
+//                 console.log(error);
+//                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
+//         }
+// };
