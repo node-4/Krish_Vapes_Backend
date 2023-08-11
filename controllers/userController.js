@@ -1330,7 +1330,7 @@ exports.successOrder = async (req, res) => {
                         });
                         var mailOptions = {
                                 from: "<do_not_reply@gmail.com>",
-                                to: `vcjagal1994@gmail.com`,
+                                to: `${user.email}`,
                                 subject: 'PDF Attachment',
                                 text: 'Please find the attached PDF.',
                                 attachments: {
