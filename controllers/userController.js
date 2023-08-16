@@ -359,7 +359,7 @@ exports.addToCart = async (req, res) => {
                                                                                         if (findColor.colorSize.length > 0) {
                                                                                                 for (let i = 0; i < findColor.colorSize.length; i++) {
                                                                                                         if ((findColor.colorSize[i].size == req.body.size) == true) {
-                                                                                                                let price, discount, delivery;
+                                                                                                                let price, discount = 0, delivery;
                                                                                                                 if (findProduct.discount == true) {
                                                                                                                         price = findProduct.discountPrice;
                                                                                                                         discount = findProduct.price - findProduct.discountPrice;
@@ -397,14 +397,18 @@ exports.addToCart = async (req, res) => {
                                                                                                                 let paidAmount = Number(b) + Number(d);
                                                                                                                 let x = Number(findCart.discount).toFixed(2);
                                                                                                                 let z = Number(x) + Number(discount).toFixed(2);
-                                                                                                                if (paidAmount > 250) {
+                                                                                                                if (totalAmount > 250) {
                                                                                                                         delivery = "0";
-                                                                                                                        paidAmount = paidAmount + Number(delivery);
+                                                                                                                        paidAmount = totalAmount + Number(delivery) + Number(productTotalTax);
                                                                                                                 } else {
                                                                                                                         delivery = "5.99";
-                                                                                                                        paidAmount = paidAmount + Number(delivery);
+                                                                                                                        paidAmount = totalAmount + Number(delivery) + Number(productTotalTax);
                                                                                                                 }
-                                                                                                                let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { delivery: delivery, totalAmount: totalAmount, totalItem: totalItem, discount: z, paidAmount: paidAmount, tax: totalTax }, $push: { products: obj } }, { new: true })
+                                                                                                                if (z == (null || undefined)) {
+                                                                                                                        z = 0;
+                                                                                                                }
+                                                                                                                let totalAmount1 = Number(totalAmount).toFixed(2);
+                                                                                                                let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { delivery: delivery, totalAmount: totalAmount1, totalItem: totalItem, discount: z, paidAmount: paidAmount, tax: totalTax }, $push: { products: obj } }, { new: true })
                                                                                                                 return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                                         }
                                                                                                 }
@@ -461,6 +465,9 @@ exports.addToCart = async (req, res) => {
                                                                                                 delivery = "5.99";
                                                                                                 paidAmount = totalAmount + Number(delivery) + Number(productTotalTax);
                                                                                         }
+                                                                                        if (z == (null || undefined)) {
+                                                                                                z = 0;
+                                                                                        }
                                                                                         let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { discount: z, delivery: delivery, totalAmount: Number(totalAmount).toFixed(2), totalItem: totalItem, paidAmount: paidAmount, tax: Number(totalTax) }, $push: { products: obj } }, { new: true })
                                                                                         return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                 }
@@ -485,6 +492,9 @@ exports.addToCart = async (req, res) => {
                                                                                 tax = tax;
                                                                         }
                                                                         totalTax = totalTax + productTotalTax;
+                                                                        if (discount == (null || undefined)) {
+                                                                                discount = 0;
+                                                                        }
                                                                         let productPaid = (Number((price * req.body.quantity).toFixed(2)) + Number(productTotalTax))
                                                                         let obj = {
                                                                                 categoryId: findProduct.categoryId,
@@ -569,6 +579,9 @@ exports.addToCart = async (req, res) => {
                                                                                                 let totalAmount = Number((price * req.body.quantity).toFixed(2));
                                                                                                 let paidAmount = productPaid;
                                                                                                 let totalItem = findCart.totalItem + 1;
+                                                                                                if (discount == (null || undefined)) {
+                                                                                                        discount = 0;
+                                                                                                }
                                                                                                 let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { delivery: delivery, discount: discount, totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount, tax: Number(totalTax).toFixed(2) }, $push: { products: obj } }, { new: true })
                                                                                                 return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                         }
@@ -596,7 +609,6 @@ exports.addToCart = async (req, res) => {
                                                                         }
                                                                         totalTax = totalTax + productTotalTax;
                                                                         let productPaid = (Number((price * req.body.quantity).toFixed(2)) + Number(productTotalTax))
-
                                                                         let obj = {
                                                                                 categoryId: findProduct.categoryId,
                                                                                 subcategoryId: findProduct.subcategoryId,
@@ -620,6 +632,9 @@ exports.addToCart = async (req, res) => {
                                                                         let totalAmount = Number((price * req.body.quantity).toFixed(2));
                                                                         let paidAmount = Number(productPaid).toFixed(2);
                                                                         let totalItem = findCart.totalItem + 1;
+                                                                        if (discount == (null || undefined)) {
+                                                                                discount = 0;
+                                                                        }
                                                                         let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { delivery: delivery, discount: discount, totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount, tax: Number(totalTax) }, $push: { products: obj } }, { new: true })
                                                                         return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                 }
@@ -668,6 +683,9 @@ exports.addToCart = async (req, res) => {
                                                         let totalAmount = Number((price * req.body.quantity).toFixed(2));
                                                         let paidAmount = Number(productPaid).toFixed(2);
                                                         let totalItem = findCart.totalItem + 1;
+                                                        if (discount == (null || undefined)) {
+                                                                discount = 0;
+                                                        }
                                                         let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { discount: discount, delivery: delivery, totalAmount: totalAmount, totalItem: totalItem, paidAmount: paidAmount, tax: Number(totalTax) }, $push: { products: obj } }, { new: true })
                                                         return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                 }
@@ -733,6 +751,9 @@ exports.addToCart = async (req, res) => {
                                                                                                 delivery = "5.99";
                                                                                                 productPaid = productPaid + Number(delivery);
                                                                                         }
+                                                                                        if (discount == (null || undefined)) {
+                                                                                                discount = 0;
+                                                                                        }
                                                                                         let cartObj = {
                                                                                                 userId: user._id,
                                                                                                 products: products,
@@ -768,6 +789,9 @@ exports.addToCart = async (req, res) => {
                                                                 } else {
                                                                         tax = tax;
                                                                 }
+                                                                if (discount == (null || undefined)) {
+                                                                        discount = 0;
+                                                                }
                                                                 totalTax = totalTax + productTotalTax;
                                                                 let productPaid = (Number((price * req.body.quantity).toFixed(2)) + Number(productTotalTax))
                                                                 let obj = {
@@ -790,6 +814,9 @@ exports.addToCart = async (req, res) => {
                                                                 } else {
                                                                         delivery = "5.99";
                                                                         productPaid = productPaid + Number(delivery);
+                                                                }
+                                                                if (discount == (null || undefined)) {
+                                                                        discount = 0;
                                                                 }
                                                                 let cartObj = {
                                                                         userId: user._id,
@@ -826,7 +853,10 @@ exports.addToCart = async (req, res) => {
                                                         tax = tax;
                                                 }
                                                 totalTax = totalTax + productTotalTax;
-                                                let productPaid = (Number((price * req.body.quantity).toFixed(2)) + Number(productTotalTax))
+                                                let productPaid = (Number((price * req.body.quantity).toFixed(2)) + Number(productTotalTax));
+                                                if (discount == (null || undefined)) {
+                                                        discount = 0;
+                                                }
                                                 let obj = {
                                                         categoryId: findProduct.categoryId,
                                                         subcategoryId: findProduct.subcategoryId,
