@@ -1219,12 +1219,12 @@ exports.updateQuantity = async (req, res) => {
                                                 }
                                                 if (paidAmount > 250) {
                                                         delivery = "0";
-                                                        paidAmount = paidAmount + Number(delivery);
+                                                        paidAmount = Number(paidAmount) + Number(delivery);
                                                 } else {
                                                         delivery = "5.99";
-                                                        paidAmount = paidAmount + Number(delivery);
+                                                        paidAmount = Number(paidAmount) + Number(delivery);
                                                 }
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { delivery: delivery, totalAmount: totalAmount, paidAmount: paidAmount, tax: totalTax, totalItem: update.products.length } }, { new: true });
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { delivery: delivery, totalAmount: Number(totalAmount).toFixed(2), paidAmount: Number0(paidAmount).toFixed(2), tax: totalTax, totalItem: update.products.length } }, { new: true });
                                                 return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
                                         }
                                 }
