@@ -1599,18 +1599,18 @@ exports.paginateAllOrdersSearch = async (req, res) => {
                 console.log("------------------------");
                 const { search, fromDate, toDate, page, limit } = req.query;
                 let query = { orderStatus: "confirmed" };
-                if (search != (null || undefined)) {
+                if (search != 'null') {
                         query.$or = [
                                 { "orderId": { $regex: req.query.search, $options: "i" }, },
                         ]
                 }
-                if ((fromDate != (null || undefined)) && (toDate == (null || undefined))) {
+                if ((fromDate != 'null') && (toDate == 'null')) {
                         query.createdAt = { $gte: fromDate };
                 }
-                if ((fromDate == (null || undefined)) && (toDate != (null || undefined))) {
+                if ((fromDate == 'null') && (toDate != 'null')) {
                         query.createdAt = { $lte: toDate };
                 }
-                if ((fromDate != (null || undefined)) && (toDate != (null || undefined))) {
+                if ((fromDate != 'null') && (toDate != 'null')) {
                         query.$and = [
                                 { createdAt: { $gte: fromDate } },
                                 { createdAt: { $lte: toDate } },
