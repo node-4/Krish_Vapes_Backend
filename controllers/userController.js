@@ -1067,7 +1067,32 @@ exports.checkout = async (req, res) => {
 };
 exports.getAllOrders = async (req, res, next) => {
         try {
-                const orders = await userOrders.find({ userId: req.user._id, orderStatus: "confirmed" }).populate('Orders')
+                const orders = await userOrders.find({ userId: req.user._id, orderStatus: "confirmed" })
+                        .populate([{ path: 'userId', select: 'fullName firstName lastName courtesyTitle email' }, {
+                                path: 'Orders',
+                                populate: [
+                                        {
+                                                path: "categoryId",
+                                                model: "Category",
+                                                select: "name image",
+                                        },
+                                        {
+                                                path: "subcategoryId",
+                                                model: "subcategory",
+                                                select: "name categoryId",
+                                        },
+                                        {
+                                                path: "productId",
+                                                model: "Product",
+                                                select: "categoryId subcategoryId name description price quantity discount discountPrice taxInclude colorActive tax ratings colors numOfReviews img publicId",
+                                        },
+                                        {
+                                                path: "productColorId",
+                                                model: "ProductColor",
+                                                select: "productId size img publicId color uantity colorSize",
+                                        },
+                                ],
+                        }])
                 if (orders.length == 0) {
                         return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
                 }
@@ -1530,12 +1555,16 @@ exports.successOrder = async (req, res) => {
                                 };
                                 let info1 = await transporter.sendMail(mailOptions1);
                                 if (info1) {
-                                        await Cart.findOneAndDelete({ userId: req.user._id });
-                                        res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                                        let deleteCart = await Cart.findOneAndDelete({ userId: findUserOrder.userId });
+                                        if (deleteCart) {
+                                                res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                                        }
                                 }
                         } else {
-                                await Cart.findOneAndDelete({ userId: req.user._id });
-                                res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                                let deleteCart = await Cart.findOneAndDelete({ userId: findUserOrder.userId });
+                                if (deleteCart) {
+                                        res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                                }
                         }
                 } else {
                         return res.status(404).json({ message: "No data found", data: {} });
