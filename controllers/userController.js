@@ -383,7 +383,7 @@ exports.addToCart = async (req, res) => {
                                                                                                                         productPrice: price,
                                                                                                                         quantity: req.body.quantity,
                                                                                                                         tax: tax,
-                                                                                                                        discount: discount,
+                                                                                                                        discount: Number(discount).toFixed(2),
                                                                                                                         totalTax: productTotalTax,
                                                                                                                         total: Number((price * req.body.quantity).toFixed(2)),
                                                                                                                         paidAmount: productPaid,
@@ -444,7 +444,7 @@ exports.addToCart = async (req, res) => {
                                                                                                 productPrice: price,
                                                                                                 quantity: req.body.quantity,
                                                                                                 tax: tax,
-                                                                                                discount: discount,
+                                                                                                discount: Number(discount).toFixed(2),
                                                                                                 totalTax: productTotalTax,
                                                                                                 total: Number((price * req.body.quantity).toFixed(2)),
                                                                                                 paidAmount: Number(productPaid).toFixed(2),
@@ -507,7 +507,7 @@ exports.addToCart = async (req, res) => {
                                                                                 quantity: req.body.quantity,
                                                                                 tax: tax,
                                                                                 totalTax: productTotalTax,
-                                                                                discount: discount,
+                                                                                discount: Number(discount).toFixed(2),
                                                                                 total: Number((price * req.body.quantity).toFixed(2)),
                                                                                 paidAmount: productPaid,
                                                                         }
@@ -529,7 +529,7 @@ exports.addToCart = async (req, res) => {
                                                                                 }
                                                                                 let totalAmount1 = Number(totalAmount).toFixed(2);
                                                                                 let paidAmount1 = Number(paidAmount).toFixed(2);
-                                                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { discount: discount, delivery: delivery, totalAmount: totalAmount1, paidAmount: paidAmount1, tax: totalTax1, totalItem: update.products.length } }, { new: true });
+                                                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { discount: Number(discount).toFixed(2), delivery: delivery, totalAmount: totalAmount1, paidAmount: paidAmount1, tax: totalTax1, totalItem: update.products.length } }, { new: true });
                                                                                 return res.status(200).json({ status: 200, message: "Product add to cart.", data: update1 })
                                                                         }
                                                                 }
@@ -569,7 +569,7 @@ exports.addToCart = async (req, res) => {
                                                                                                         productPrice: price,
                                                                                                         quantity: req.body.quantity,
                                                                                                         tax: tax,
-                                                                                                        discount: discount,
+                                                                                                        discount: Number(discount).toFixed(2),
                                                                                                         totalTax: productTotalTax,
                                                                                                         total: Number((price * req.body.quantity).toFixed(2)),
                                                                                                         paidAmount: productPaid,
@@ -589,7 +589,7 @@ exports.addToCart = async (req, res) => {
                                                                                                 }
                                                                                                 let totalAmount1 = Number(totalAmount).toFixed(2);
                                                                                                 let paidAmount1 = Number(paidAmount).toFixed(2);
-                                                                                                let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { delivery: delivery, discount: discount, totalAmount: totalAmount1, totalItem: totalItem, paidAmount: paidAmount1, tax: Number(totalTax).toFixed(2) }, $push: { products: obj } }, { new: true })
+                                                                                                let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { delivery: delivery, discount: Number(discount).toFixed(2), totalAmount: totalAmount1, totalItem: totalItem, paidAmount: paidAmount1, tax: Number(totalTax).toFixed(2) }, $push: { products: obj } }, { new: true })
                                                                                                 return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                                         }
                                                                                 }
@@ -624,7 +624,7 @@ exports.addToCart = async (req, res) => {
                                                                                 productPrice: price,
                                                                                 quantity: req.body.quantity,
                                                                                 tax: tax,
-                                                                                discount: discount,
+                                                                                discount: Number(discount).toFixed(2),
                                                                                 totalTax: productTotalTax,
                                                                                 total: Number((price * req.body.quantity).toFixed(2)),
                                                                                 paidAmount: Number(productPaid).toFixed(2),
@@ -644,7 +644,7 @@ exports.addToCart = async (req, res) => {
                                                                         if (discount == (null || undefined)) {
                                                                                 discount = 0;
                                                                         }
-                                                                        let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { delivery: delivery, discount: discount, totalAmount: totalAmount1, totalItem: totalItem, paidAmount: paidAmount1, tax: Number(totalTax) }, $push: { products: obj } }, { new: true })
+                                                                        let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { delivery: delivery, discount: Number(discount).toFixed(2), totalAmount: totalAmount1, totalItem: totalItem, paidAmount: paidAmount1, tax: Number(totalTax) }, $push: { products: obj } }, { new: true })
                                                                         return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                                 }
                                                         }
@@ -677,7 +677,7 @@ exports.addToCart = async (req, res) => {
                                                                 productPrice: price,
                                                                 quantity: req.body.quantity,
                                                                 tax: tax,
-                                                                discount: discount,
+                                                                discount: Number(discount).toFixed(2),
                                                                 totalTax: productTotalTax,
                                                                 total: Number((price * req.body.quantity).toFixed(2)),
                                                                 paidAmount: productPaid,
@@ -697,7 +697,7 @@ exports.addToCart = async (req, res) => {
                                                         if (discount == (null || undefined)) {
                                                                 discount = 0;
                                                         }
-                                                        let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { discount: discount, delivery: delivery, totalAmount: totalAmount1, totalItem: totalItem, paidAmount: paidAmount1, tax: Number(totalTax) }, $push: { products: obj } }, { new: true })
+                                                        let updateCart = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { discount: Number(discount).toFixed(2), delivery: delivery, totalAmount: totalAmount1, totalItem: totalItem, paidAmount: paidAmount1, tax: Number(totalTax) }, $push: { products: obj } }, { new: true })
                                                         return res.status(200).send({ message: "Product add to cart.", data: updateCart, });
                                                 }
                                         }
@@ -749,7 +749,7 @@ exports.addToCart = async (req, res) => {
                                                                                                 quantity: req.body.quantity,
                                                                                                 tax: tax,
                                                                                                 totalTax: productTotalTax,
-                                                                                                discount: discount,
+                                                                                                discount: Number(discount).toFixed(2),
                                                                                                 total: Number((price * req.body.quantity).toFixed(2)),
                                                                                                 paidAmount: productPaid,
                                                                                         }
@@ -769,7 +769,7 @@ exports.addToCart = async (req, res) => {
                                                                                                 userId: user._id,
                                                                                                 products: products,
                                                                                                 tax: Number(totalTax).toFixed(2),
-                                                                                                discount: discount,
+                                                                                                discount: Number(discount).toFixed(2),
                                                                                                 totalAmount: Number((price * req.body.quantity).toFixed(2)),
                                                                                                 paidAmount: Number(productPaid).toFixed(2),
                                                                                                 delivery: Number(delivery),
@@ -812,7 +812,7 @@ exports.addToCart = async (req, res) => {
                                                                         productColorId: findColor._id,
                                                                         productPrice: price,
                                                                         quantity: req.body.quantity,
-                                                                        discount: discount,
+                                                                        discount: Number(discount).toFixed(2),
                                                                         tax: tax,
                                                                         totalTax: productTotalTax,
                                                                         total: Number((price * req.body.quantity).toFixed(2)),
@@ -833,7 +833,7 @@ exports.addToCart = async (req, res) => {
                                                                         userId: user._id,
                                                                         products: products,
                                                                         tax: Number(totalTax).toFixed(2),
-                                                                        discount: discount,
+                                                                        discount: Number(discount).toFixed(2),
                                                                         delivery: delivery,
                                                                         totalAmount: Number((price * req.body.quantity).toFixed(2)),
                                                                         paidAmount: Number(productPaid).toFixed(2),
@@ -876,7 +876,7 @@ exports.addToCart = async (req, res) => {
                                                         quantity: req.body.quantity,
                                                         tax: tax,
                                                         totalTax: productTotalTax,
-                                                        discount: discount,
+                                                        discount: Number(discount).toFixed(2),
                                                         total: Number((price * req.body.quantity).toFixed(2)),
                                                         paidAmount: productPaid,
                                                 }
@@ -892,7 +892,7 @@ exports.addToCart = async (req, res) => {
                                                         userId: user._id,
                                                         products: products,
                                                         tax: Number(totalTax).toFixed(2),
-                                                        discount: discount,
+                                                        discount: Number(discount).toFixed(2),
                                                         totalAmount: Number((price * req.body.quantity).toFixed(2)),
                                                         paidAmount: Number(productPaid).toFixed(2),
                                                         delivery: delivery,
