@@ -923,7 +923,7 @@ exports.getCart = async (req, res) => {
                         if (findCart) {
                                 return res.status(200).send({ status: 200, message: "Cart detail found.", data: findCart });
                         } else {
-                                return res.status(404).send({ status: 404, message: "Cart detail not found.", data: {} });
+                                return res.status(200).send({ status: 200, message: "Cart detail not found.", data: {} });
                         }
                 }
         } catch (error) {
