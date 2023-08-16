@@ -34,6 +34,9 @@ const DocumentSchema = schema({
                 tax: {
                         type: String,
                 },
+                discount: {
+                        type: String,
+                },
                 totalTax: {
                         type: String,
                 },
@@ -50,7 +53,10 @@ const DocumentSchema = schema({
         tax: {
                 type: String
         },
-        discountPrice: {
+        discount: {
+                type: String,
+        },
+        delivery: {
                 type: String,
         },
         paidAmount: {

@@ -27,5 +27,5 @@ router.get("/user/viewOrder/:id", [authJwt.verifyToken], auth.getOrderbyId);
 router.post("/user/placeOrder/:orderId", [authJwt.verifyToken], auth.placeOrder);
 router.get("/user/successOrder/:orderId", [authJwt.verifyToken], auth.successOrder);
 router.get("/user/cancelOrder/:orderId", [authJwt.verifyToken], auth.cancelOrder);
-// router.get("/user/successOrder1/:orderId", [authJwt.verifyToken], auth.successOrder2);
+router.get("/user/successOrder1/:orderId", [authJwt.verifyToken], auth.successOrder2);
 module.exports = router;

@@ -38,6 +38,9 @@ const DocumentSchema = schema({
   total: {
     type: String,
   },
+  delivery: {
+    type: String
+  },
   paidAmount: {
     type: String,
   },
