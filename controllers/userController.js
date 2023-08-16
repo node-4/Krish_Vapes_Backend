@@ -923,12 +923,12 @@ exports.getCart = async (req, res) => {
                         if (findCart) {
                                 return res.status(200).send({ status: 200, message: "Cart detail found.", data: findCart });
                         } else {
-                                return res.status(400).send({ status: 400, message: "Cart detail not found.", data: {} });
+                                return res.status(404).send({ status: 404, message: "Cart detail not found.", data: {} });
                         }
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.checkout = async (req, res) => {
