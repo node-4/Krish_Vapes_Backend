@@ -1211,20 +1211,20 @@ exports.updateQuantity = async (req, res) => {
                                 if (count == productLength) {
                                         let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
                                         if (update) {
-                                                let totalAmount = 0, totalTax = 0, paidAmount = 0, delivery = 0;
+                                                let totalAmount = 0, totalTax = 0, paidAmount2 = 0, delivery = 0;
                                                 for (let j = 0; j < update.products.length; j++) {
                                                         totalAmount = totalAmount + update.products[j].total;
                                                         totalTax = totalTax + update.products[j].totalTax;
-                                                        paidAmount = paidAmount + update.products[j].paidAmount;
+                                                        paidAmount2 = paidAmount2 + update.products[j].paidAmount;
                                                 }
-                                                if (paidAmount > 250) {
+                                                if (paidAmount2 > 250) {
                                                         delivery = "0";
-                                                        paidAmount = Number(paidAmount) + Number(delivery);
+                                                        paidAmount2 = Number(paidAmount2) + Number(delivery);
                                                 } else {
                                                         delivery = "5.99";
-                                                        paidAmount = Number(paidAmount) + Number(delivery);
+                                                        paidAmount2 = Number(paidAmount2) + Number(delivery);
                                                 }
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { delivery: delivery, totalAmount: Number(totalAmount).toFixed(2), paidAmount: Number0(paidAmount).toFixed(2), tax: totalTax, totalItem: update.products.length } }, { new: true });
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { delivery: delivery, totalAmount: Number(totalAmount).toFixed(2), paidAmount: Number0(paidAmount2).toFixed(2), tax: totalTax, totalItem: update.products.length } }, { new: true });
                                                 return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
                                         }
                                 }
