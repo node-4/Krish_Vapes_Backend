@@ -1259,12 +1259,18 @@ exports.deleteProductfromCart = async (req, res) => {
                                                 for (let j = 0; j < update.products.length; j++) {
                                                         totals = totals + update.products[j].total
                                                 }
-                                                if (totals > 250) {
-                                                        delivery = "0";
-                                                        paidAmount = totals + Number(delivery);
+                                                if (update.products.length > 0) {
+                                                        if (totals > 250) {
+                                                                delivery = "0";
+                                                                paidAmount = totals + Number(delivery);
+                                                        } else {
+                                                                delivery = "5.99";
+                                                                paidAmount = totals + Number(delivery);
+                                                        }
                                                 } else {
-                                                        delivery = "5.99";
-                                                        paidAmount = totals + Number(delivery);
+                                                        delivery = '0';
+                                                        paidAmount = '0';
+                                                        totals: "0";
                                                 }
                                                 console.log(totals);
                                                 let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, delivery: delivery, paidAmount: paidAmount, totalItem: products.length } }, { new: true });
