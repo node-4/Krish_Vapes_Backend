@@ -1599,18 +1599,18 @@ exports.paginateAllOrdersSearch = async (req, res) => {
                 console.log("------------------------");
                 const { search, fromDate, toDate, page, limit } = req.query;
                 let query = { orderStatus: "confirmed" };
-                if (search) {
+                if (search != (null || undefined)) {
                         query.$or = [
                                 { "orderId": { $regex: req.query.search, $options: "i" }, },
                         ]
                 }
-                if (fromDate && !toDate) {
+                if ((fromDate != (null || undefined)) && (toDate == (null || undefined))) {
                         query.createdAt = { $gte: fromDate };
                 }
-                if (!fromDate && toDate) {
+                if ((fromDate == (null || undefined)) && (toDate != (null || undefined))) {
                         query.createdAt = { $lte: toDate };
                 }
-                if (fromDate && toDate) {
+                if ((fromDate != (null || undefined)) && (toDate != (null || undefined))) {
                         query.$and = [
                                 { createdAt: { $gte: fromDate } },
                                 { createdAt: { $lte: toDate } },
@@ -1648,7 +1648,6 @@ exports.getOrderbyId = async (req, res, next) => {
                 res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
-
 exports.createBanner1 = async (req, res) => {
         try {
                 if (req.file.path) {
