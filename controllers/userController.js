@@ -88,7 +88,7 @@ exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
                 let userEmail = email.toLowerCase();
-                const user = await User.findOne({ email: userEmail, userType: "USER" });
+                const user = await User.findOne({ $or: [{ email: userEmail }, { email: email }], userType: "USER" });
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered" });
                 } else {
