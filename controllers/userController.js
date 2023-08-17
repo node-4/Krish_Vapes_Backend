@@ -100,7 +100,8 @@ exports.signin = async (req, res) => {
                                         return res.status(401).send({ status: 401, message: "Wrong password" });
                                 }
                                 const accessToken = jwt.sign({ id: user._id }, authConfig.secret, { expiresIn: authConfig.accessTokenTime, });
-                                return res.status(200).send({ status: 200, data: user, accessToken: accessToken });
+                                let findAddress = await userAddress.findOne({ userId: user._id, type: "Registration" });
+                                return res.status(200).send({ status: 200, data: user, Address: findAddress, accessToken: accessToken });
                         }
                 }
 

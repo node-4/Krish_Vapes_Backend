@@ -90,7 +90,8 @@ exports.viewUser = async (req, res) => {
                 if (!data) {
                         return res.status(400).send({ msg: "not found" });
                 }
-                return res.status(200).send({ msg: "Data found successfully", data: data });
+                let findAddress = await userAddress.findOne({ userId: data._id, type: "Registration" });
+                return res.status(200).send({ msg: "Data found successfully", data: data, address: findAddress });
         } catch (err) {
                 console.log(err.message);
                 return res.status(500).send({ msg: "internal server error", error: err.message, });
