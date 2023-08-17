@@ -1166,7 +1166,7 @@ exports.getBottomBanner = async (req, res) => {
 };
 exports.getIdBanner = async (req, res) => {
         try {
-                const data = await banner.findById(req.params.id);
+                const data = await banner.findById(req.params.id).populate('productId');
                 if (!data) {
                         return res.status(400).send({ msg: "not found" });
                 }
