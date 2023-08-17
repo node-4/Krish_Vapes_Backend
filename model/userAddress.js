@@ -26,6 +26,11 @@ var userSchema = new schema(
                         minLength: 8,
                         maxLength: 12,
                 },
+                type: {
+                        type: String,
+                        enum: ["Registration", "Other"],
+                        default: "Other"
+                },
         },
         { timestamps: true }
 );

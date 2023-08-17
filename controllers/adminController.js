@@ -1090,15 +1090,30 @@ exports.editProductColorSize = async (req, res) => {
 };
 exports.createBanner = async (req, res) => {
         try {
-                let bannerImage;
+                let bannerImage, data;
                 if (req.file.path) {
                         bannerImage = req.file.path
                 }
-                const data = {
-                        bannerName: req.body.bannerName,
-                        bannerImage: bannerImage,
-                        position: req.body.position
-                };
+                if (req.body.productId != (null || undefined)) {
+                        const findProduct = await Product.findById({ _id: req.body.productId })
+                        if (!findProduct || findProduct.length === 0) {
+                                return res.status(400).send({ msg: "not found" });
+                        }
+                        data = {
+                                productId: findProduct._id,
+                                bannerName: req.body.bannerName,
+                                bannerImage: bannerImage,
+                                position: req.body.position,
+                                type: "Product"
+                        };
+                } else {
+                        data = {
+                                bannerName: req.body.bannerName,
+                                bannerImage: bannerImage,
+                                position: req.body.position,
+                                type: "Other"
+                        };
+                }
                 const Banner = await banner.create(data);
                 return res.status(200).json({ message: "Banner add successfully.", status: 200, data: Banner });
         } catch (error) {
@@ -1178,11 +1193,36 @@ exports.updateBanner = async (req, res) => {
                 if (!findData) {
                         return res.status(400).send({ msg: "not found" });
                 }
-                let bannerImage;
-                if (req.file.path) {
-                        bannerImage = req.file.path
+                let data;
+                if (req.body.productId != (null || undefined)) {
+                        const findProduct = await Product.findById({ _id: req.body.productId })
+                        if (!findProduct || findProduct.length === 0) {
+                                return res.status(400).send({ msg: "not found" });
+                        }
+                        let bannerImage;
+                        if (req.file.path) {
+                                bannerImage = req.file.path
+                        }
+                        data = {
+                                bannerName: req.body.bannerName || findData.bannerName,
+                                bannerImage: bannerImage || findData.bannerImage,
+                                position: req.body.position || findData.position,
+                                type: "Product" || findData.type,
+                                productId: findProduct._id || findData.productId,
+                        };
+                } else {
+                        let bannerImage;
+                        if (req.file.path) {
+                                bannerImage = req.file.path
+                        }
+                        data = {
+                                bannerName: req.body.bannerName || findData.bannerName,
+                                bannerImage: bannerImage || findData.bannerImage,
+                                position: req.body.position || findData.position,
+                                type: "Other" || findData.type,
+                                productId: findData.productId,
+                        };
                 }
-                const data = { bannerName: req.body.bannerName || findData.bannerName, bannerImage: bannerImage || findData.bannerImage, position: req.body.position || findData.position, };
                 const Banner = await banner.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
                 return res.status(200).json({ message: "Banner update successfully.", status: 200, data: Banner });
         } catch (error) {

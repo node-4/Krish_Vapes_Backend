@@ -58,6 +58,9 @@ var userSchema = new schema(
                 company: {
                         type: String,
                 },
+                registrationNo: {
+                        type: String,
+                },
                 vatNumber: {
                         type: String,
                         minLength: 5,

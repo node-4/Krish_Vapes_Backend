@@ -26,9 +26,10 @@ const puppeteer = require('puppeteer');
 // const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc'); // live
 const stripe = require("stripe")('sk_test_51NYCJcArS6Dr0SQY0UJ5ZOoiPHQ8R5jNOyCMOkjxpl4BHkG4DcAGAU8tjBw6TSOSfimDSELa6BVyCVSo9CGLXlyX00GkGDAQFo'); // test
 exports.registration = async (req, res) => {
-        const { courtesyTitle, dob, email, firstName, lastName, password, company, vatNumber, vatUsed, country, phone } = req.body;
+        const { courtesyTitle, dob, email, firstName, lastName, password, company, vatNumber, vatUsed, country, phone, registrationNo, address, addressComplement, city, pincode, addressCountry } = req.body;
         try {
-                let user = await User.findOne({ email: email, userType: "USER" });
+                let userEmail = email.toLowerCase();
+                let user = await User.findOne({ email: userEmail, userType: "USER" });
                 if (!user) {
                         let fullName = `${req.body.firstName} ${req.body.lastName}`;
                         if (vatUsed == "true") {
@@ -44,7 +45,7 @@ exports.registration = async (req, res) => {
                         }
                         req.body.courtesyTitle = courtesyTitle;
                         req.body.dob = dob;
-                        req.body.email = email;
+                        req.body.email = userEmail;
                         req.body.firstName = firstName;
                         req.body.lastName = lastName;
                         req.body.password = bcrypt.hashSync(password, 8);
@@ -56,8 +57,24 @@ exports.registration = async (req, res) => {
                         req.body.fullName = fullName;
                         req.body.userType = "USER";
                         req.body.status = "Pending"
+                        req.body.registrationNo = registrationNo;
                         const userCreate = await User.create(req.body);
-                        return res.status(200).send({ message: "registered successfully ", data: userCreate, });
+                        if (userCreate) {
+                                let obj = {
+                                        userId: userCreate._id,
+                                        address: address,
+                                        addressComplement: addressComplement,
+                                        city: city,
+                                        pincode: pincode,
+                                        country: addressCountry,
+                                        phone: phone,
+                                        type: "Registration"
+                                }
+                                const userCreate1 = await userAddress.create(obj);
+                                if (userCreate1) {
+                                        return res.status(200).send({ message: "registered successfully ", data: userCreate, });
+                                }
+                        }
                 } else {
                         console.log(user);
                         return res.status(409).send({ message: "Already Exist", data: [] });
@@ -70,7 +87,8 @@ exports.registration = async (req, res) => {
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
-                const user = await User.findOne({ email: email, userType: "USER" });
+                let userEmail = email.toLowerCase();
+                const user = await User.findOne({ email: userEmail, userType: "USER" });
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered" });
                 } else {
@@ -229,17 +247,21 @@ exports.updateAdress = async (req, res) => {
                         if (!findData) {
                                 return res.status(400).send({ msg: "not found" });
                         }
-                        let obj = {
-                                userId: user._id,
-                                address: address || findData.address,
-                                addressComplement: addressComplement || findData.addressComplement,
-                                city: city || findData.city,
-                                pincode: pincode || findData.pincode,
-                                country: country || findData.country,
-                                phone: phone || findData.phone
+                        if (findData.type == 'Registration') {
+                                return res.status(201).send({ message: "Registration address can not update.", data: {} });
+                        } else {
+                                let obj = {
+                                        userId: user._id,
+                                        address: address || findData.address,
+                                        addressComplement: addressComplement || findData.addressComplement,
+                                        city: city || findData.city,
+                                        pincode: pincode || findData.pincode,
+                                        country: country || findData.country,
+                                        phone: phone || findData.phone
+                                }
+                                const userCreate = await userAddress.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true })
+                                return res.status(200).send({ message: "Address update successfully.", data: userCreate });
                         }
-                        const userCreate = await userAddress.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true })
-                        return res.status(200).send({ message: "Address update successfully.", data: userCreate });
                 }
         } catch (err) {
                 console.log(err);
@@ -255,9 +277,14 @@ exports.deleteAdress = async (req, res) => {
                         const findData = await userAddress.findById(req.params.id);
                         if (!findData) {
                                 return res.status(400).send({ msg: "not found" });
+                        } else {
+                                if (findData.type == 'Registration') {
+                                        return res.status(201).send({ message: "Registration address not delete.", data: {} });
+                                } else {
+                                        const userCreate = await userAddress.findByIdAndDelete({ _id: findData._id })
+                                        return res.status(200).send({ message: "Address delete successfully.", data: {} });
+                                }
                         }
-                        const userCreate = await userAddress.findByIdAndDelete({ _id: findData._id })
-                        return res.status(200).send({ message: "Address delete successfully.", data: {} });
                 }
         } catch (err) {
                 console.log(err);
