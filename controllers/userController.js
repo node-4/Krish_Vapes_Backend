@@ -185,7 +185,7 @@ exports.getProfile = async (req, res) => {
 };
 exports.update = async (req, res) => {
         try {
-                const { firstName, lastName, email, dob, password, courtesyTitle, company, vatNumber } = req.body;
+                const { firstName, lastName, email, dob, password, courtesyTitle, company, vatNumber, phone, registrationNo } = req.body;
                 const user = await User.findById(req.user._id);
                 if (!user) {
                         return res.status(404).send({ message: "not found" });
@@ -197,7 +197,17 @@ exports.update = async (req, res) => {
                 user.courtesyTitle = courtesyTitle || user.courtesyTitle;
                 user.company = company || user.company;
                 user.vatNumber = vatNumber || user.vatNumber;
+                user.registrationNo = registrationNo || user.registrationNo;
                 user.fullName = `${firstName || user.firstName} ${lastName || user.lastName}`;
+                if (phone != (null || undefined)) {
+                        user.phone = phone || user.phone;
+                        let findAddress = await userAddress.findOne({ userId: user._id, type: "Registration" });
+                        if (findAddress) {
+                                await userAddress.findByIdAndUpdate({ _id: findAddress._id }, { $set: { phone: phone || findAddress.phone } }, { new: true })
+                        }
+                } else {
+                        user.phone = user.phone;
+                }
                 if (req.body.password) {
                         user.password = bcrypt.hashSync(password, 8) || user.password;
                 } else {
