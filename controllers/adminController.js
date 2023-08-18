@@ -1123,7 +1123,7 @@ exports.createBanner = async (req, res) => {
 };
 exports.getBanner = async (req, res) => {
         try {
-                const data = await banner.find({}).populate('productId');
+                const data = await banner.find({}).populate('subcategoryId');
                 if (data.length === 0) {
                         return res.status(400).send({ msg: "not found" });
                 }
@@ -1134,7 +1134,7 @@ exports.getBanner = async (req, res) => {
 };
 exports.getTopBanner = async (req, res) => {
         try {
-                const data = await banner.find({ position: "TOP" }).populate('productId');
+                const data = await banner.find({ position: "TOP" }).populate('subcategoryId');
                 if (data.length === 0) {
                         return res.status(400).send({ msg: "not found" });
                 }
@@ -1145,7 +1145,7 @@ exports.getTopBanner = async (req, res) => {
 };
 exports.getMidBanner = async (req, res) => {
         try {
-                const data = await banner.find({ position: "MID" }).populate('productId');
+                const data = await banner.find({ position: "MID" }).populate('subcategoryId');
                 if (data.length === 0) {
                         return res.status(400).send({ msg: "not found" });
                 }
@@ -1156,7 +1156,7 @@ exports.getMidBanner = async (req, res) => {
 };
 exports.getBottomBanner = async (req, res) => {
         try {
-                const data = await banner.find({ position: "BOTTOM" }).populate('productId');
+                const data = await banner.find({ position: "BOTTOM" }).populate('subcategoryId');
                 if (data.length === 0) {
                         return res.status(400).send({ msg: "not found" });
                 }
@@ -1167,7 +1167,7 @@ exports.getBottomBanner = async (req, res) => {
 };
 exports.getIdBanner = async (req, res) => {
         try {
-                const data = await banner.findById(req.params.id).populate('productId');
+                const data = await banner.findById(req.params.id).populate('subcategoryId');
                 if (!data) {
                         return res.status(400).send({ msg: "not found" });
                 }
