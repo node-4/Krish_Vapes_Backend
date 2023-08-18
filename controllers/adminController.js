@@ -359,9 +359,12 @@ exports.updateSubCategory = async (req, res) => {
                 if (!findSubCategory) {
                         return res.status(404).json({ status: 404, message: "Sub Category Not Found", data: {} });
                 }
-                const findCategory = await Category.findById(req.body.categoryId);
-                if (!findCategory || findCategory.length === 0) {
-                        return res.status(400).send({ status: 404, msg: "Category not found" });
+                let findCategory;
+                if (req.body.categoryId != "null") {
+                        findCategory = await Category.findById({ _id: req.body.categoryId });
+                        if (!findCategory || findCategory.length === 0) {
+                                return res.status(400).send({ status: 404, msg: "Category not found" });
+                        }
                 }
                 req.body.categoryId = findCategory._id || findSubCategory.categoryId;
                 req.body.name = req.body.name || findSubCategory.name;
