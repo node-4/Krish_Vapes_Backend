@@ -6,9 +6,9 @@ const DocumentSchema = schema({
                 enum: ["TOP", "MID", "BOTTOM"],
                 default: "TOP"
         },
-        productId: {
+        subcategoryId: {
                 type: schema.Types.ObjectId,
-                ref: "Product"
+                ref: "subcategory"
         },
         bannerName: {
                 type: String
@@ -18,7 +18,7 @@ const DocumentSchema = schema({
         },
         type: {
                 type: String,
-                enum: ["Product", "Other"],
+                enum: ["SubCategory", "Other"],
                 default: "Other"
         },
 }, { timestamps: true })

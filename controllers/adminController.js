@@ -1095,17 +1095,17 @@ exports.createBanner = async (req, res) => {
                 if (req.file.path) {
                         bannerImage = req.file.path
                 }
-                if (req.body.productId != (null || undefined)) {
-                        const findProduct = await Product.findById({ _id: req.body.productId })
-                        if (!findProduct || findProduct.length === 0) {
+                if (req.body.subcategoryId != (null || undefined)) {
+                        const findSubCategory = await subCategory.findById({ _id: req.body.subcategoryId })
+                        if (!findSubCategory || findSubCategory.length === 0) {
                                 return res.status(400).send({ msg: "not found" });
                         }
                         data = {
-                                productId: findProduct._id,
+                                subcategoryId: findSubCategory._id,
                                 bannerName: req.body.bannerName,
                                 bannerImage: bannerImage,
                                 position: req.body.position,
-                                type: "Product"
+                                type: "SubCategory"
                         };
                 } else {
                         data = {
@@ -1195,9 +1195,9 @@ exports.updateBanner = async (req, res) => {
                         return res.status(400).send({ msg: "not found" });
                 }
                 let data;
-                if (req.body.productId != (null || undefined)) {
-                        const findProduct = await Product.findById({ _id: req.body.productId })
-                        if (!findProduct || findProduct.length === 0) {
+                if (req.body.subcategoryId != (null || undefined)) {
+                        const findSubCategory = await subCategory.findById({ _id: req.body.subcategoryId })
+                        if (!findSubCategory || findSubCategory.length === 0) {
                                 return res.status(400).send({ msg: "not found" });
                         }
                         let bannerImage;
@@ -1208,8 +1208,8 @@ exports.updateBanner = async (req, res) => {
                                 bannerName: req.body.bannerName || findData.bannerName,
                                 bannerImage: bannerImage || findData.bannerImage,
                                 position: req.body.position || findData.position,
-                                type: "Product" || findData.type,
-                                productId: findProduct._id || findData.productId,
+                                type: "SubCategory" || findData.type,
+                                subcategoryId: findSubCategory._id || findData.subcategoryId,
                         };
                 } else {
                         let bannerImage;
@@ -1221,7 +1221,7 @@ exports.updateBanner = async (req, res) => {
                                 bannerImage: bannerImage || findData.bannerImage,
                                 position: req.body.position || findData.position,
                                 type: "Other" || findData.type,
-                                productId: findData.productId,
+                                subcategoryId: findData.subcategoryId,
                         };
                 }
                 const Banner = await banner.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
