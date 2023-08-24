@@ -19,6 +19,12 @@ const productSchema = mongoose.Schema({
         price: {
                 type: String,
         },
+        costPrice: {
+                type: String,
+        },
+        marginPrice: {
+                type: String,
+        },
         quantity: {
                 type: Number,
                 default: 0,

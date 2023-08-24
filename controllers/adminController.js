@@ -444,6 +444,8 @@ exports.createProduct = async (req, res) => {
                                         images.push(obj)
                                 }
                         }
+                        let marginPrice = Number(req.body.costPrice) - Number(req.body.price)
+                        req.body.marginPrice = Number(marginPrice).toFixed(2)
                         const ProductCreated = await Product.create(req.body);
                         if (ProductCreated) {
                                 if (req.body.colorActive == 'true') {
@@ -495,6 +497,8 @@ exports.createProduct = async (req, res) => {
                         req.body.publicId = aboutusImage[0].filename;
                         if (req.body.quantity > 0) { req.body.status = "STOCK" }
                         if (req.body.quantity <= 0) { req.body.status = "OUTOFSTOCK" }
+                        let marginPrice = Number(req.body.costPrice) - Number(req.body.price)
+                        req.body.marginPrice = Number(marginPrice).toFixed(2)
                         const ProductCreated = await Product.create(req.body);
                         if (ProductCreated) {
                                 return res.status(201).send({ status: 200, message: "Product add successfully", data: ProductCreated, });
@@ -748,12 +752,16 @@ exports.editProduct = async (req, res) => {
                                 req.body.publicId = aboutusImage[0].filename;
                         }
                 }
+                let marginPrice = Number(req.body.costPrice) - Number(req.body.price)
+                req.body.marginPrice = Number(marginPrice).toFixed(2)
                 let obj = {
                         categoryId: req.body.categoryId || data.categoryId,
                         subcategoryId: req.body.subcategoryId || data.subcategoryId,
                         name: req.body.name || data.name,
                         description: req.body.description || data.description,
                         price: req.body.price || data.price,
+                        costPrice: req.body.costPrice || data.costPrice,
+                        marginPrice: req.body.marginPrice || data.marginPrice,
                         taxInclude: req.body.taxInclude || data.taxInclude,
                         tax: req.body.tax || data.tax,
                         discount: req.body.discount || data.discount,
