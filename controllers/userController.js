@@ -1186,18 +1186,24 @@ exports.updateQuantity = async (req, res) => {
                                 let products = [], count = 0, productLength = findCart.products.length;
                                 for (var i = 0; i < findCart.products.length; i++) {
                                         if ((findCart.products[i]._id).toString() === req.body.products_id) {
-                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0;
+                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0, price, discount;
+                                                if (findProduct.discount == true) {
+                                                        price = findProduct.discountPrice;
+                                                        discount = ((findProduct.price - findProduct.discountPrice) * req.body.quantity);
+                                                } else {
+                                                        price = findProduct.price
+                                                }
                                                 let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
                                                 if (findProduct.taxInclude == true) {
                                                         tax = findProduct.tax;
-                                                        totalTax = Number((((findProduct.price * req.body.quantity)) * Number(tax)) / 100).toFixed(2);
-                                                        total = Number((findProduct.price * req.body.quantity).toFixed(2));
+                                                        totalTax = Number((((price * req.body.quantity)) * Number(tax)) / 100).toFixed(2);
+                                                        total = Number((price * req.body.quantity).toFixed(2));
                                                         let totalTax1 = Number(totalTax)
                                                         paidAmount = total + totalTax1
                                                 } else {
                                                         tax = tax;
                                                         totalTax = totalTax;
-                                                        total = Number((findProduct.price * req.body.quantity).toFixed(2));
+                                                        total = Number((price * req.body.quantity).toFixed(2));
                                                         let totalTax1 = Number(totalTax)
                                                         paidAmount = total + totalTax1
                                                         console.log("==================")
@@ -1208,7 +1214,8 @@ exports.updateQuantity = async (req, res) => {
                                                         productId: findCart.products[i].productId,
                                                         productColorId: findCart.products[i].productColorId,
                                                         productSize: findCart.products[i].productSize,
-                                                        productPrice: findCart.products[i].productPrice,
+                                                        productPrice: price,
+                                                        discount: Number(discount).toFixed(2),
                                                         quantity: req.body.quantity,
                                                         tax: tax,
                                                         totalTax: totalTax,
@@ -1218,18 +1225,24 @@ exports.updateQuantity = async (req, res) => {
                                                 products.push(obj)
                                                 count++
                                         } else {
-                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0;
+                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0, price, discount;
                                                 let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
+                                                if (findProduct.discount == true) {
+                                                        price = findProduct.discountPrice;
+                                                        discount = ((findProduct.price - findProduct.discountPrice) * req.body.quantity);
+                                                } else {
+                                                        price = findProduct.price
+                                                }
                                                 if (findProduct.taxInclude == true) {
                                                         tax = findProduct.tax;
-                                                        totalTax = Number((((findProduct.price * findCart.products[i].quantity)) * tax) / 100).toFixed(2);
-                                                        total = Number((findProduct.price * findCart.products[i].quantity).toFixed(2));
+                                                        totalTax = Number((((price * findCart.products[i].quantity)) * tax) / 100).toFixed(2);
+                                                        total = Number((price * findCart.products[i].quantity).toFixed(2));
                                                         let totalTax1 = Number(totalTax)
                                                         paidAmount = total + totalTax1
                                                 } else {
                                                         tax = tax;
                                                         totalTax = totalTax;
-                                                        total = Number((findProduct.price * findCart.products[i].quantity).toFixed(2));
+                                                        total = Number((price * findCart.products[i].quantity).toFixed(2));
                                                         let totalTax1 = Number(totalTax)
                                                         paidAmount = total + totalTax1
                                                 }
@@ -1239,9 +1252,10 @@ exports.updateQuantity = async (req, res) => {
                                                         productId: findCart.products[i].productId,
                                                         productColorId: findCart.products[i].productColorId,
                                                         productSize: findCart.products[i].productSize,
-                                                        productPrice: findCart.products[i].productPrice,
+                                                        productPrice: price,
                                                         quantity: findCart.products[i].quantity,
                                                         tax: tax,
+                                                        discount: Number(discount).toFixed(2),
                                                         totalTax: totalTax,
                                                         total: total,
                                                         paidAmount: paidAmount,
@@ -1254,11 +1268,12 @@ exports.updateQuantity = async (req, res) => {
                                 if (count == productLength) {
                                         let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
                                         if (update) {
-                                                let totalAmount = 0, totalTax = 0, paidAmount2 = 0, delivery = 0;
+                                                let totalAmount = 0, totalTax = 0, paidAmount2 = 0, delivery = 0, discount = 0;
                                                 for (let j = 0; j < update.products.length; j++) {
                                                         totalAmount = Number(totalAmount) + Number(update.products[j].total);
                                                         totalTax = Number(totalTax) + Number(update.products[j].totalTax);
                                                         paidAmount2 = Number(paidAmount2) + Number(update.products[j].paidAmount);
+                                                        discount = Number(discount) + Number(update.products[j].discount)
                                                 }
                                                 if (paidAmount2 > 250) {
                                                         delivery = "0";
@@ -1267,7 +1282,7 @@ exports.updateQuantity = async (req, res) => {
                                                         delivery = "5.99";
                                                         paidAmount2 = Number(paidAmount2) + Number(delivery);
                                                 }
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { delivery: delivery, totalAmount: Number(totalAmount).toFixed(2), paidAmount: Number(paidAmount2).toFixed(2), tax: Number(totalTax).toFixed(2), totalItem: update.products.length } }, { new: true });
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { delivery: delivery, discount: Number(discount).toFixed(2), totalAmount: Number(totalAmount).toFixed(2), paidAmount: Number(paidAmount2).toFixed(2), tax: Number(totalTax).toFixed(2), totalItem: update.products.length } }, { new: true });
                                                 return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
                                         }
                                 }
@@ -1305,10 +1320,10 @@ exports.deleteProductfromCart = async (req, res) => {
                                                 if (update.products.length > 0) {
                                                         if (totals > 250) {
                                                                 delivery = "0";
-                                                                paidAmount = Number(totals) + Number(delivery);
+                                                                paidAmount = Number(totals).toFixed(2) + Number(delivery).toFixed(2);
                                                         } else {
                                                                 delivery = "5.99";
-                                                                paidAmount = Number(totals) + Number(delivery);
+                                                                paidAmount = Number(totals).toFixed(2) + Number(delivery).toFixed(2);
                                                         }
                                                 } else {
                                                         delivery = '0';
@@ -1316,7 +1331,7 @@ exports.deleteProductfromCart = async (req, res) => {
                                                         totals = "0";
                                                 }
                                                 console.log(totals);
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, delivery: delivery, paidAmount: paidAmount, totalItem: products.length } }, { new: true });
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: Number(totals).toFixed(2), delivery: delivery, paidAmount: paidAmount, totalItem: products.length } }, { new: true });
                                                 return res.status(200).json({ status: 200, message: "Product delete from cart Successfully.", data: update1 })
                                         }
                                 }
