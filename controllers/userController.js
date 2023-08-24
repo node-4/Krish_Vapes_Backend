@@ -1303,41 +1303,46 @@ exports.deleteProductfromCart = async (req, res) => {
                 } else {
                         let findCart = await Cart.findOne({ userId: user._id });
                         if (findCart) {
-                                let products = [], count = 0;
+                                let products = [], count = 0, paidAmount = 0, totalTax = 0, totals = 0, delivery = 0, discount = 0;;
                                 for (let i = 0; i < findCart.products.length; i++) {
                                         if ((findCart.products[i]._id).toString() != req.params.cartProductId) {
                                                 products.push(findCart.products[i])
+                                                paidAmount = paidAmount + Number(findCart.products[i].paidAmount);
+                                                totals = totals + Number(findCart.products[i].total);
+                                                discount = discount + Number(findCart.products[i].discount);
+                                                totalTax = totalTax + Number(findCart.products[i].totalTax)
                                                 count++
                                         }
                                 }
-                                if (count == findCart.products.length - 1) {
-                                        let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
-                                        if (update) {
-                                                let totals = 0, delivery = 0, totalTax = 0, paidAmount2 = 0, discount = 0;
-                                                for (let j = 0; j < update.products.length; j++) {
-                                                        totals = Number(totals) + Number(update.products[j].total);
-                                                        totalTax = Number(totalTax) + Number(update.products[j].totalTax);
-                                                        discount = Number(discount) + Number(update.products[j].discount)
-                                                }
-                                                paidAmount2 = Number(totals) + Number(totalTax);
-                                                if (update.products.length > 0) {
-                                                        if (totals > 250) {
-                                                                delivery = "0";
-                                                                paidAmount2 = Number(paidAmount2).toFixed(2)
-                                                        } else {
-                                                                delivery = "5.99";
-                                                                paidAmount2 = Number(paidAmount2).toFixed(2) + Number(delivery).toFixed(2);
-                                                        }
-                                                } else {
-                                                        delivery = '0';
-                                                        paidAmount2 = '0';
-                                                        totals = "0";
-                                                }
-                                                console.log(totals);
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { discount: Number(discount).toFixed(2), totalAmount: Number(totals).toFixed(2), delivery: delivery, paidAmount: Number(paidAmount2).toFixed(2), totalItem: products.length, tax: Number(totalTax).toFixed(2) } }, { new: true });
-                                                return res.status(200).json({ status: 200, message: "Product delete from cart Successfully.", data: update1 })
-                                        }
+                                if (paidAmount > 250) {
+                                        delivery = "0";
+                                        paidAmount = Number(paidAmount) + Number(delivery);
+                                } else {
+                                        delivery = "5.99";
+                                        paidAmount = Number(paidAmount) + Number(delivery);
                                 }
+                                if (products.length > 0) {
+                                        if (count == findCart.products.length - 1) {
+                                                let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, {
+                                                        $set: {
+                                                                products: products,
+                                                                totalAmount: Number(totals).toFixed(2),
+                                                                tax: Number(totalTax).toFixed(2),
+                                                                discount:Number(discount).toFixed(2),
+                                                                delivery:Number(delivery).toFixed(2),
+                                                                paidAmount:Number(paidAmount).toFixed(2),
+                                                                totalItem: products.length
+                                                        }
+                                                }, { new: true });
+                                                if (update) {
+                                                        return res.status(200).json({ status: 200, message: "Product delete from cart Successfully.", data: update })
+                                                }
+                                        }
+                                } else {
+                                        await Cart.findByIdAndDelete({ _id: findCart._id });
+                                        return res.status(200).json({ status: 200, message: "cart delete Successfully.", data: {} })
+                                }
+
                         } else {
                                 return res.status(404).send({ status: 404, message: "Cart not found." });
                         }
