@@ -1320,7 +1320,7 @@ exports.deleteProductfromCart = async (req, res) => {
                                                 if (update.products.length > 0) {
                                                         if (totals > 250) {
                                                                 delivery = "0";
-                                                                paidAmount = Number(totals).toFixed(2) + Number(delivery).toFixed(2);
+                                                                paidAmount = Number(totals).toFixed(2)
                                                         } else {
                                                                 delivery = "5.99";
                                                                 paidAmount = Number(totals).toFixed(2) + Number(delivery).toFixed(2);
@@ -1331,7 +1331,7 @@ exports.deleteProductfromCart = async (req, res) => {
                                                         totals = "0";
                                                 }
                                                 console.log(totals);
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: Number(totals).toFixed(2), delivery: delivery, paidAmount: paidAmount, totalItem: products.length } }, { new: true });
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: Number(totals).toFixed(2), delivery: delivery, paidAmount: Number(paidAmount).toFixed(2), totalItem: products.length } }, { new: true });
                                                 return res.status(200).json({ status: 200, message: "Product delete from cart Successfully.", data: update1 })
                                         }
                                 }
