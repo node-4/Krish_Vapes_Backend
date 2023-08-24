@@ -1222,14 +1222,14 @@ exports.updateQuantity = async (req, res) => {
                                                 let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
                                                 if (findProduct.taxInclude == true) {
                                                         tax = findProduct.tax;
-                                                        totalTax = Number((((findProduct.price * req.body.quantity)) * tax) / 100).toFixed(2);
-                                                        total = Number((findProduct.price * req.body.quantity).toFixed(2));
+                                                        totalTax = Number((((findProduct.price * findCart.products[i].quantity)) * tax) / 100).toFixed(2);
+                                                        total = Number((findProduct.price * findCart.products[i].quantity).toFixed(2));
                                                         let totalTax1 = Number(totalTax)
                                                         paidAmount = total + totalTax1
                                                 } else {
                                                         tax = tax;
                                                         totalTax = totalTax;
-                                                        total = Number((findProduct.price * req.body.quantity).toFixed(2));
+                                                        total = Number((findProduct.price * findCart.products[i].quantity).toFixed(2));
                                                         let totalTax1 = Number(totalTax)
                                                         paidAmount = total + totalTax1
                                                 }
@@ -1256,9 +1256,9 @@ exports.updateQuantity = async (req, res) => {
                                         if (update) {
                                                 let totalAmount = 0, totalTax = 0, paidAmount2 = 0, delivery = 0;
                                                 for (let j = 0; j < update.products.length; j++) {
-                                                        totalAmount = totalAmount + update.products[j].total;
-                                                        totalTax = totalTax + update.products[j].totalTax;
-                                                        paidAmount2 = paidAmount2 + update.products[j].paidAmount;
+                                                        totalAmount = Number(totalAmount) + Number(update.products[j].total);
+                                                        totalTax = Number(totalTax) + Number(update.products[j].totalTax);
+                                                        paidAmount2 = Number(paidAmount2) + Number(update.products[j].paidAmount);
                                                 }
                                                 if (paidAmount2 > 250) {
                                                         delivery = "0";
