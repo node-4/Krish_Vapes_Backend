@@ -582,7 +582,7 @@ exports.addToCart = async (req, res) => {
                                                                         if (findColor.colorSize.length > 0) {
                                                                                 for (let i = 0; i < findColor.colorSize.length; i++) {
                                                                                         if ((findColor.colorSize[i].size == req.body.size) == true) {
-                                                                                                let price, discount, delivery;
+                                                                                                let price, discount = 0, delivery;
                                                                                                 if (findProduct.discount == true) {
                                                                                                         price = findProduct.discountPrice;
                                                                                                         discount = findProduct.price - findProduct.discountPrice;
@@ -637,7 +637,7 @@ exports.addToCart = async (req, res) => {
                                                                 }
                                                                 else {
                                                                         console.log("---------------------------------280------------");
-                                                                        let price, discount, delivery;
+                                                                        let price, discount = 0, delivery;
                                                                         if (findProduct.discount == true) {
                                                                                 price = findProduct.discountPrice;
                                                                                 discount = findProduct.price - findProduct.discountPrice;
@@ -692,7 +692,7 @@ exports.addToCart = async (req, res) => {
                                                 }
                                                 else {
                                                         console.log("322================");
-                                                        let price, discount, delivery;
+                                                        let price, discount = 0, delivery;
                                                         if (findProduct.discount == true) {
                                                                 price = findProduct.discountPrice;
                                                                 discount = findProduct.price - findProduct.discountPrice;
@@ -754,7 +754,7 @@ exports.addToCart = async (req, res) => {
                                                                 if (findColor.colorSize.length > 0) {
                                                                         for (let i = 0; i < findColor.colorSize.length; i++) {
                                                                                 if ((findColor.colorSize[i].size == req.body.size) == true) {
-                                                                                        let price, discount, delivery;
+                                                                                        let price, discount = 0, delivery;
                                                                                         if (findProduct.discount == true) {
                                                                                                 price = findProduct.discountPrice;
                                                                                                 discount = Number(findProduct.price).toFixed(2) - Number(findProduct.discountPrice).toFixed(2);
@@ -823,7 +823,7 @@ exports.addToCart = async (req, res) => {
                                                                 }
                                                         }
                                                         else {
-                                                                let price, discount, delivery;
+                                                                let price, discount = 0, delivery;
                                                                 if (findProduct.discount == true) {
                                                                         price = findProduct.discountPrice;
                                                                         discount = Number(findProduct.price).toFixed(2) - Number(findProduct.discountPrice).toFixed(2);
@@ -886,7 +886,7 @@ exports.addToCart = async (req, res) => {
                                                 }
                                         }
                                         else {
-                                                let price, discount, delivery;
+                                                let price, discount = 0, delivery;
                                                 if (findProduct.discount == true) {
                                                         price = findProduct.discountPrice;
                                                         discount = Number(findProduct.price).toFixed(2) - Number(findProduct.discountPrice).toFixed(2);
