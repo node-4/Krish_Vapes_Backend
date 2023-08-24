@@ -1186,14 +1186,14 @@ exports.updateQuantity = async (req, res) => {
                                 let products = [], count = 0, productLength = findCart.products.length;
                                 for (var i = 0; i < findCart.products.length; i++) {
                                         if ((findCart.products[i]._id).toString() === req.body.products_id) {
-                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0, price, discount;
+                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0, price, discount = 0;
+                                                let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
                                                 if (findProduct.discount == true) {
                                                         price = findProduct.discountPrice;
                                                         discount = ((findProduct.price - findProduct.discountPrice) * req.body.quantity);
                                                 } else {
                                                         price = findProduct.price
                                                 }
-                                                let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
                                                 if (findProduct.taxInclude == true) {
                                                         tax = findProduct.tax;
                                                         totalTax = Number((((price * req.body.quantity)) * Number(tax)) / 100).toFixed(2);
@@ -1225,7 +1225,7 @@ exports.updateQuantity = async (req, res) => {
                                                 products.push(obj)
                                                 count++
                                         } else {
-                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0, price, discount;
+                                                let tax = 0, totalTax = 0, total = 0, paidAmount = 0, price, discount = 0;
                                                 let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
                                                 if (findProduct.discount == true) {
                                                         price = findProduct.discountPrice;
