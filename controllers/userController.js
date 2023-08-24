@@ -1229,7 +1229,7 @@ exports.updateQuantity = async (req, res) => {
                                                 let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
                                                 if (findProduct.discount == true) {
                                                         price = findProduct.discountPrice;
-                                                        discount = ((findProduct.price - findProduct.discountPrice) * req.body.quantity);
+                                                        discount = ((findProduct.price - findProduct.discountPrice) * findCart.products[i].quantity);
                                                 } else {
                                                         price = findProduct.price
                                                 }
