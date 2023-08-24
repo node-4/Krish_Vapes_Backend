@@ -444,8 +444,13 @@ exports.createProduct = async (req, res) => {
                                         images.push(obj)
                                 }
                         }
-                        let marginPrice = Number(req.body.costPrice) - Number(req.body.price)
-                        req.body.marginPrice = Number(marginPrice).toFixed(2)
+                        if (req.body.discount == 'true') {
+                                let marginPrice = Number(req.body.price) - Number(req.body.discountPrice)
+                                req.body.marginPrice = Number(marginPrice).toFixed(2)
+                        } else {
+                                let marginPrice = Number(req.body.price) - Number(req.body.costPrice)
+                                req.body.marginPrice = Number(marginPrice).toFixed(2)
+                        }
                         const ProductCreated = await Product.create(req.body);
                         if (ProductCreated) {
                                 if (req.body.colorActive == 'true') {
@@ -497,8 +502,13 @@ exports.createProduct = async (req, res) => {
                         req.body.publicId = aboutusImage[0].filename;
                         if (req.body.quantity > 0) { req.body.status = "STOCK" }
                         if (req.body.quantity <= 0) { req.body.status = "OUTOFSTOCK" }
-                        let marginPrice = Number(req.body.costPrice) - Number(req.body.price)
-                        req.body.marginPrice = Number(marginPrice).toFixed(2)
+                        if (req.body.discount == 'true') {
+                                let marginPrice = Number(req.body.price) - Number(req.body.discountPrice)
+                                req.body.marginPrice = Number(marginPrice).toFixed(2)
+                        } else {
+                                let marginPrice = Number(req.body.price) - Number(req.body.costPrice)
+                                req.body.marginPrice = Number(marginPrice).toFixed(2)
+                        }
                         const ProductCreated = await Product.create(req.body);
                         if (ProductCreated) {
                                 return res.status(201).send({ status: 200, message: "Product add successfully", data: ProductCreated, });
@@ -752,8 +762,14 @@ exports.editProduct = async (req, res) => {
                                 req.body.publicId = aboutusImage[0].filename;
                         }
                 }
-                let marginPrice = Number(req.body.costPrice) - Number(req.body.price)
-                req.body.marginPrice = Number(marginPrice).toFixed(2)
+
+                if (req.body.discount == 'true') {
+                        let marginPrice = Number(req.body.price) - Number(req.body.discountPrice)
+                        req.body.marginPrice = Number(marginPrice).toFixed(2)
+                } else {
+                        let marginPrice = Number(req.body.price) - Number(req.body.costPrice)
+                        req.body.marginPrice = Number(marginPrice).toFixed(2)
+                }
                 let obj = {
                         categoryId: req.body.categoryId || data.categoryId,
                         subcategoryId: req.body.subcategoryId || data.subcategoryId,
