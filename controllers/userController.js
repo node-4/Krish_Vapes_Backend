@@ -1313,11 +1313,12 @@ exports.deleteProductfromCart = async (req, res) => {
                                 if (count == findCart.products.length - 1) {
                                         let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
                                         if (update) {
-                                                let totals = 0, delivery = 0, totalTax = 0, paidAmount2 = 0;
+                                                let totals = 0, delivery = 0, totalTax = 0, paidAmount2 = 0, discount = 0;
                                                 for (let j = 0; j < update.products.length; j++) {
                                                         totals = Number(totals) + Number(update.products[j].total);
                                                         paidAmount2 = Number(paidAmount2) + Number(update.products[j].paidAmount);
                                                         totalTax = Number(totalTax) + Number(update.products[j].totalTax);
+                                                        discount = Number(discount) + Number(update.products[j].discount)
                                                 }
                                                 if (update.products.length > 0) {
                                                         if (totals > 250) {
@@ -1333,7 +1334,7 @@ exports.deleteProductfromCart = async (req, res) => {
                                                         totals = "0";
                                                 }
                                                 console.log(totals);
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: Number(totals).toFixed(2), delivery: delivery, paidAmount: Number(paidAmount2).toFixed(2), totalItem: products.length, tax: Number(totalTax).toFixed(2) } }, { new: true });
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { discount: Number(discount).toFixed(2), totalAmount: Number(totals).toFixed(2), delivery: delivery, paidAmount: Number(paidAmount2).toFixed(2), totalItem: products.length, tax: Number(totalTax).toFixed(2) } }, { new: true });
                                                 return res.status(200).json({ status: 200, message: "Product delete from cart Successfully.", data: update1 })
                                         }
                                 }
