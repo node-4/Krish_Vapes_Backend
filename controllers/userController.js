@@ -1298,22 +1298,22 @@ exports.deleteProductfromCart = async (req, res) => {
                                 if (count == findCart.products.length - 1) {
                                         let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
                                         if (update) {
-                                                let totals = 0, delivery = 0;
+                                                let totals = 0, delivery = 0, paidAmount = 0;
                                                 for (let j = 0; j < update.products.length; j++) {
-                                                        totals = totals + update.products[j].total
+                                                        totals = Number(totals) + Number(update.products[j].total);
                                                 }
                                                 if (update.products.length > 0) {
                                                         if (totals > 250) {
                                                                 delivery = "0";
-                                                                paidAmount = totals + Number(delivery);
+                                                                paidAmount = Number(totals) + Number(delivery);
                                                         } else {
                                                                 delivery = "5.99";
-                                                                paidAmount = totals + Number(delivery);
+                                                                paidAmount = Number(totals) + Number(delivery);
                                                         }
                                                 } else {
                                                         delivery = '0';
                                                         paidAmount = '0';
-                                                        totals: "0";
+                                                        totals = "0";
                                                 }
                                                 console.log(totals);
                                                 let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { totalAmount: totals, delivery: delivery, paidAmount: paidAmount, totalItem: products.length } }, { new: true });
