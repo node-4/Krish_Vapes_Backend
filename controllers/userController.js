@@ -1316,10 +1316,10 @@ exports.deleteProductfromCart = async (req, res) => {
                                                 let totals = 0, delivery = 0, totalTax = 0, paidAmount2 = 0, discount = 0;
                                                 for (let j = 0; j < update.products.length; j++) {
                                                         totals = Number(totals) + Number(update.products[j].total);
-                                                        paidAmount2 = Number(paidAmount2) + Number(update.products[j].paidAmount);
                                                         totalTax = Number(totalTax) + Number(update.products[j].totalTax);
                                                         discount = Number(discount) + Number(update.products[j].discount)
                                                 }
+                                                paidAmount2 = Number(totals) + Number(totalTax);
                                                 if (update.products.length > 0) {
                                                         if (totals > 250) {
                                                                 delivery = "0";
