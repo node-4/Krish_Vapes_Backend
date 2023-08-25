@@ -1459,12 +1459,29 @@ exports.createAboutUs = async (req, res) => {
                         aboutusImage = req.files['aboutusImage'];
                 }
                 let desc = [];
-                for (let k = 0; k < req.body.desc.length; k++) {
-                        let obj = {
-                                title: req.body.title[k],
-                                desc: req.body.desc[k]
+                if (req.body.title.length > 1) {
+                        for (let k = 0; k < req.body.desc.length; k++) {
+                                let obj = {
+                                        title: req.body.title[k],
+                                        desc: req.body.desc[k]
+                                }
+                                desc.push(obj)
                         }
-                        desc.push(obj)
+                } else {
+                        for (let k = 0; k < req.body.desc.length; k++) {
+                                if (k == 0) {
+                                        let obj = {
+                                                title: req.body.title,
+                                                desc: req.body.desc[0]
+                                        }
+                                        desc.push(obj)
+                                } else {
+                                        let obj = {
+                                                desc: req.body.desc[k]
+                                        }
+                                        desc.push(obj)
+                                }
+                        }
                 }
                 const data = {
                         aboutusImage: aboutusImage[0].path,
