@@ -19,7 +19,7 @@ const userAddress = require("../model/userAddress");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
 const PDFDocument = require("pdfkit-table");
-const doc = new PDFDocument({ margin: 30, size: 'A4' });
+const doc = new PDFDocument({ autoFirstPage: true, margin: 10, size: 'A4' });
 const nodemailer = require('nodemailer')
 var html_to_pdf = require('html-pdf-node');
 const puppeteer = require('puppeteer');
@@ -1328,9 +1328,9 @@ exports.deleteProductfromCart = async (req, res) => {
                                                                 products: products,
                                                                 totalAmount: Number(totals).toFixed(2),
                                                                 tax: Number(totalTax).toFixed(2),
-                                                                discount:Number(discount).toFixed(2),
-                                                                delivery:Number(delivery).toFixed(2),
-                                                                paidAmount:Number(paidAmount).toFixed(2),
+                                                                discount: Number(discount).toFixed(2),
+                                                                delivery: Number(delivery).toFixed(2),
+                                                                paidAmount: Number(paidAmount).toFixed(2),
                                                                 totalItem: products.length
                                                         }
                                                 }, { new: true });
@@ -1530,8 +1530,6 @@ exports.successOrder = async (req, res) => {
                         // };
                         // doc.table(tableArray0, { Height: 250, width: 560 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
                         doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
                         let table1 = [
                                 ["Day: 1", "", "", "", "", "Invoice No: ", `${findUserOrder.orderId}`],
                                 [`${findUserOrder.address}${findUserOrder.city}`, "", "", "", "", "Invoice Date :", `${fullDate} ${hr}:${min}`],
@@ -1543,9 +1541,6 @@ exports.successOrder = async (req, res) => {
                                 headers: ["INVOICE To", "", "", "", "", "", "INVOICE", ""],
                                 rows: table1,
                         };
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
                         doc.moveDown();
                         doc.moveDown();
                         doc.moveDown();
@@ -1573,10 +1568,9 @@ exports.successOrder = async (req, res) => {
                                 datas: line_items,
                         };
                         doc.moveDown();
-                        doc.moveDown();
-                        doc.table(table, {
-                                prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-                                prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
+                        doc.table(table,{
+                                prepareHeader: () => doc.font("Helvetica-Bold").fontSize(6),
+                                prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(6),
                         });
                         let table3 = [
                                 ["On Trolley", "1", "Items Type", `${line_items.length}`, "Total", `${TotalQua}`],
@@ -1586,22 +1580,6 @@ exports.successOrder = async (req, res) => {
                                 rows: table3,
                         };
                         doc.table(tableArray3, { width: 250, x: 300, y: 0 });
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
-                        doc.moveDown();
                         doc.moveDown();
                         let table13 = [
                                 ["HSBC", "Z=0 % S=20 %", "R=5 %", "", "", "AMOUNT", "", "VAT AMOUNT"],
