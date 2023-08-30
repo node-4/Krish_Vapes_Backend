@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const authConfig = require("../configs/auth.config");
 const banner = require("../model/bannerModel");
 const blog = require("../model/blogModel");
-const Cart = require("../model/cartModel");
 const Category = require("../model/categoryModel");
 const contact = require("../model/contactDetail");
 const helpandSupport = require("../model/helpAndSupport");
