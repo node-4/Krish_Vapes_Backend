@@ -21,8 +21,9 @@ const Wishlist = require("../model/WishlistModel");
 const PDFDocument = require("pdfkit-table");
 const doc = new PDFDocument({ autoFirstPage: true, margin: 10, size: 'A4' });
 const nodemailer = require('nodemailer')
-const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc'); // live
+// const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc'); // live
 // const stripe = require("stripe")('sk_test_51NYCJcArS6Dr0SQY0UJ5ZOoiPHQ8R5jNOyCMOkjxpl4BHkG4DcAGAU8tjBw6TSOSfimDSELa6BVyCVSo9CGLXlyX00GkGDAQFo'); // test
+const stripe = require("stripe")('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'); // live
 exports.registration = async (req, res) => {
         const { courtesyTitle, dob, email, firstName, lastName, password, company, vatNumber, vatUsed, country, phone, registrationNo, address, addressComplement, city, pincode, addressCountry } = req.body;
         try {
