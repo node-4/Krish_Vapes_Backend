@@ -1409,13 +1409,13 @@ exports.placeOrder = async (req, res) => {
                                 line_items: line_items,
                                 mode: "payment",
                         });
-                        res.status(200).json({ status: "success", session: session, });
+                        return res.status(200).json({ status: "success", session: session, });
                 } else {
                         return res.status(404).json({ message: "No data found", data: {} });
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.cancelOrder = async (req, res) => {
