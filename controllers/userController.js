@@ -1379,6 +1379,7 @@ exports.placeOrder = async (req, res) => {
         try {
                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
                 if (findUserOrder) {
+                        let delivery = Number(findUserOrder.delivery);
                         let line_items = [];
                         for (let i = 0; i < findUserOrder.Orders.length; i++) {
                                 let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
@@ -1401,6 +1402,17 @@ exports.placeOrder = async (req, res) => {
                                         }
                                 }
                         }
+                        let obj3 = {
+                                price_data: {
+                                        currency: "gbp",
+                                        product_data: {
+                                                name: `Delivery Charge`,
+                                        },
+                                        unit_amount: `${Math.round(delivery * 100)}`,
+                                },
+                                quantity: 1,
+                        }
+                        line_items.push(obj3)
                         const session = await stripe.checkout.sessions.create({
                                 payment_method_types: ["card"],
                                 success_url: `https://krishwholesale.co.uk/order-success/${findUserOrder.orderId}`,
