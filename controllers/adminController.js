@@ -18,6 +18,7 @@ const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
 const nodemailer = require('nodemailer')
 const Cart = require("../model/cartModel");
+const { log } = require("console");
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
         try {
@@ -592,7 +593,11 @@ exports.getBestSellerByToken = async (req, res, next) => {
                         let apiFeature = await Product.aggregate(data1);
                         apiFeature.forEach((product) => {
                                 const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
-                                product.isInCart = isInCart;
+                                if (isInCart == true) {
+                                        product.isInCart = isInCart;
+                                } else {
+                                        product.isInCart = isInCart;
+                                }
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
@@ -686,8 +691,18 @@ exports.getNewArrivalByToken = async (req, res, next) => {
                         ]
                         let apiFeature = await Product.aggregate(data1);
                         apiFeature.forEach((product) => {
-                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
-                                product.isInCart = isInCart;
+                                userCart.products.some((cartItem) => {
+                                        const isInCart = cartItem.productId?.equals(product._id)
+                                        if (isInCart) {
+                                                console.log(isInCart);
+                                                product.isInCart = isInCart;
+                                                product.quantityInCart = cartItem.quantity;
+                                        } else {
+                                                product.isInCart = isInCart;
+                                                product.quantityInCart = 0;
+                                        }
+
+                                });
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
@@ -698,9 +713,12 @@ exports.getNewArrivalByToken = async (req, res, next) => {
                                 { $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId" } },
                                 { $unwind: "$subcategoryId" }
                         ]);
-                        apiFeature.forEach((product) => {
-                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
-                                product.isInCart = isInCart;
+                        userCart.products.some((cartItem) => {
+                                apiFeature.forEach((product) => {
+                                        let isInCart = cartItem.productId?.equals(product._id);
+                                        console.log(isInCart);
+                                        product.isInCart = isInCart;
+                                });
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }]);
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
@@ -710,6 +728,8 @@ exports.getNewArrivalByToken = async (req, res, next) => {
                 return res.status(500).send({ message: "Internal server error while creating Product", });
         }
 };
+
+
 exports.getOnSale = async (req, res, next) => {
         try {
                 const productsCount = await Product.count();

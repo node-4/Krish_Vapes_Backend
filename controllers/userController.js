@@ -1184,7 +1184,7 @@ exports.updateQuantity = async (req, res) => {
                         if (findCart) {
                                 let products = [], count = 0, productLength = findCart.products.length;
                                 for (var i = 0; i < findCart.products.length; i++) {
-                                        if ((findCart.products[i]._id).toString() === req.body.products_id) {
+                                        if ((findCart.products[i].productId).toString() === req.body.products_id) {
                                                 let tax = 0, totalTax = 0, total = 0, paidAmount = 0, price, discount = 0;
                                                 let findProduct = await Product.findById({ _id: (findCart.products[i].productId).toString() });
                                                 if (findProduct.discount == true) {
