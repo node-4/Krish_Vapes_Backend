@@ -592,11 +592,13 @@ exports.getBestSellerByToken = async (req, res, next) => {
                         ]
                         let apiFeature = await Product.aggregate(data1);
                         apiFeature.forEach((product) => {
-                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
-                                if (isInCart == true) {
-                                        product.isInCart = isInCart;
+                                const cartItem = userCart.products.find((cartItem) => cartItem.productId?.equals(product._id));
+                                if (cartItem) {
+                                        product.isInCart = true;
+                                        product.quantityInCart = cartItem.quantity;
                                 } else {
-                                        product.isInCart = isInCart;
+                                        product.isInCart = false;
+                                        product.quantityInCart = 0;
                                 }
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }])
@@ -610,8 +612,14 @@ exports.getBestSellerByToken = async (req, res, next) => {
                                 { $sort: { ratings: -1 } }
                         ]);
                         apiFeature.forEach((product) => {
-                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
-                                product.isInCart = isInCart;
+                                const cartItem = userCart.products.find((cartItem) => cartItem.productId?.equals(product._id));
+                                if (cartItem) {
+                                        product.isInCart = true;
+                                        product.quantityInCart = cartItem.quantity;
+                                } else {
+                                        product.isInCart = false;
+                                        product.quantityInCart = 0;
+                                }
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }]);
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
@@ -667,7 +675,7 @@ exports.getNewArrival = async (req, res, next) => {
 exports.getNewArrivalByToken = async (req, res, next) => {
         try {
                 const productsCount = await Product.count();
-                const userCart = await Cart.findOne({ userId: req.user._id });
+                const userCart = await Cart.findOne({ userId: req.user._id })
                 if (req.query.search != (null || undefined)) {
                         let data1 = [
                                 {
@@ -691,18 +699,14 @@ exports.getNewArrivalByToken = async (req, res, next) => {
                         ]
                         let apiFeature = await Product.aggregate(data1);
                         apiFeature.forEach((product) => {
-                                userCart.products.some((cartItem) => {
-                                        const isInCart = cartItem.productId?.equals(product._id)
-                                        if (isInCart) {
-                                                console.log(isInCart);
-                                                product.isInCart = isInCart;
-                                                product.quantityInCart = cartItem.quantity;
-                                        } else {
-                                                product.isInCart = isInCart;
-                                                product.quantityInCart = 0;
-                                        }
-
-                                });
+                                const cartItem = userCart.products.find((cartItem) => cartItem.productId?.equals(product._id));
+                                if (cartItem) {
+                                        product.isInCart = true;
+                                        product.quantityInCart = cartItem.quantity;
+                                } else {
+                                        product.isInCart = false;
+                                        product.quantityInCart = 0;
+                                }
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
@@ -714,9 +718,16 @@ exports.getNewArrivalByToken = async (req, res, next) => {
                                 { $unwind: "$subcategoryId" }
                         ]);
                         apiFeature.forEach((product) => {
-                                let isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
-                                product.isInCart = isInCart
+                                const cartItem = userCart.products.find((cartItem) => cartItem.productId?.equals(product._id));
+                                if (cartItem) {
+                                        product.isInCart = true;
+                                        product.quantityInCart = cartItem.quantity;
+                                } else {
+                                        product.isInCart = false;
+                                        product.quantityInCart = 0;
+                                }
                         });
+
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }]);
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
                 }
@@ -725,8 +736,6 @@ exports.getNewArrivalByToken = async (req, res, next) => {
                 return res.status(500).send({ message: "Internal server error while creating Product", });
         }
 };
-
-
 exports.getOnSale = async (req, res, next) => {
         try {
                 const productsCount = await Product.count();
@@ -798,8 +807,14 @@ exports.getOnSaleByToken = async (req, res, next) => {
                         ]
                         let apiFeature = await Product.aggregate(data1);
                         apiFeature.forEach((product) => {
-                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
-                                product.isInCart = isInCart;
+                                const cartItem = userCart.products.find((cartItem) => cartItem.productId?.equals(product._id));
+                                if (cartItem) {
+                                        product.isInCart = true;
+                                        product.quantityInCart = cartItem.quantity;
+                                } else {
+                                        product.isInCart = false;
+                                        product.quantityInCart = 0;
+                                }
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
@@ -811,8 +826,14 @@ exports.getOnSaleByToken = async (req, res, next) => {
                                 { $unwind: "$subcategoryId" }, { $match: { "discount": true } },
                         ]);
                         apiFeature.forEach((product) => {
-                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
-                                product.isInCart = isInCart;
+                                const cartItem = userCart.products.find((cartItem) => cartItem.productId?.equals(product._id));
+                                if (cartItem) {
+                                        product.isInCart = true;
+                                        product.quantityInCart = cartItem.quantity;
+                                } else {
+                                        product.isInCart = false;
+                                        product.quantityInCart = 0;
+                                }
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }]);
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
