@@ -26,9 +26,12 @@ router.get("/SubCategory/paginate/SubCategoriesSearch", auth.paginateSubCategori
 router.get("/SubCategory/allSubcategoryById/:categoryId", auth.getSubCategoryByCategoryId);
 router.post("/Product/addProduct", [authJwt.verifyToken], cpUpload0, auth.createProduct);
 router.get("/Product/all/BestSeller", auth.getBestSeller);
+router.get("/Product/all/BestSellerByToken", [authJwt.verifyToken], auth.getBestSellerByToken);
 router.get("/Product/all/paginateProductSearch", auth.paginateProductSearch);
 router.get("/Product/all/NewArrival", auth.getNewArrival);
+router.get("/Product/all/getNewArrivalByToken", [authJwt.verifyToken], auth.getNewArrivalByToken);
 router.get("/Product/all/getOnSale", auth.getOnSale);
+router.get("/Product/all/getOnSaleByToken", [authJwt.verifyToken], auth.getOnSaleByToken);
 router.get("/Product/:id", auth.getIdProduct);
 router.get("/Product/color/:id", auth.getIdProductColor);
 router.put("/Product/editProduct/:id", [authJwt.verifyToken], cpUpload0, auth.editProduct);

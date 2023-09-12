@@ -17,6 +17,7 @@ const userAddress = require("../model/userAddress");
 const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
 const nodemailer = require('nodemailer')
+const Cart = require("../model/cartModel");
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
         try {
@@ -562,6 +563,59 @@ exports.getBestSeller = async (req, res, next) => {
                 return res.status(500).send({ message: "Internal server error while creating Product", });
         }
 };
+exports.getBestSellerByToken = async (req, res, next) => {
+        try {
+                const productsCount = await Product.count();
+                const userCart = await Cart.findOne({ userId: req.user._id });
+                if (req.query.search != (null || undefined)) {
+                        let data1 = [
+                                {
+                                        $lookup: { from: "categories", localField: "categoryId", foreignField: "_id", as: "categoryId" },
+                                },
+                                { $unwind: "$categoryId" },
+                                {
+                                        $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId", },
+                                },
+                                { $unwind: "$subcategoryId" },
+                                {
+                                        $match: {
+                                                $or: [
+                                                        { "categoryId.name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "subcategoryId.name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "description": { $regex: req.query.search, $options: "i" }, },
+                                                ]
+                                        }
+                                },
+                                { $sort: { ratings: -1 } }
+                        ]
+                        let apiFeature = await Product.aggregate(data1);
+                        apiFeature.forEach((product) => {
+                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
+                                product.isInCart = isInCart;
+                        });
+                        let update = await Product.populate(apiFeature, [{ path: 'colors' }])
+                        return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
+                } else {
+                        let apiFeature = await Product.aggregate([
+                                { $lookup: { from: "categories", localField: "categoryId", foreignField: "_id", as: "categoryId" } },
+                                { $unwind: "$categoryId" },
+                                { $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId" } },
+                                { $unwind: "$subcategoryId" },
+                                { $sort: { ratings: -1 } }
+                        ]);
+                        apiFeature.forEach((product) => {
+                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
+                                product.isInCart = isInCart;
+                        });
+                        let update = await Product.populate(apiFeature, [{ path: 'colors' }]);
+                        return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
+                }
+        } catch (err) {
+                console.log(err);
+                return res.status(500).send({ message: "Internal server error while creating Product", });
+        }
+};
 exports.getNewArrival = async (req, res, next) => {
         try {
                 const productsCount = await Product.count();
@@ -598,6 +652,57 @@ exports.getNewArrival = async (req, res, next) => {
                         ]);
 
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }])
+                        return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
+                }
+        } catch (err) {
+                console.log(err);
+                return res.status(500).send({ message: "Internal server error while creating Product", });
+        }
+};
+exports.getNewArrivalByToken = async (req, res, next) => {
+        try {
+                const productsCount = await Product.count();
+                const userCart = await Cart.findOne({ userId: req.user._id });
+                if (req.query.search != (null || undefined)) {
+                        let data1 = [
+                                {
+                                        $lookup: { from: "categories", localField: "categoryId", foreignField: "_id", as: "categoryId" },
+                                },
+                                { $unwind: "$categoryId" },
+                                {
+                                        $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId", },
+                                },
+                                { $unwind: "$subcategoryId" },
+                                {
+                                        $match: {
+                                                $or: [
+                                                        { "categoryId.name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "subcategoryId.name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "description": { $regex: req.query.search, $options: "i" }, },
+                                                ]
+                                        }
+                                },
+                        ]
+                        let apiFeature = await Product.aggregate(data1);
+                        apiFeature.forEach((product) => {
+                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
+                                product.isInCart = isInCart;
+                        });
+                        let update = await Product.populate(apiFeature, [{ path: 'colors' }])
+                        return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
+                } else {
+                        let apiFeature = await Product.aggregate([
+                                { $lookup: { from: "categories", localField: "categoryId", foreignField: "_id", as: "categoryId" } },
+                                { $unwind: "$categoryId" },
+                                { $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId" } },
+                                { $unwind: "$subcategoryId" }
+                        ]);
+                        apiFeature.forEach((product) => {
+                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
+                                product.isInCart = isInCart;
+                        });
+                        let update = await Product.populate(apiFeature, [{ path: 'colors' }]);
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
                 }
         } catch (err) {
@@ -642,6 +747,58 @@ exports.getOnSale = async (req, res, next) => {
                         ]);
                         await Product.populate(apiFeature, [{ path: 'colors' }])
                         return res.status(200).json({ status: 200, message: "Product data found.", data: apiFeature, count: productsCount });
+                }
+        } catch (err) {
+                console.log(err);
+                return res.status(500).send({ message: "Internal server error while creating Product", });
+        }
+};
+exports.getOnSaleByToken = async (req, res, next) => {
+        try {
+                const productsCount = await Product.count();
+                const userCart = await Cart.findOne({ userId: req.user._id });
+                if (req.query.search != (null || undefined)) {
+                        let data1 = [
+                                {
+                                        $lookup: { from: "categories", localField: "categoryId", foreignField: "_id", as: "categoryId" },
+                                },
+                                { $unwind: "$categoryId" },
+                                {
+                                        $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId", },
+                                },
+                                { $unwind: "$subcategoryId" },
+                                {
+                                        $match: {
+                                                $or: [
+                                                        { "categoryId.name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "subcategoryId.name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "name": { $regex: req.query.search, $options: "i" }, },
+                                                        { "description": { $regex: req.query.search, $options: "i" }, },
+                                                ]
+                                        },
+                                        $match: { "discount": true },
+                                },
+                        ]
+                        let apiFeature = await Product.aggregate(data1);
+                        apiFeature.forEach((product) => {
+                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
+                                product.isInCart = isInCart;
+                        });
+                        let update = await Product.populate(apiFeature, [{ path: 'colors' }])
+                        return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
+                } else {
+                        let apiFeature = await Product.aggregate([
+                                { $lookup: { from: "categories", localField: "categoryId", foreignField: "_id", as: "categoryId" } },
+                                { $unwind: "$categoryId" },
+                                { $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId" } },
+                                { $unwind: "$subcategoryId" }, { $match: { "discount": true } },
+                        ]);
+                        apiFeature.forEach((product) => {
+                                const isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
+                                product.isInCart = isInCart;
+                        });
+                        let update = await Product.populate(apiFeature, [{ path: 'colors' }]);
+                        return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
                 }
         } catch (err) {
                 console.log(err);
