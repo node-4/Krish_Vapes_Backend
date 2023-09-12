@@ -713,12 +713,9 @@ exports.getNewArrivalByToken = async (req, res, next) => {
                                 { $lookup: { from: "subcategories", localField: "subcategoryId", foreignField: "_id", as: "subcategoryId" } },
                                 { $unwind: "$subcategoryId" }
                         ]);
-                        userCart.products.some((cartItem) => {
-                                apiFeature.forEach((product) => {
-                                        let isInCart = cartItem.productId?.equals(product._id);
-                                        console.log(isInCart);
-                                        product.isInCart = isInCart;
-                                });
+                        apiFeature.forEach((product) => {
+                                let isInCart = userCart.products.some((cartItem) => cartItem.productId?.equals(product._id));
+                                product.isInCart = isInCart
                         });
                         let update = await Product.populate(apiFeature, [{ path: 'colors' }]);
                         return res.status(200).json({ status: 200, message: "Product data found.", data: update, count: productsCount });
