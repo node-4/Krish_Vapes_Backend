@@ -70,4 +70,8 @@ router.get("/admin/paginate/OrdersSearch", auth.paginateOrdersSearch);
 router.get("/NewsLetter/allNewsLetter", auth.allNewsLetter);
 router.get("/admin/paginateAllOrdersSearch/OrdersSearch", auth.paginateAllOrdersSearch);
 router.get("/admin/viewOrder/:id", auth.getOrderbyId);
+router.post('/Notification', auth.AddNotification);
+router.get('/Notification', auth.getNotificationforWebsite);
+router.get('/Notification/get/:id', auth.GetBYNotifyID);
+router.delete('/Notification/delete/:id', auth.deleteNotification);
 module.exports = router;

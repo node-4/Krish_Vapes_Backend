@@ -18,7 +18,7 @@ const visitorSubscriber = require("../model/visitorSubscriber");
 const Wishlist = require("../model/WishlistModel");
 const nodemailer = require('nodemailer')
 const Cart = require("../model/cartModel");
-const { log } = require("console");
+const notify = require('../model/notification');
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
         try {
@@ -1963,3 +1963,46 @@ exports.createBanner1 = async (req, res) => {
                 return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
         }
 };
+exports.AddNotification = async (req, res) => {
+        try {
+                const findNotification = await notify.findOne({});
+                if (findNotification) {
+                        const data = await notify.findByIdAndUpdate({ _id: findNotification._id }, { $set: { message: req.body.message } }, { new: true })
+                        return res.status(200).json({ message: data })
+                } else {
+                        const data = { message: req.body.message, }
+                        const Data = await notify.create(data)
+                        return res.status(200).json({ message: Data })
+                }
+        } catch (err) {
+                return res.status(400).json({ message: err.message })
+        }
+}
+exports.GetBYNotifyID = async (req, res) => {
+        try {
+                const data = await notify.findById({ _id: req.params.id })
+                return res.status(200).json({ message: data })
+        } catch (err) {
+                return res.status(400).json({ message: err.message })
+        }
+}
+exports.deleteNotification = async (req, res) => {
+        try {
+                await notify.findByIdAndDelete({ _id: req.params.id });
+                return res.status(200).json({
+                        message: "Notification Deleted "
+                })
+        } catch (err) {
+                return res.status(400).json({
+                        message: err.message
+                })
+        }
+}
+exports.getNotificationforWebsite = async (req, res) => {
+        try {
+                const data = await notify.findOne({});
+                return res.status(200).json({ message: "Data found successfully", data: data })
+        } catch (err) {
+                return res.status(400).json({ message: err.message })
+        }
+}
