@@ -136,10 +136,10 @@ exports.forgetPassword = async (req, res) => {
                                 let otpExpiration = new Date(Date.now() + 5 * 60 * 1000);
                                 const updated = await User.findOneAndUpdate({ _id: data._id }, { $set: { accountVerification: accountVerification, otp: otp, otpExpiration: otpExpiration } }, { new: true, });
                                 if (updated) {
-                                        res.status(200).json({ message: "Otp send to your email.", status: 200, data: {} });
+                                        return res.status(200).json({ message: "Otp send to your email.", status: 200, data: {} });
                                 }
                         } else {
-                                res.status(200).json({ message: "Otp not send on your mail please check.", status: 200, data: {} });
+                                return res.status(200).json({ message: "Otp not send on your mail please check.", status: 200, data: {} });
                         }
                 }
         } catch (err) {
@@ -316,7 +316,7 @@ exports.getAdress = async (req, res) => {
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 }
 exports.createWishlist = async (req, res, next) => {
@@ -328,25 +328,25 @@ exports.createWishlist = async (req, res, next) => {
                 }
                 wishList.products.addToSet(product);
                 await wishList.save();
-                res.status(200).json({ status: 200, message: "product add to wishlist Successfully", });
+                return res.status(200).json({ status: 200, message: "product add to wishlist Successfully", });
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.removeFromWishlist = async (req, res, next) => {
         try {
                 const wishlist = await Wishlist.findOne({ user: req.user._id });
                 if (!wishlist) {
-                        res.status(404).json({ message: "Wishlist not found", status: 404 });
+                        return res.status(404).json({ message: "Wishlist not found", status: 404 });
                 }
                 const product = req.params.id;
                 wishlist.products.pull(product);
                 await wishlist.save();
-                res.status(200).json({ status: 200, message: "Removed From Wishlist", });
+                return res.status(200).json({ status: 200, message: "Removed From Wishlist", });
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.myWishlist = async (req, res, next) => {
@@ -367,10 +367,10 @@ exports.myWishlist = async (req, res, next) => {
                         __v: myList.__v
                 }
 
-                res.status(200).json({ status: 200, wishlist: obj, });
+                return res.status(200).json({ status: 200, wishlist: obj, });
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.addToCart = async (req, res) => {
@@ -949,7 +949,7 @@ exports.addToCart = async (req, res) => {
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.getCart = async (req, res) => {
@@ -1033,9 +1033,9 @@ exports.checkout = async (req, res) => {
                                                 }
                                         }
                                         let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
-                                        res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
+                                        return res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
                                 } else {
-                                        res.status(404).json({ status: 404, message: "Address not found. ", data: {} })
+                                        return res.status(404).json({ status: 404, message: "Address not found. ", data: {} })
                                 }
                         }
                 } else {
@@ -1104,15 +1104,15 @@ exports.checkout = async (req, res) => {
                                                 }
                                         }
                                         let findUserOrder = await userOrders.findOne({ orderId: orderId }).populate('Orders');
-                                        res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
+                                        return res.status(200).json({ status: 200, message: "Order create successfully. ", data: findUserOrder })
                                 } else {
-                                        res.status(404).json({ status: 404, message: "Address not found. ", data: {} })
+                                        return res.status(404).json({ status: 404, message: "Address not found. ", data: {} })
                                 }
                         }
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.getAllOrders = async (req, res, next) => {
@@ -1149,7 +1149,7 @@ exports.getAllOrders = async (req, res, next) => {
                 return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.getOrders = async (req, res, next) => {
@@ -1161,7 +1161,7 @@ exports.getOrders = async (req, res, next) => {
                 return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.getOrderbyId = async (req, res, next) => {
@@ -1173,7 +1173,7 @@ exports.getOrderbyId = async (req, res, next) => {
                 return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.updateQuantity = async (req, res) => {
@@ -1293,7 +1293,7 @@ exports.updateQuantity = async (req, res) => {
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.deleteProductfromCart = async (req, res) => {
@@ -1350,7 +1350,7 @@ exports.deleteProductfromCart = async (req, res) => {
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.deleteCart = async (req, res) => {
@@ -1374,7 +1374,7 @@ exports.deleteCart = async (req, res) => {
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.placeOrder = async (req, res) => {
@@ -1437,13 +1437,13 @@ exports.cancelOrder = async (req, res) => {
         try {
                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
                 if (findUserOrder) {
-                        res.status(201).json({ message: "Payment failed.", status: 201, orderId: req.params.orderId });
+                        return res.status(201).json({ message: "Payment failed.", status: 201, orderId: req.params.orderId });
                 } else {
                         return res.status(404).json({ message: "No data found", data: {} });
                 }
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.successOrder = async (req, res) => {
@@ -1639,13 +1639,13 @@ exports.successOrder = async (req, res) => {
                                 if (info1) {
                                         let deleteCart = await Cart.findOneAndDelete({ userId: findUserOrder.userId });
                                         if (deleteCart) {
-                                                res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                                                return res.status(200).json({ message: "Payment success.", status: 200, data: {} });
                                         }
                                 }
                         } else {
                                 let deleteCart = await Cart.findOneAndDelete({ userId: findUserOrder.userId });
                                 if (deleteCart) {
-                                        res.status(200).json({ message: "Payment success.", status: 200, data: {} });
+                                        return res.status(200).json({ message: "Payment success.", status: 200, data: {} });
                                 }
                         }
                 } else {
@@ -1654,7 +1654,7 @@ exports.successOrder = async (req, res) => {
 
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 const reffralCode = async () => {

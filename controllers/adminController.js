@@ -133,7 +133,7 @@ exports.approveRejectUser = async (req, res) => {
                                 if (error) {
                                         callback(error, null)
                                 } else {
-                                        res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                                        return res.status(200).json({ message: "Payment success.", status: 200, data: update });
                                 }
                         });
                         return res.status(200).send({ msg: `${req.body.status} successfully`, data: update });
@@ -202,7 +202,7 @@ exports.getCategories = async (req, res) => {
         if (categories.length == 0) {
                 return res.status(404).json({ message: "category not found.", status: 404, data: {} });
         }
-        res.status(200).json({ status: 200, message: "Category data found.", data: categories });
+        return res.status(200).json({ status: 200, message: "Category data found.", data: categories });
 };
 exports.paginateCategoriesSearch = async (req, res) => {
         try {
@@ -250,7 +250,7 @@ exports.updateCategory = async (req, res) => {
         category.name = req.body.name || category.name;
         category.image = image || category.image
         let update = await category.save();
-        res.status(200).json({ status: 200, message: "Updated Successfully", data: update });
+        return res.status(200).json({ status: 200, message: "Updated Successfully", data: update });
 };
 exports.removeCategory = async (req, res) => {
         const { id } = req.params;
@@ -1849,7 +1849,7 @@ exports.getAllOrders = async (req, res, next) => {
                 return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.getOrders = async (req, res, next) => {
@@ -1861,7 +1861,7 @@ exports.getOrders = async (req, res, next) => {
                 return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.paginateOrdersSearch = async (req, res) => {
@@ -1950,7 +1950,7 @@ exports.getOrderbyId = async (req, res, next) => {
                 return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
         } catch (error) {
                 console.log(error);
-                res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.createBanner1 = async (req, res) => {
