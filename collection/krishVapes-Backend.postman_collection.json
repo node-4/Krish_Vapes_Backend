@@ -1,0 +1,2175 @@
+{
+	"info": {
+		"_postman_id": "f0795ce3-3655-4661-a05d-a585806bf69c",
+		"name": "krishVapes-Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "23385795",
+		"_collection_link": "https://solar-trinity-26355.postman.co/workspace/flyweis~160f0fa9-ce3b-44b5-9e35-ff590823618d/collection/23385795-f0795ce3-3655-4661-a05d-a585806bf69c?action=share&creator=23385795&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\": \"9873216540\",\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"Admin@1234\",\r\n    \"firstName\": \"Admin\",\r\n    \"lastName\": \"Boss\",\r\n    \"courtesyTitle\": \"MR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/admin/registration"
+					},
+					"response": [
+						{
+							"name": "admin Registration 1",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"phone\": \"9873216540\",\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"Admin@1234\",\r\n    \"fullName\": \"Admin Boss\",\r\n    \"firstName\": \"Admin\",\r\n    \"lastName\": \"Boss\",\r\n    \"courtesyTitle\": \"MR\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:2014/api/v1/admin/registration"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "427"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1ab-vZwPQ/56ZFAxidxoMFlRJP1a500\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 24 Jul 2023 08:11:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"registered successfully \",\n    \"data\": {\n        \"fullName\": \"Admin Boss\",\n        \"firstName\": \"Admin\",\n        \"lastName\": \"Boss\",\n        \"courtesyTitle\": \"MR\",\n        \"phone\": \"9873216540\",\n        \"email\": \"admin@gmail.com\",\n        \"password\": \"$2a$08$EyCjYEXp02bc05KtOSTseOu.CuKT0eny4PV8aRrx7ZDfcizUWqHca\",\n        \"accountVerification\": true,\n        \"userType\": \"ADMIN\",\n        \"wallet\": 0,\n        \"_id\": \"64be3242e26cbbf1ea22a8e2\",\n        \"createdAt\": \"2023-07-24T08:11:46.923Z\",\n        \"updatedAt\": \"2023-07-24T08:11:46.923Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"Admin@1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/admin/login"
+					},
+					"response": []
+				},
+				{
+					"name": "getProfile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/admin/getProfile"
+					},
+					"response": []
+				},
+				{
+					"name": "update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\": \"9873216540\",\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"Admin@1234\",\r\n    \"fullName\": \"Admin Boss\",\r\n    \"firstName\": \"Admin\",\r\n    \"lastName\": \"Boss\",\r\n    \"courtesyTitle\": \"MR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/admin/update"
+					},
+					"response": []
+				},
+				{
+					"name": "allOrders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/admin/allOrders"
+					},
+					"response": []
+				},
+				{
+					"name": "Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDc4ODQxMCwiZXhwIjoxNjkxMDQ3NjEwfQ.A2oln1cwDPi5lLVJpXn0jp5paGaUs3OrT7AVZu6_KgY"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/admin/Orders"
+					},
+					"response": []
+				},
+				{
+					"name": "paginate/OrdersSearch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:2014/api/v1/admin/paginate/OrdersSearch?search=Y5FE8PHBB",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"paginate",
+								"OrdersSearch"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Y5FE8PHBB"
+								},
+								{
+									"key": "fromDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"courtesyTitle\": \"Mr\",\r\n    \"dob\": \"01/07/2004\",\r\n    \"email\": \"Qadir@gmail.com\",\r\n    \"firstName\": \"Qadir \",\r\n    \"lastName\": \"Ali\",\r\n    \"password\": \"Qadir@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Localhost}}/api/v1/user/registration"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"QadirAli@gmail.com\",\r\n    \"password\": \"Qadir\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Localhost}}/api/v1/user/login"
+					},
+					"response": []
+				},
+				{
+					"name": "getProfile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{Localhost}}/api/v1/user/getProfile"
+					},
+					"response": []
+				},
+				{
+					"name": "update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Varun\",\r\n    \"lastName\": \"Chaudhary\",\r\n    \"email\": \"varun@gmail.com\",\r\n    \"password\": \"varun@1234\",\r\n    \"dob\": \"10/27/1998\",\r\n    \"courtesyTitle\": \"MR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{Localhost}}/api/v1/user/update"
+					},
+					"response": []
+				},
+				{
+					"name": "addAdress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"varun\",\r\n    \"lastName\": \"Chaudhary\",\r\n    \"alias\": \"vc\",\r\n    \"company\": \"chaudhary&sons\",\r\n    \"vatNumber\": \"IE1234567T\",\r\n    \"address\": \"A62 sector 63 noida\",\r\n    \"addressComplement\": \"B62 sector 62 noida\",\r\n    \"city\": \"Noida\",\r\n    \"pincode\": 110015,\r\n    \"country\": \"India\",\r\n    \"phone\": \"9873698247\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/addAdress"
+					},
+					"response": []
+				},
+				{
+					"name": "updateAdress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"varun\",\r\n    \"lastName\": \"Chaudhary\",\r\n    \"alias\": \"vc\",\r\n    \"company\": \"chaudhary&sons\",\r\n    \"vatNumber\": \"IE1234567T\",\r\n    \"address\": \"A62 sector 63 noida\",\r\n    \"addressComplement\": \"B62 sector 62 noida\",\r\n    \"city\": \"Noida\",\r\n    \"pincode\": 110015,\r\n    \"country\": \"India\",\r\n    \"phone\": \"9873698247\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/updateAdress/64c11981de5d110fdea0615e"
+					},
+					"response": []
+				},
+				{
+					"name": "getAdress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzBkNGViMTc4YmQ0YmE4ODQ2YTc3ZiIsImlhdCI6MTY5MDUyOTQ4MiwiZXhwIjoxNjkwNzg4NjgyfQ.zNZzXqMI5l25nyeWSFUXf2YrrBfC_tKAj6ZH79TFD5o"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/getAdress"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAdress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/deleteAdress/64c11981de5d110fdea0615e"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Wishlist",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/createWishlist/64bf6639a23767bde722ff05"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove From Wishlist",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/removeFromWishlist/648d80031e4a8571f35ee4e3"
+					},
+					"response": []
+				},
+				{
+					"name": "myWishlist",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/myWishlist"
+					},
+					"response": []
+				},
+				{
+					"name": "addToCart Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"64c0db9951404240d348662d\",\r\n    \"quantity\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/addToCart"
+					},
+					"response": []
+				},
+				{
+					"name": "updateQuantity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzM2Njg4YzY0NjM3OGZlODczMzc2YSIsImlhdCI6MTY5MDUzOTkyNCwiZXhwIjoxNjkwNzk5MTI0fQ.FoUhKBq7QzhyK81vTVkMYupiQZR8Zlz-cA3psY11Smk"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"products_id\": \"64c2779bf149df5c8d5669a7\",\r\n    \"quantity\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/updateQuantity"
+					},
+					"response": []
+				},
+				{
+					"name": "addToCart color",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"64c1004586462269a2bb6b07\",\r\n    \"colorId\": \"64c1004686462269a2bb6b0c\",\r\n    \"quantity\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/addToCart"
+					},
+					"response": []
+				},
+				{
+					"name": "updateQuantity color",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"64c1004586462269a2bb6b07\",\r\n    \"colorId\": \"64c1004686462269a2bb6b0c\",\r\n    \"quantity\": 11\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/updateQuantity"
+					},
+					"response": []
+				},
+				{
+					"name": "addToCart color with varient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzM2Njg4YzY0NjM3OGZlODczMzc2YSIsImlhdCI6MTY5MDUyOTc3NiwiZXhwIjoxNjkwNzg4OTc2fQ.Lv5LFkFJGaakIRKejXGQXgHO-dTCB8hoy5PLPiN1zN8"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"colorId\": \"64bffb6948d29a27dcb333d8\",\r\n    \"productId\": \"64bffb6848d29a27dcb333d3\",\r\n    \"quantity\": 1,\r\n    \"size\": \"XL\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://krish-vapes-backend.vercel.app/api/v1/user/addToCart"
+					},
+					"response": []
+				},
+				{
+					"name": "updateQuantity color with varient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"64bffb6848d29a27dcb333d3\",\r\n    \"colorId\": \"64bffb6948d29a27dcb333d5\",\r\n    \"size\": \"M\",\r\n    \"quantity\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/updateQuantity"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteProductfromCart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cartProductId\": \"64c29c25367ee6aef9acc04c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/deleteProductfromCart"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/deleteCart"
+					},
+					"response": []
+				},
+				{
+					"name": "getCart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/getCart"
+					},
+					"response": []
+				},
+				{
+					"name": "checkout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzNiOThiNDlhYWY3OGE1ZWRiZWFhZSIsImlhdCI6MTY5MDU0ODYyMiwiZXhwIjoxNjkwODA3ODIyfQ.kg2CT_ICVWUEacLke3PL58rYMeKlRo4hLo2L7PJcDNk"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"addressId\": \"64c3bd63cb3beac4fd3c3864\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://krish-vapes-backend.vercel.app/api/v1/user/checkout"
+					},
+					"response": []
+				},
+				{
+					"name": "Place Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paymentStatus\": \"paid\"\r\n    // \"paymentStatus\": \"failed\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/user/placeOrder/Y5FE8PHBB"
+					},
+					"response": []
+				},
+				{
+					"name": "allOrders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/allOrders"
+					},
+					"response": []
+				},
+				{
+					"name": "Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmZiODc5ZDA2YTMyYzk5NGVmY2Y1YiIsImlhdCI6MTY5MDI4NjI1NCwiZXhwIjoxNjkwNTQ1NDU0fQ.NDiA3lgiqBbp64Y4frLxJKoc8ehYbDDtl0ItutELYVo"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/Orders"
+					},
+					"response": []
+				},
+				{
+					"name": "viewOrder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDc4OTI0OSwiZXhwIjoxNjkxMDQ4NDQ5fQ.nzYgWXCjaRQzBx5nBaHzo-Q1B8DQk6caQPaZvXVVyII"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/user/viewOrder/64c25d2c2ba30c636d979c54"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "addCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "lluqp9E_1/BATTERIES & CHARGERS.png"
+								},
+								{
+									"key": "name",
+									"value": "Batteries & Chargers",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Category/addCategory"
+					},
+					"response": []
+				},
+				{
+					"name": "updateCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Starter Kit",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "XVgXJinkM/image1.png"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Category/updateCategory/64be3ea62591b241463b2528"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1/Category/deleteCategory/64be3ea62591b241463b2528"
+					},
+					"response": []
+				},
+				{
+					"name": "allCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/Category/allCategory"
+					},
+					"response": []
+				},
+				{
+					"name": "paginateCategoriesSearch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:2014/api/v1/Category/paginateCategoriesSearch",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"Category",
+								"paginateCategoriesSearch"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Diamond Stud",
+									"disabled": true
+								},
+								{
+									"key": "fromDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SubCategory",
+			"item": [
+				{
+					"name": "addSubCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"All-In-One Systems\",\r\n    \"categoryId\": \"64c112434024038808e36403\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/SubCategory/addSubcategory"
+					},
+					"response": []
+				},
+				{
+					"name": "updateSubcategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Cold Drink\",\r\n    \"categoryId\": \"64be3ea62591b241463b2528\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/SubCategory/updateSubcategory/64be44debe7dcdbf74ce89dc"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteSubcategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1/SubCategory/deleteSubcategory/64be44debe7dcdbf74ce89dc"
+					},
+					"response": []
+				},
+				{
+					"name": "allSubcategory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/SubCategory/all/Subcategory"
+					},
+					"response": []
+				},
+				{
+					"name": "SubCategoryForAdmin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/SubCategory/all/SubCategoryForAdmin"
+					},
+					"response": []
+				},
+				{
+					"name": "all Subcategory By category Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/SubCategory/allSubcategoryById/64c11109b3774ed6cf1e78bd"
+					},
+					"response": []
+				},
+				{
+					"name": "all Subcategory By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/SubCategory/64c1135b4024038808e36425"
+					},
+					"response": []
+				},
+				{
+					"name": "paginateSubCategoriesSearch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:2014/api/v1/SubCategory/paginate/SubCategoriesSearch",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"SubCategory",
+								"paginate",
+								"SubCategoriesSearch"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Diamond Stud",
+									"disabled": true
+								},
+								{
+									"key": "fromDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "addProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDc4ODQxMCwiZXhwIjoxNjkxMDQ3NjEwfQ.A2oln1cwDPi5lLVJpXn0jp5paGaUs3OrT7AVZu6_KgY"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "categoryId",
+									"value": "64be3ea62591b241463b2528",
+									"type": "text"
+								},
+								{
+									"key": "subcategoryId",
+									"value": "64be45844bbd0ae3dcbe3e18",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Diamond Halo Stud Ligula",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "The best is yet to come! Give your walls a voice with a framed poster. This aesthethic, optimistic poster will look great in your desk or in an open-space office. Painted wooden frame with passe-partout for more depth.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "34",
+									"type": "text"
+								},
+								{
+									"key": "taxInclude",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "discountPrice",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "colorActive",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "color[0]",
+									"value": "Iron",
+									"type": "text"
+								},
+								{
+									"key": "color[1]",
+									"value": "Black",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": [
+										"JzGvc2sBr/1.jpg",
+										"JzGvc2sBr/2.jpg"
+									]
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Product/addProduct"
+					},
+					"response": []
+				},
+				{
+					"name": "addProduct varient but no size",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "categoryId",
+									"value": "64be3ea62591b241463b2528",
+									"type": "text"
+								},
+								{
+									"key": "subcategoryId",
+									"value": "64be45844bbd0ae3dcbe3e18",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Diamond Halo Stud Ligula",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "The best is yet to come! Give your walls a voice with a framed poster. This aesthethic, optimistic poster will look great in your desk or in an open-space office. Painted wooden frame with passe-partout for more depth.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "34",
+									"type": "text"
+								},
+								{
+									"key": "taxInclude",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "colorActive",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "color[0]",
+									"value": "Iron",
+									"type": "text"
+								},
+								{
+									"key": "color[1]",
+									"value": "Black",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": [
+										"SZ2T5Hra3/4.jpg",
+										"SZ2T5Hra3/5.jpg"
+									]
+								},
+								{
+									"key": "arrayQuantity[0]",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "arrayQuantity[1]",
+									"value": "100",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Product/addProduct"
+					},
+					"response": []
+				},
+				{
+					"name": "addProduct no varity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "categoryId",
+									"value": "64be3ea62591b241463b2528",
+									"type": "text"
+								},
+								{
+									"key": "subcategoryId",
+									"value": "64be45844bbd0ae3dcbe3e18",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Diamond Halo Stud Ligula",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "The best is yet to come! Give your walls a voice with a framed poster. This aesthethic, optimistic poster will look great in your desk or in an open-space office. Painted wooden frame with passe-partout for more depth.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "34",
+									"type": "text"
+								},
+								{
+									"key": "taxInclude",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "discountPrice",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "color",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "quantity",
+									"value": "100",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Product/addProduct"
+					},
+					"response": []
+				},
+				{
+					"name": "BestSeller",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost:2014/api/v1/Product/all/BestSeller",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"all",
+								"BestSeller"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Vaping",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "paginateProductSearch",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:2014/api/v1/Product/all/paginateProductSearch",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"all",
+								"paginateProductSearch"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Diamond Stud",
+									"disabled": true
+								},
+								{
+									"key": "fromDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "toDate",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "categoryId",
+									"value": "64be3ea62591b241463b2528",
+									"disabled": true
+								},
+								{
+									"key": "subcategoryId",
+									"value": "64be45844bbd0ae3dcbe3e18",
+									"disabled": true
+								},
+								{
+									"key": "quantity",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NewArrival",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost:2014/api/v1/Product/all/NewArrival",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"all",
+								"NewArrival"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Vaping",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOnSale",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost:2014/api/v1/Product/all/getOnSale",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"all",
+								"getOnSale"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Vaping",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "categoryId",
+									"value": "64be3ea62591b241463b2528",
+									"type": "text"
+								},
+								{
+									"key": "subcategoryId",
+									"value": "64be45844bbd0ae3dcbe3e18",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Diamond Halo Stud Ligula",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "The best is yet to come! Give your walls a voice with a framed poster. This aesthethic, optimistic poster will look great in your desk or in an open-space office. Painted wooden frame with passe-partout for more depth.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "14.28",
+									"type": "text"
+								},
+								{
+									"key": "taxInclude",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "tax",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": [
+										"6mLLnwTq-/2.jpg",
+										"6mLLnwTq-/1.jpg"
+									]
+								},
+								{
+									"key": "color[0]",
+									"value": "Black",
+									"type": "text"
+								},
+								{
+									"key": "color[1]",
+									"value": "Pink",
+									"type": "text"
+								},
+								{
+									"key": "discountPrice",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "discount",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "0",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Product/editProduct/64be50c3678aa3622b21fa55"
+					},
+					"response": []
+				},
+				{
+					"name": "Product by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost:2014/api/v1/Product/64be50c3678aa3622b21fa55",
+							"host": [
+								"localhost"
+							],
+							"port": "2014",
+							"path": [
+								"api",
+								"v1",
+								"Product",
+								"64be50c3678aa3622b21fa55"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product color by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": "localhost:2014/api/v1/Product/color/64bffb6948d29a27dcb333d5"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDE4ODMxMywiZXhwIjoxNjkwNDQ3NTEzfQ.WCxwYbGVdtTTKuZFTb3_8g7yFx0aaW3NPj2lgURVr3Q"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": "localhost:2014/api/v1/Product/deleteProduct/64be50c3678aa3622b21fa55"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Banner",
+			"item": [
+				{
+					"name": "addBanner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDIwNTU0MCwiZXhwIjoxNjkwNDY0NzQwfQ.JwdJpiYhXp3duriOTzLxOgACL7xmSGVPatXLXcysGfg"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "TLhbJEtW1/bannerbottom1.jpg"
+								},
+								{
+									"key": "bannerName",
+									"value": "banner1",
+									"type": "text"
+								},
+								{
+									"key": "position",
+									"value": "BOTTOM",
+									"description": "TOP // MID  //  BOTTOM",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Banner/addBanner"
+					},
+					"response": []
+				},
+				{
+					"name": "updateBanner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDIwNTU0MCwiZXhwIjoxNjkwNDY0NzQwfQ.JwdJpiYhXp3duriOTzLxOgACL7xmSGVPatXLXcysGfg"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "iRdVvZhHK/bannermid 4.jpg"
+								},
+								{
+									"key": "bannerName",
+									"value": "banner 4",
+									"type": "text"
+								},
+								{
+									"key": "position",
+									"value": "MID",
+									"description": "TOP // MID  //  BOTTOM",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Banner/updateBanner/64be7e3dd07d994e5e569201"
+					},
+					"response": []
+				},
+				{
+					"name": "getTopBanner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/Banner/getTopBanner"
+					},
+					"response": []
+				},
+				{
+					"name": "getMidBanner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/Banner/getMidBanner"
+					},
+					"response": []
+				},
+				{
+					"name": "getBottomBanner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/Banner/getBottomBanner"
+					},
+					"response": []
+				},
+				{
+					"name": "getBanner by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1//Banner/64bf610630a8275acdebb4e6"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1//Banner/64bf610630a8275acdebb4e6"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Blog",
+			"item": [
+				{
+					"name": "addBlog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDIwNTU0MCwiZXhwIjoxNjkwNDY0NzQwfQ.JwdJpiYhXp3duriOTzLxOgACL7xmSGVPatXLXcysGfg"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "3DIyZvmbj/blog8.jpeg"
+								},
+								{
+									"key": "description",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Lorem ipsum dolor sit amet, consectetur",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/Blog/addBlog"
+					},
+					"response": []
+				},
+				{
+					"name": "updateBlog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDIwNTU0MCwiZXhwIjoxNjkwNDY0NzQwfQ.JwdJpiYhXp3duriOTzLxOgACL7xmSGVPatXLXcysGfg"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "3DIyZvmbj/blog8.jpeg"
+								},
+								{
+									"key": "description",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Lorem ipsum dolor sit amet, consectetur",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1//Blog/updateBlog/64bf709360907d84e005f8b6"
+					},
+					"response": []
+				},
+				{
+					"name": "all Blog",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/Blog/all"
+					},
+					"response": []
+				},
+				{
+					"name": "getBlogByToken",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/Blog/getBlogByToken"
+					},
+					"response": []
+				},
+				{
+					"name": "get Blog by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/Blog/64bf709360907d84e005f8b6"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1/Blog/64bf709360907d84e005f8b6"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ContactDetails",
+			"item": [
+				{
+					"name": "addContactDetails",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDI3MDg1NSwiZXhwIjoxNjkwNTMwMDU1fQ.Ceee6FCrQuUcKW61P-rbRlUPLQy_NKMIP29JAWipY7I"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fb\": \"www.fb.com\",\r\n    \"twitter\": \"www.twitter.com\",\r\n    \"google\": \"www.google.com\",\r\n    \"instagram\": \"www.instagram.com\",\r\n    \"basketball\": \"www.basketball.com\",\r\n    \"behance\": \"www.behance.com\",\r\n    \"dribbble\": \"www.dribbble.com\",\r\n    \"pinterest\": \"www.pinterest.com\",\r\n    \"linkedIn\": \"www.linkedIn.com\",\r\n    \"youtube\": \"www.youtube.com\",\r\n    \"map\": \"<iframe src='https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7005.1292628429965!2d77.380918!3d28.612835!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce5abc9471d59%3A0x5c647411835dccdc!2sFlyweis%20Group!5e0!3m2!1sen!2sin!4v1690271337754!5m2!1sen!2sin' width='600' height='450' style='border:0;' allowfullscreen='' loading='lazy' referrerpolicy='no-referrer-when-downgrade'></iframe>\",\r\n    \"address\": \"14 LE Gounlburn St, Sydney 1198NSA\",\r\n    \"phone\": \"+08919918989\",\r\n    \"supportEmail\": \"support@domain.com\",\r\n    \"openingTime\": \"Mon-Fri 8:00 - 17:00\",\r\n    \"infoEmail\": \"info@flyweis.technology\",\r\n    \"contactAddress\": \"A-66, Sector 63 Rd, A Block, Noida,Uttar Pradesh 201301\",\r\n    \"tollfreeNo\": \"80014010000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/ContactDetails/addContactDetails"
+					},
+					"response": []
+				},
+				{
+					"name": "viewContactDetails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/ContactDetails/viewContactDetails"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Help and support",
+			"item": [
+				{
+					"name": "addQuery",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"varun Chaudhary\",\r\n    \"email\": \"v@gmail.com\",\r\n    \"mobile\": \"7983270584\",\r\n    \"query\": \"hello\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/help/addQuery"
+					},
+					"response": []
+				},
+				{
+					"name": "all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/help/all"
+					},
+					"response": []
+				},
+				{
+					"name": "by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/help/64bf848b67f073b3a951261c"
+					},
+					"response": []
+				},
+				{
+					"name": "by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1/help/64bf848b67f073b3a951261c"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AboutUs",
+			"item": [
+				{
+					"name": "addAboutUs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDI3MDg1NSwiZXhwIjoxNjkwNTMwMDU1fQ.Ceee6FCrQuUcKW61P-rbRlUPLQy_NKMIP29JAWipY7I"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "aboutusImages",
+									"type": "file",
+									"src": [
+										"5fM3OwNeB/aboutus3.jpg",
+										"5fM3OwNeB/aboutus2.jpg"
+									]
+								},
+								{
+									"key": "aboutusImage",
+									"type": "file",
+									"src": "d9r7CJgBy/aboutus1.jpg"
+								},
+								{
+									"key": "desc[0]",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n",
+									"type": "text"
+								},
+								{
+									"key": "title[0]",
+									"value": "Lorem Ipsum is simply dummy text",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/AboutUs/addAboutUs"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAboutUs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDI3MDg1NSwiZXhwIjoxNjkwNTMwMDU1fQ.Ceee6FCrQuUcKW61P-rbRlUPLQy_NKMIP29JAWipY7I"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:2014/api/v1/AboutUs/deleteAboutUs"
+					},
+					"response": []
+				},
+				{
+					"name": "edit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YmUzMjQyZTI2Y2JiZjFlYTIyYThlMiIsImlhdCI6MTY5MDI3MDg1NSwiZXhwIjoxNjkwNTMwMDU1fQ.Ceee6FCrQuUcKW61P-rbRlUPLQy_NKMIP29JAWipY7I"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "aboutusImages",
+									"type": "file",
+									"src": [
+										"5fM3OwNeB/aboutus3.jpg",
+										"5fM3OwNeB/aboutus2.jpg"
+									],
+									"disabled": true
+								},
+								{
+									"key": "aboutusImage",
+									"type": "file",
+									"src": "d9r7CJgBy/aboutus1.jpg",
+									"disabled": true
+								},
+								{
+									"key": "desc[0]",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n",
+									"type": "text"
+								},
+								{
+									"key": "title[0]",
+									"value": "Lorem Ipsum is simply dummy text",
+									"type": "text"
+								},
+								{
+									"key": "desc[1]",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n",
+									"type": "text"
+								},
+								{
+									"key": "title[1]",
+									"value": "Lorem Ipsum is simply dummy text",
+									"type": "text"
+								},
+								{
+									"key": "desc[2]",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n",
+									"type": "text"
+								},
+								{
+									"key": "desc[3]",
+									"value": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n",
+									"type": "text"
+								}
+							]
+						},
+						"url": "localhost:2014/api/v1/AboutUs/editAboutUs"
+					},
+					"response": []
+				},
+				{
+					"name": "get about us",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:2014/api/v1/AboutUs/all"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "News Letter",
+			"item": [
+				{
+					"name": "SUBSCRIBE NewsLetter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"SUBSCRIBE\",\r\n    \"email\": \"vcjagal1994@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/NewsLetter/subscribeUnsubscribe"
+					},
+					"response": []
+				},
+				{
+					"name": "UNSUBSCRIBE NewsLetter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"UNSUBSCRIBE\",\r\n    \"email\": \"vcjagal1994@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:2014/api/v1/NewsLetter/subscribeUnsubscribe"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "Localhost",
+			"value": "localhost:2014"
+		}
+	]
+}
