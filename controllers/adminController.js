@@ -227,7 +227,7 @@ exports.paginateCategoriesSearch = async (req, res) => {
                 }
                 let options = {
                         page: Number(page) || 1,
-                        limit: Number(limit) || 10,
+                        limit: Number(limit) || 50,
                         sort: { createdAt: -1 },
                 };
                 let data = await Category.paginate(query, options);
@@ -310,7 +310,7 @@ exports.paginateSubCategoriesSearch = async (req, res) => {
                 }
                 let options = {
                         page: Number(page) || 1,
-                        limit: Number(limit) || 10,
+                        limit: Number(limit) || 50,
                         sort: { createdAt: -1 },
                         populate: ('categoryId')
                 };
@@ -922,7 +922,7 @@ exports.paginateProductSearch = async (req, res) => {
                 }
                 let options = {
                         page: Number(page) || 1,
-                        limit: Number(limit) || 15,
+                        limit: Number(limit) || 50,
                         sort: { createdAt: -1 },
                         populate: ('categoryId subcategoryId colors')
                 };
@@ -1888,7 +1888,7 @@ exports.paginateOrdersSearch = async (req, res) => {
                 }
                 let options = {
                         page: Number(page) || 1,
-                        limit: Number(limit) || 10,
+                        limit: Number(limit) || 50,
                         sort: { createdAt: -1 },
                         populate: ([{ path: 'userId', select: 'fullName firstName lastName courtesyTitle email' }, { path: 'categoryId', select: 'name image' }, { path: 'subcategoryId', select: 'name categoryId' }, { path: 'productId', select: 'categoryId subcategoryId name description price quantity discount discountPrice taxInclude colorActive tax ratings colors numOfReviews img publicId' }, { path: 'productColorId', select: 'productId size img publicId color uantity colorSize' }])
                 };
@@ -1923,7 +1923,7 @@ exports.paginateAllOrdersSearch = async (req, res) => {
                 }
                 let options = {
                         page: Number(page) || 1,
-                        limit: Number(limit) || 10,
+                        limit: Number(limit) || 50,
                         sort: { createdAt: -1 },
                 };
                 let data = await userOrders.paginate(query, options);
