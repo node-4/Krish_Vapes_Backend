@@ -890,6 +890,7 @@ exports.paginateProductSearch = async (req, res) => {
         try {
                 const { search, fromDate, toDate, categoryId, subcategoryId, quantity, status, page, limit } = req.query;
                 let query = {};
+                const productsCount = await Product.count();
                 if (search) {
                         query.$or = [
                                 { "name": { $regex: req.query.search, $options: "i" }, },
@@ -922,7 +923,7 @@ exports.paginateProductSearch = async (req, res) => {
                 }
                 let options = {
                         page: Number(page) || 1,
-                        limit: Number(limit) || 50,
+                        limit: Number(limit) || productsCount,
                         sort: { createdAt: -1 },
                         populate: ('categoryId subcategoryId colors')
                 };
