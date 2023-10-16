@@ -1270,12 +1270,13 @@ exports.updateQuantity = async (req, res) => {
                                 if (count == productLength) {
                                         let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: { products: products } }, { new: true });
                                         if (update) {
-                                                let totalAmount = 0, totalTax = 0, paidAmount2 = 0, delivery = 0, discount = 0;
+                                                let totalAmount = 0, totalTax = 0, paidAmount2 = 0, delivery = 0, discount = 0, totalItem = 0;
                                                 for (let j = 0; j < update.products.length; j++) {
                                                         totalAmount = Number(totalAmount) + Number(update.products[j].total);
                                                         totalTax = Number(totalTax) + Number(update.products[j].totalTax);
                                                         paidAmount2 = Number(paidAmount2) + Number(update.products[j].paidAmount);
                                                         discount = Number(discount) + Number(update.products[j].discount)
+                                                        totalItem = Number(totalItem) + Number(update.products[j].quantity)
                                                 }
                                                 if (paidAmount2 > 250) {
                                                         delivery = "0";
@@ -1284,7 +1285,7 @@ exports.updateQuantity = async (req, res) => {
                                                         delivery = "5.99";
                                                         paidAmount2 = Number(paidAmount2) + Number(delivery);
                                                 }
-                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { delivery: delivery, discount: Number(discount).toFixed(2), totalAmount: Number(totalAmount).toFixed(2), paidAmount: Number(paidAmount2).toFixed(2), tax: Number(totalTax).toFixed(2), totalItem: update.products.length } }, { new: true });
+                                                let update1 = await Cart.findByIdAndUpdate({ _id: update._id }, { $set: { delivery: delivery, discount: Number(discount).toFixed(2), totalAmount: Number(totalAmount).toFixed(2), paidAmount: Number(paidAmount2).toFixed(2), tax: Number(totalTax).toFixed(2), totalItem: totalItem } }, { new: true });
                                                 return res.status(200).json({ status: 200, message: "cart update Successfully.", data: update1 })
                                         }
                                 }
@@ -1305,7 +1306,7 @@ exports.deleteProductfromCart = async (req, res) => {
                 } else {
                         let findCart = await Cart.findOne({ userId: user._id });
                         if (findCart) {
-                                let products = [], count = 0, paidAmount = 0, totalTax = 0, totals = 0, delivery = 0, discount = 0;;
+                                let products = [], count = 0, paidAmount = 0, totalTax = 0, totals = 0, delivery = 0, discount = 0, totalItem = 0;
                                 for (let i = 0; i < findCart.products.length; i++) {
                                         if ((findCart.products[i]._id).toString() != req.params.cartProductId) {
                                                 products.push(findCart.products[i])
@@ -1313,6 +1314,7 @@ exports.deleteProductfromCart = async (req, res) => {
                                                 totals = totals + Number(findCart.products[i].total);
                                                 discount = discount + Number(findCart.products[i].discount);
                                                 totalTax = totalTax + Number(findCart.products[i].totalTax)
+                                                totalItem = Number(totalItem) + Number(findCart.products[j].quantity)
                                                 count++
                                         }
                                 }
@@ -1333,7 +1335,7 @@ exports.deleteProductfromCart = async (req, res) => {
                                                                 discount: Number(discount).toFixed(2),
                                                                 delivery: Number(delivery).toFixed(2),
                                                                 paidAmount: Number(paidAmount).toFixed(2),
-                                                                totalItem: products.length
+                                                                totalItem: totalItem
                                                         }
                                                 }, { new: true });
                                                 if (update) {
