@@ -1314,7 +1314,7 @@ exports.deleteProductfromCart = async (req, res) => {
                                                 totals = totals + Number(findCart.products[i].total);
                                                 discount = discount + Number(findCart.products[i].discount);
                                                 totalTax = totalTax + Number(findCart.products[i].totalTax)
-                                                totalItem = Number(totalItem) + Number(findCart.products[j].quantity)
+                                                totalItem = totalItem + Number(findCart.products[i].quantity)
                                                 count++
                                         }
                                 }
