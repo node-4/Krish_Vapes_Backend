@@ -1051,8 +1051,9 @@ exports.checkout = async (req, res) => {
                         }
                         let findCart = await Cart.findOne({ userId: req.user._id });
                         if (findCart) {
-                                let findAddress = await userAddress.find({ _id: req.body.addressId });
+                                let findAddress = await userAddress.findById({ _id: req.body.addressId });
                                 if (findAddress) {
+                                        console.log(findAddress);
                                         let orderId = await reffralCode();
                                         for (let i = 0; i < findCart.products.length; i++) {
                                                 let obj = {
@@ -1433,7 +1434,7 @@ exports.placeOrder = async (req, res) => {
                 }
         } catch (error) {
                 console.log(error);
-                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                return res.status(501).send({ status: 501, message: "server error.", data: error.raw.message, });
         }
 };
 exports.cancelOrder = async (req, res) => {
