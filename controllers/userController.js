@@ -21,6 +21,12 @@ const Wishlist = require("../model/WishlistModel");
 const PDFDocument = require("pdfkit-table");
 const doc = new PDFDocument({ autoFirstPage: true, margin: 10, size: 'A4' });
 const nodemailer = require('nodemailer')
+var paypal = require("paypal-rest-sdk");
+paypal.configure({
+        mode: "sandbox", //sandbox or live
+        client_id: "AfrwGgPhrZF75g-lnWIEZCMz-0zvxaFJSsEL2oaSHJ7JOEUDwv3WTtvzXyxJfowuVOty7AjhTC3TWWq9",
+        client_secret: "EJmUs61eKjJOkKE937qEQT7MCuKakPmpcrZ19jhm6X5orw7dI24YsK5kde_wOg4YhrosTSAsHIomcSGP",
+});
 // const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc'); // live
 // const stripe = require("stripe")('sk_test_51NYCJcArS6Dr0SQY0UJ5ZOoiPHQ8R5jNOyCMOkjxpl4BHkG4DcAGAU8tjBw6TSOSfimDSELa6BVyCVSo9CGLXlyX00GkGDAQFo'); // test
 const stripe = require("stripe")('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'); // live
@@ -1669,3 +1675,78 @@ const reffralCode = async () => {
         }
         return OTP;
 }
+exports.placeOrderPaypalPayment = async (req, res) => {
+        try {
+                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+                if (findUserOrder) {
+                        let delivery = Number(findUserOrder.delivery);
+                        let line_items = [];
+                        let totalAmount = 0;
+                        for (let i = 0; i < findUserOrder.Orders.length; i++) {
+                                let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+                                if (findu) {
+                                        let findProduct = await Product.findById(findu.productId);
+                                        if (findProduct) {
+                                                let price = Number(findu.paidAmount);
+                                                totalAmount = totalAmount + price;
+                                                console.log(price);
+                                                let obj2 = {
+                                                        "name": findProduct.name,
+                                                        "price": price,
+                                                        "currency": "GBP",
+                                                        "quantity": 1
+                                                };
+                                                line_items.push(obj2);
+                                        }
+                                }
+                        }
+                        totalAmount = totalAmount + delivery;
+                        let deliveryItem = {
+                                "name": 'Delivery Charge',
+                                "price": delivery,
+                                "currency": "GBP",
+                                "quantity": 1
+                        };
+                        line_items.push(deliveryItem);
+                        console.log(line_items)
+                        const create_payment_json = {
+                                "intent": "sale",
+                                "payer": {
+                                        "payment_method": "paypal"
+                                },
+                                "redirect_urls": {
+                                        'return_url': `https://krish-vapes.vercel.app/order-success/${findUserOrder.orderId}`,
+                                        'cancel_url': `https://krish-vapes.vercel.app/order-failure/${findUserOrder.orderId}`,
+                                },
+                                "transactions": [{
+                                        "item_list": {
+                                                "items": line_items
+                                        },
+                                        "amount": {
+                                                "currency": "GBP",
+                                                "total": totalAmount
+                                        },
+                                        "description": "Hat for the best team ever"
+                                }]
+                        };
+                        paypal.payment.create(create_payment_json, async (error, payData) => {
+                                if (error) {
+                                        return res.status(500).json({ status: 'error', message: 'Server error.', data: error });
+                                } else {
+                                        for (let i = 0; i < payData.links.length; i++) {
+                                                if (payData.links[i].rel === 'approval_url') {
+                                                        var tokenId = payData.links[i].href.split('&token=');
+                                                        let url = payData.links[i].href;
+                                                        return res.status(200).json({ status: 'success', session: url });
+                                                }
+                                        }
+                                }
+                        });
+                } else {
+                        return res.status(404).json({ message: 'No data found', data: {} });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(500).json({ status: 'error', message: 'Server error.', data: error.message });
+        }
+};

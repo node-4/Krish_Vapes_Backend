@@ -24,6 +24,7 @@
     "nodemailer": "^6.9.4",
     "nodemon": "^3.0.1",
     "otp-generators": "^1.0.3",
+    "paypal-rest-sdk": "^1.8.1",
     "pdfkit-table": "^0.1.99",
     "serverless-http": "^3.2.0",
     "stripe": "^13.3.0"
