@@ -1694,12 +1694,12 @@ exports.placeOrderPaypalPayment = async (req, res) => {
                                 if (findu) {
                                         let findProduct = await Product.findById(findu.productId);
                                         if (findProduct) {
-                                                let price = Number(findu.paidAmount);
+                                                let price = Number(findu.paidAmount)
                                                 totalAmount = totalAmount + price;
                                                 console.log(price);
                                                 let obj2 = {
                                                         "name": findProduct.name,
-                                                        "price": price,
+                                                        "price": Number(price).toFixed(2),
                                                         "currency": "GBP",
                                                         "quantity": 1
                                                 };
@@ -1731,7 +1731,7 @@ exports.placeOrderPaypalPayment = async (req, res) => {
                                         },
                                         "amount": {
                                                 "currency": "GBP",
-                                                "total": totalAmount
+                                                "total": Number(totalAmount).toFixed(2)
                                         },
                                         "description": "Hat for the best team ever"
                                 }]
