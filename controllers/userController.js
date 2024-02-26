@@ -1770,7 +1770,6 @@ exports.placeOrderPaypalPayment = async (req, res) => {
                                         let findProduct = await Product.findById(findu.productId);
                                         if (findProduct) {
                                                 totalAmount = 1;
-                                                console.log(price);
                                                 let obj2 = {
                                                         "name": findProduct.name,
                                                         "price": 1,
