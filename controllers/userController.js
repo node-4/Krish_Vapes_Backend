@@ -1682,7 +1682,7 @@ const reffralCode = async () => {
         }
         return OTP;
 }
-exports.placeOrderPaypalPayment = async (req, res) => {
+exports.placeOrderPaypalPayment1 = async (req, res) => {
         try {
                 let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
                 if (findUserOrder) {
@@ -1715,6 +1715,80 @@ exports.placeOrderPaypalPayment = async (req, res) => {
                                 "quantity": 1
                         };
                         line_items.push(deliveryItem);
+                        console.log(line_items)
+                        const create_payment_json = {
+                                "intent": "sale",
+                                "payer": {
+                                        "payment_method": "paypal"
+                                },
+                                "redirect_urls": {
+                                        'return_url': `https://krish-vapes.vercel.app/order-success/${findUserOrder.orderId}`,
+                                        'cancel_url': `https://krish-vapes.vercel.app/order-failure/${findUserOrder.orderId}`,
+                                },
+                                "transactions": [{
+                                        "item_list": {
+                                                "items": line_items
+                                        },
+                                        "amount": {
+                                                "currency": "GBP",
+                                                "total": Number(totalAmount).toFixed(2)
+                                        },
+                                        "description": "Hat for the best team ever"
+                                }]
+                        };
+                        paypal.payment.create(create_payment_json, async (error, payData) => {
+                                if (error) {
+                                        return res.status(500).json({ status: 'error', message: 'Server error.', data: error });
+                                } else {
+                                        for (let i = 0; i < payData.links.length; i++) {
+                                                if (payData.links[i].rel === 'approval_url') {
+                                                        var tokenId = payData.links[i].href.split('&token=');
+                                                        let url = payData.links[i].href;
+                                                        return res.status(200).json({ status: 'success', session: url });
+                                                }
+                                        }
+                                }
+                        });
+                } else {
+                        return res.status(404).json({ message: 'No data found', data: {} });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(500).json({ status: 'error', message: 'Server error.', data: error.message });
+        }
+};
+exports.placeOrderPaypalPayment = async (req, res) => {
+        try {
+                let findUserOrder = await userOrders.findOne({ orderId: req.params.orderId });
+                if (findUserOrder) {
+                        let delivery = 0;
+                        let line_items = [];
+                        let totalAmount = 0;
+                        for (let i = 0; i < findUserOrder.Orders.length; i++) {
+                                let findu = await order.findOne({ _id: findUserOrder.Orders[i] });
+                                if (findu) {
+                                        let findProduct = await Product.findById(findu.productId);
+                                        if (findProduct) {
+                                                totalAmount = 1;
+                                                console.log(price);
+                                                let obj2 = {
+                                                        "name": findProduct.name,
+                                                        "price": 1,
+                                                        "currency": "GBP",
+                                                        "quantity": 1
+                                                };
+                                                line_items.push(obj2);
+                                        }
+                                }
+                        }
+                        totalAmount = totalAmount;
+                        // let deliveryItem = {
+                        //         "name": 'Delivery Charge',
+                        //         "price": delivery,
+                        //         "currency": "GBP",
+                        //         "quantity": 1
+                        // };
+                        // line_items.push(deliveryItem);
                         console.log(line_items)
                         const create_payment_json = {
                                 "intent": "sale",
