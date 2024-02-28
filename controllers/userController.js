@@ -1825,7 +1825,7 @@ exports.placeOrderPaypalPayment = async (req, res) => {
                                         "payment_method": "paypal"
                                 },
                                 "redirect_urls": {
-                                        'return_url': `https://krish-vapes.vercel.app/order-success/${findUserOrder.orderId}/amount=${totalAmount}`,
+                                        'return_url': `https://krish-vapes.vercel.app/order-success/${findUserOrder.orderId}-amount=${totalAmount}`,
                                         'cancel_url': `https://krish-vapes.vercel.app/order-failure/${findUserOrder.orderId}`,
                                 },
                                 "transactions": [{
