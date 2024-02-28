@@ -27,5 +27,6 @@ router.get("/user/viewOrder/:id", [authJwt.verifyToken], auth.getOrderbyId);
 router.post("/user/placeOrder/:orderId", [authJwt.verifyToken], auth.placeOrder);
 router.post("/user/placeOrderPaypalPayment/:orderId", [authJwt.verifyToken], auth.placeOrderPaypalPayment);
 router.get("/user/successOrder/:orderId", [authJwt.verifyToken], auth.successOrder);
+router.get("/user/successOrderForPaypal", [authJwt.verifyToken], auth.successOrderForPaypal);
 router.get("/user/cancelOrder/:orderId", [authJwt.verifyToken], auth.cancelOrder);
 module.exports = router;

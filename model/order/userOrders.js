@@ -47,6 +47,9 @@ const DocumentSchema = schema({
   totalItem: {
     type: Number
   },
+  transactionId: {
+    type: String,
+  },
   orderStatus: {
     type: String,
     enum: ["unconfirmed", "confirmed"],

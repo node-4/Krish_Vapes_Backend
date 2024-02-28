@@ -28,17 +28,17 @@ var paypal = require("paypal-rest-sdk");
 //         client_secret: "EJmUs61eKjJOkKE937qEQT7MCuKakPmpcrZ19jhm6X5orw7dI24YsK5kde_wOg4YhrosTSAsHIomcSGP",
 // }); // varun
 
-// paypal.configure({
-//         mode: "sandbox", //sandbox or live
-//         client_id: "AZsmV_dtdB09wyYw4diPR_RlSo-Rw6s0vV8CQumZ-PG5kKAi-k0wFtsMOVc0hNF4rb4bTWNLUzxa3ri0",
-//         client_secret: "EPzm9lyRnSGp2npsQS57aGBLju7QfPNJwMKpaXT8ikVD3JA7DRsx32ETulF580r6tPydoPA2DKdyXSyz",
-// }); // Client
-
 paypal.configure({
-        mode: "live", //sandbox or live
-        client_id: "AeJKJyRbJ7O63oYfwD903--O4mAnT1yOpk3rIhn7Cbtf45669Gg0i_jMUnPqzUSiyhx695AvoDhzjdFE",
-        client_secret: "EBfiXipIyxOc8mmF1iT-YRD08SrwrUxDkpRIuixaY7lpdts09lLwGbCavtfYT1aiKaOkw1a2ch778yyy",
+        mode: "sandbox", //sandbox or live
+        client_id: "AZsmV_dtdB09wyYw4diPR_RlSo-Rw6s0vV8CQumZ-PG5kKAi-k0wFtsMOVc0hNF4rb4bTWNLUzxa3ri0",
+        client_secret: "EPzm9lyRnSGp2npsQS57aGBLju7QfPNJwMKpaXT8ikVD3JA7DRsx32ETulF580r6tPydoPA2DKdyXSyz",
 }); // Client
+
+// paypal.configure({
+//         mode: "live", //sandbox or live
+//         client_id: "AeJKJyRbJ7O63oYfwD903--O4mAnT1yOpk3rIhn7Cbtf45669Gg0i_jMUnPqzUSiyhx695AvoDhzjdFE",
+//         client_secret: "EBfiXipIyxOc8mmF1iT-YRD08SrwrUxDkpRIuixaY7lpdts09lLwGbCavtfYT1aiKaOkw1a2ch778yyy",
+// }); // Client
 // const stripe = require("stripe")('pk_live_51NYCJcArS6Dr0SQYUKlqAd37V2GZMbxBL6OGM9sZi8CY6nv6H7TUJcjfMiepBmkIdSdn1bUCo855sQuKb66oiM4j00PRLQzvUc'); // live
 // const stripe = require("stripe")('sk_test_51NYCJcArS6Dr0SQY0UJ5ZOoiPHQ8R5jNOyCMOkjxpl4BHkG4DcAGAU8tjBw6TSOSfimDSELa6BVyCVSo9CGLXlyX00GkGDAQFo'); // test
 const stripe = require("stripe")('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'); // live
@@ -1679,6 +1679,31 @@ exports.successOrder = async (req, res) => {
                 return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
+exports.successOrderForPaypal = async (req, res) => {
+        try {
+                const payerId = req.query.PayerID;
+                const paymentId = req.query.paymentId;
+                const execute_payment_json = {
+                        "payer_id": payerId,
+                        "transactions": [{
+                                "amount": {
+                                        "currency": "GBP",
+                                        "total": req.query.amount
+                                }
+                        }]
+                };
+                paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+                        if (error) {
+                                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+                        } else {
+                                return res.status(200).send({ status: 200, message: "Payment success..", data: payment, });
+                        }
+                });
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
 const reffralCode = async () => {
         var digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let OTP = '';
@@ -1822,6 +1847,8 @@ exports.placeOrderPaypalPayment = async (req, res) => {
                                                 if (payData.links[i].rel === 'approval_url') {
                                                         var tokenId = payData.links[i].href.split('&token=');
                                                         let url = payData.links[i].href;
+                                                        await userOrders.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { transactionId: payData.id } }, { new: true })
+                                                        console.log(payData)
                                                         return res.status(200).json({ status: 'success', session: url });
                                                 }
                                         }
