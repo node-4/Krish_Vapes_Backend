@@ -1034,7 +1034,7 @@ exports.editProduct = async (req, res) => {
                                         for (let k = 0; k < images.length; k++) {
                                                 let findColor = await ProductColor.findOne({ color: images[k].color });
                                                 if (findColor) {
-                                                        await cloudinary.v2.api.delete_resources([`${findColor.publicId}`], { type: 'upload', resource_type: 'image' })
+                                                        // await cloudinary.v2.api.delete_resources([`${findColor.publicId}`], { type: 'upload', resource_type: 'image' })
                                                         await ProductColor.findByIdAndUpdate({ _id: findColor._id }, { $set: { img: images[k].img, publicId: images[k].publicId, } }, { new: true })
                                                         count++;
                                                 } else {
