@@ -19,6 +19,8 @@ const Wishlist = require("../model/WishlistModel");
 const nodemailer = require('nodemailer')
 const Cart = require("../model/cartModel");
 const notify = require('../model/notification');
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({ cloud_name: authConfig.cloud_name, api_key: authConfig.api_key, api_secret: authConfig.api_secret, });
 exports.registration = async (req, res) => {
         const { phone, email } = req.body;
         try {
